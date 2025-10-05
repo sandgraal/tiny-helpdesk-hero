@@ -6,11 +6,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="favicon.ico" />
     <!-- TODO: add stylesheet once UI scaffolding exists -->
+    <style>
+      html, body {
+        margin: 0;
+        min-height: 100%;
+        background: #071629;
+        color: #ffffff;
+        font-family: 'Segoe UI', sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .loading-state {
+        position: absolute;
+        top: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 1rem;
+        letter-spacing: 0.05em;
+      }
+      canvas {
+        display: block;
+        width: 100vw;
+        height: 100vh;
+      }
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/littlejsengine@1.14.9/dist/littlejs.min.js" defer></script>
     <script type="module" src="../src/main.js" defer></script>
   </head>
   <body>
     <noscript>This experience requires JavaScript to run.</noscript>
-    <!-- TODO: add loading indicator and accessibility messaging -->
+    <main aria-live="polite" class="loading-state">Loading Tiny Helpdesk Hero…</main>
+    <canvas id="glCanvas" width="1280" height="720" hidden></canvas>
+    <canvas id="mainCanvas" width="1280" height="720"></canvas>
   </body>
 </html>

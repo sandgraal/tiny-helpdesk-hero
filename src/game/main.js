@@ -103,6 +103,8 @@ export function createGameLifecycle() {
   return {
     init() {
       globalThis.setShowSplashScreen?.(false);
+      const loading = globalThis.document?.querySelector('.loading-state');
+      loading?.remove();
       restartShift();
     },
     update() {
