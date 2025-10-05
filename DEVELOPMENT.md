@@ -1,6 +1,6 @@
 # Development Guidelines
 
-These guidelines define how we will rebuild Tiny Helpdesk Hero after the project reset. Treat them as the living contract for code quality, accessibility, and collaboration.
+These guidelines define how we will build Tiny Helpdesk Hero from the ground up. Treat them as the living contract for code quality, accessibility, and collaboration.
 
 ## Phased Development Roadmap
 1. **Bootstrap (Sprint 0)**
@@ -29,7 +29,7 @@ These guidelines define how we will rebuild Tiny Helpdesk Hero after the project
 ├── tests/         # Optional automated checks (data validation, smoke tests)
 └── docs/          # Design notes, briefs, research (besides repo root markdown)
 ```
-The structure above is aspirational until the codebase is reintroduced. When creating directories, mirror this layout.
+The structure above is aspirational until we begin committing implementation work. Mirror this layout as directories are introduced.
 
 ## Coding Standards
 - **Style:** JavaScript ES2022, modules only. Prefer `const`/`let`; avoid mutable singletons. Use 2-space indentation.
@@ -67,4 +67,4 @@ The structure above is aspirational until the codebase is reintroduced. When cre
 - Document tone and empathy guardrails in `docs/narrative/guide.md` (to be created).
 - Prefer asynchronous feedback (issues, PR comments); reserve synchronous calls for milestone planning.
 
-The guidelines will evolve as the rebuilt codebase comes online. Propose edits through pull requests whenever workflow or tooling changes are introduced.
+The guidelines will evolve as the codebase grows. Propose edits through pull requests whenever workflow or tooling changes are introduced.

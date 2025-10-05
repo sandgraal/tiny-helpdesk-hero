@@ -1,6 +1,6 @@
 # Contributing to Tiny Helpdesk Hero
 
-Thanks for helping reboot Tiny Helpdesk Hero! The repository currently contains documentation only; code and assets will be reintroduced as we progress through the roadmap in `IMPLEMENTATION_PLAN.md`.
+Thanks for helping build Tiny Helpdesk Hero! The repository currently contains documentation only; code and assets will be introduced as we progress through the roadmap in `IMPLEMENTATION_PLAN.md`.
 
 ## Getting Started
 1. Fork and clone the repository.
@@ -28,9 +28,9 @@ Thanks for helping reboot Tiny Helpdesk Hero! The repository currently contains 
 Use GitHub Issues for:
 - Clarifying questions about requirements or tone.
 - Suggestions for new features, personas, or accessibility improvements.
-- Bugs discovered once the rebuild is underway (label appropriately).
+- Bugs discovered once implementation is underway (label appropriately).
 
 ## Code of Conduct
 Humor should aim upward and celebrate empathy. Be respectful, inclusive, and collaborative in all interactions. If conflicts arise, escalate via GitHub Issues or direct contact with the maintainers for mediation.
 
-We’re excited to rebuild this experience intentionally—thank you for being part of it!
+We’re excited to shape this experience intentionally—thank you for being part of it!

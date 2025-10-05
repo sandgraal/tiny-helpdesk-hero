@@ -1,10 +1,10 @@
 # Tiny Helpdesk Hero
 
-**Tiny Helpdesk Hero** is an empathy-forward comedy game being built for the LittleJS Game Jam 2025. The project has been reset to a clean slate so we can deliberately design the experience, tooling, and content before writing production code.
+**Tiny Helpdesk Hero** is an empathy-forward comedy game being built for the LittleJS Game Jam 2025. We’re starting from documentation-first planning so the experience, tooling, and content are intentional before production code lands.
 
 ## Current Status
-- ✅ Documentation reboot completed (README, CONTRIBUTING, DEVELOPMENT, IMPLEMENTATION_PLAN).
-- ⏳ Gameplay code, assets, and build tooling will be recreated in the next development phase.
+- ✅ Core documentation drafted (README, CONTRIBUTING, DEVELOPMENT, IMPLEMENTATION_PLAN).
+- ⏳ Gameplay code, assets, and build tooling are planned but not yet implemented.
 - 🎯 Goal for this iteration: lock the creative direction, outline technical architecture, and capture the milestone plan inside the documentation set.
 
 ## Game Vision

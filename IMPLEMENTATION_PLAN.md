@@ -1,10 +1,9 @@
 # Implementation Plan
 
-The codebase has been reset to documentation only. This plan captures the roadmap for rebuilding Tiny Helpdesk Hero and flags what is already complete.
+The project is kicking off with a documentation-first approach. This plan captures the roadmap for building Tiny Helpdesk Hero and flags what is already complete.
 
 ## Status Snapshot
-- [x] Archive previous prototype code and reset repository to documentation baseline.
-- [x] Refresh core documentation (README, DEVELOPMENT, CONTRIBUTING, IMPLEMENTATION_PLAN).
+- [x] Establish documentation baseline (README, DEVELOPMENT, CONTRIBUTING, IMPLEMENTATION_PLAN).
 - [ ] Recreate technical scaffolding (public assets, LittleJS bootstrap, module layout).
 - [ ] Deliver the jam-ready playable build.
 
