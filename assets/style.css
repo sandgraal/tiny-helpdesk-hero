@@ -1,0 +1,18 @@
+/* Futuristic cartoony theme for Tiny Helpdesk Hero */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0f044c, #1f4172, #5fb4ff);
+  font-family: Arial, Helvetica, sans-serif;
+  color: #ffffff;
+}
+
+/* Ensure the LittleJS canvas fills the viewport */
+canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
