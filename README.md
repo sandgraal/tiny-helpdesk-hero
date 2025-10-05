@@ -30,6 +30,13 @@ This project takes advantage of several LittleJS features:
 
 Work is ongoing. We plan to expand the call list, add more humorous outcomes, and polish the UI during the jam. Contributions and feedback are welcome!
 
+## Development Workflow
+- **Run locally:** From the project root, launch a simple dev server with `npx http-server -c-1` and open `http://localhost:8080`. This mirrors the GitHub Pages deployment environment and lets LittleJS load correctly.
+- **Modular structure:** Core logic lives in `src/`. Use `conversationEngine.js` for call data and progression, `ui.js` for rendering helpers, `audio.js` for sound hooks, and `main.js` as the orchestrator. When you add features, create focused modules and import them into `main.js` so callers, UI, and audio remain decoupled.
+- **Docs to explore:** See `DEVELOPMENT.md` for coding conventions, `IMPLEMENTATION_PLAN.md` for the current roadmap, and `CONTRIBUTING.md` for onboarding steps.
+- **Live site:** The playable build is published at https://sandgraal.github.io/tiny-helpdesk-hero/. Keep the `.nojekyll` file in the repo so GitHub serves everything (especially `src/` files) without Jekyll processing.
+- **Writing new calls:** Draft humorous, empathy-first scenarios that highlight “SMALL” problems. Blend sincere support tips with playful twists, and focus on responses that reward active listening over snark.
+
 ---
 
 *Tiny Helpdesk Hero* is created by Chris (@sandgraal) and friends for the LittleJS Game Jam 2025.

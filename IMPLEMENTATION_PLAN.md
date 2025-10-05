@@ -6,22 +6,22 @@ This plan outlines the tasks and milestones for developing Tiny Helpdesk Hero. A
 
 - [x] Initialize the repository and create a comprehensive `README.md`.
 - [x] Set up the project structure with `src/`, `assets/`, `docs/` and `dist/` directories.
-- [ ] Create essential configuration files (`.gitignore`, `LICENSE`, `ATTRIBUTION.md`).
-- [ ] Configure a local development server (e.g., using `http-server`) to serve the game.
+- [ ] Create essential configuration files (`.gitignore`, `LICENSE`, `ATTRIBUTION.md`). *(Note: `.gitignore` exists; still need a licence and attribution list.)*
+- [x] Configure a local development server (documented via `npx http-server`).
 
 ## Core Game Loop
 
-x [x]xImplement `gameInit` for initial setup (loading assets, state variables).
-- [x]xImplement `gameUpdate` to handle logic, input and state updates.
-- [ ]xImplement `gameRender` to draw game visuals and UI.
-- [ ]xHook up basic input handling for mouse and keyboard.
+- [x] Implement `gameInit` for initial setup (loading assets, state variables).
+- [x] Implement `gameUpdate` to handle logic, input and state updates.
+- [x] Implement `gameRender` to draw game visuals and UI.
+- [x] Hook up basic input handling for mouse clicks. *(Keyboard gamepad remain on backlog.)*
 
 ## Conversation Engine
 
-- [ ]x Define call data as an array of objects (text, options, outcomes).
-- [ ]x Build UI elements to display call text and multiple choice responses.
-- [ ]x Handle option selection and update score/satisfaction accordingly.
-- [ ]x InItroduce a timer or queue system to add pressure and prioritisation.
+- [x] Define call data as an array of objects (text, options, outcomes).
+- [x] Build UI elements to display call text and multiple choice responses.
+- [x] Handle option selection and update score/empathy accordingly.
+- [ ] Introduce a timer or queue system to add pressure and prioritisation.
 
 - [ ] Expand the call database with a wide range of absurd IT issues and small-talk scenarios.
 - [ ] Implement a modular system to assemble calls from random personas, problems, and twists for replayability.
@@ -31,13 +31,13 @@ x [x]xImplement `gameInit` for initial setup (loading assets, state variables).
 ## UI & Graphics
 
 - [ ] Design a minimal pixel art interface (phone, desk, buttons).
-- [x]  Use ULittleJS screen‑space drawing functions to render UI components.
+- [x] Use LittleJS screen-space drawing functions to render UI components.
 - [ ] Experiment with dynamic resizing to keep the canvas small but responsive.
 - [ ] Add animated UI feedback such as button wobble, queue lights pulsing, and confetti bursts when calls are resolved.
 - [ ] Include an on-screen avatar or robot that reacts to player actions and empathy level. 
- ## Audio & Feedback
+## Audio & Feedback
 
-- [x ] Use ZzFX to synthesize simple sounds (ringtones, button clicks, hold music).
+- [x] Use ZzFX to synthesize simple sounds (currently a placeholder click).
 - [ ] Use ZzFX to craft distinct ringtones, hold music and caller voice motifs for different personas.
 - [ ] Layer ambient office hums or futuristic sounds to reinforce the theme.
 - [ ] Vary audio feedback based on empathy score (e.g., distortion when empathy is low, warm tones when high).
@@ -51,8 +51,8 @@ x [x]xImplement `gameInit` for initial setup (loading assets, state variables).
 - [ ] Scale difficulty based on performance (e.g., faster speech, trickier puzzles).
 - [ ] Add multiple endings based on total score and satisfaction.
 - [ ] Insert meta-humor and fourth-wall breaks to keep players engaged (e.g., achievements for repeated advice or commentary on over-reliance on "turn it off and on").
-- [ x] Introduce an empathy meter that affects call difficulty; high empathy calms callers, low empathy makes them more irritable and speeds up the call queue.
-- [x ] Provide reflective end-of-game feedback summarizing empathy versus dismissiveness to encourage learning.
+- [ ] Introduce an empathy meter that affects call difficulty; high empathy calms callers, low empathy makes them more irritable and speeds up the call queue.
+- [x] Provide reflective end-of-game feedback summarizing empathy versus dismissiveness to encourage learning.
 
 
 ## Testing & Deployment
@@ -63,3 +63,11 @@ x [x]xImplement `gameInit` for initial setup (loading assets, state variables).
 - [ ] Playtest each feature incrementally to catch bugs and adjust difficulty.
 - [ ] Optimise performance; test on different browsers/devices.
 - [ ] Upload the finished build to itch.io and complete the jam submission form.
+
+## Next Developer Focus
+
+- [ ] Dynamic call generation that assembles scenarios from personas, problems, and twists. *(Labels: Enhancement, Gameplay)*
+- [ ] Animated UI polish including button motion and responsiveness. *(Label: UI)*
+- [ ] Layered audio design with hold music and empathy-reactive cues. *(Label: Audio)*
+- [ ] Meta-humor writing pass to add self-aware achievements and callbacks. *(Label: Enhancement)*
+- [ ] Structured playtesting plan to validate humor, empathy beats, and difficulty. *(Label: Enhancement)*

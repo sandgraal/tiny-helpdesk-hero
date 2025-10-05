@@ -1,44 +1,87 @@
 /**
- * conversationEngine.js
- *
- * Handles the call database and functions for generating calls.
+ * Lightweight conversation engine responsible for call sequencing.
  * TODO:
- *  - Expand the call database with a wide range of absurd IT issues and small-talk scenarios.
- *  - Implement modular generation that assembles a call from persona, problem, and twist components.
- *  - Add branching dialogue logic that can schedule follow-up calls.
- *  - Track player choices for self-referential humour and adaptive difficulty.
+ *  - Expand the call database with absurd, empathy-first scenarios.
+ *  - Replace the static array with modular generation (persona + problem + twist).
+ *  - Track player choices so future calls react to empathy history.
  */
 
-// Example call database; this will be expanded
-export const calls = [
+const callDeck = [
   {
-    persona: "Retiree",
-    issue: "Icons are too small",
+    message: "Caller: My desktop icons are so small I need a microscope! What do I do?",
     options: [
-      { text: "Guide them to increase display scaling", correct: true },
-      { text: "Tell them to buy a magnifying glass", correct: false },
+      { text: "Guide them to press Ctrl + Plus to zoom in", correct: true },
+      { text: "Suggest buying a bigger monitor", correct: false },
+      { text: "Tell them to restart their computer", correct: false },
+    ],
+  },
+  {
+    message: "Caller: The text on my screen is miniature. I swear it shrunk overnight!",
+    options: [
+      { text: "Explain how to adjust display scaling settings", correct: true },
+      { text: "Advise them to squint harder", correct: false },
+      { text: "Tell them it’s a virus and they’re doomed", correct: false },
+    ],
+  },
+  {
+    message: "Caller: The USB port is too small for my cable — can you please enlarge it?",
+    options: [
+      { text: "Suggest flipping the cable and gently inserting it", correct: true },
+      { text: "Recommend using a hammer to widen the port", correct: false },
+      { text: "Tell them to call a carpenter", correct: false },
+    ],
+  },
+  {
+    message: "Caller: My AI assistant refuses to talk to me because I’m not empathetic enough.",
+    options: [
+      { text: "Advise them to ask nicely and schedule a feelings check", correct: true },
+      { text: "Suggest reinstalling the operating system", correct: false },
+      { text: "Tell them to unplug it and plug it back in", correct: false },
+    ],
+  },
+  {
+    message: "Caller: The cat gif on my desktop has stopped looping and it’s ruining my day.",
+    options: [
+      { text: "Explain how to refresh or reopen the GIF", correct: true },
+      { text: "Suggest tapping the monitor gently", correct: false },
+      { text: "Tell them it’s a sign they should adopt a real cat", correct: false },
+    ],
+  },
+  {
+    message: "Caller: The volume slider is tiny and I can’t grab it.",
+    options: [
+      { text: "Use keyboard arrow keys to adjust the volume", correct: true },
+      { text: "Recommend using tweezers", correct: false },
+      { text: "Tell them to yell louder at the computer", correct: false },
     ],
   },
 ];
 
-// Index of the current call
 let currentIndex = 0;
 
-/**
- * Returns the next call object.
- * If modular generation is implemented, this function will assemble a call dynamically.
- */
-export function getNextCall() {
-  if (currentIndex < calls.length) {
-    return calls[currentIndex++];
-  }
-  // TODO: generate random call here
-  return null;
+export function getCallCount() {
+  return callDeck.length;
 }
 
-/**
- * Resets the call index (useful for restarts).
- */
+export function getCurrentCall() {
+  return callDeck[currentIndex] ?? null;
+}
+
+export function advanceCall() {
+  currentIndex += 1;
+  return getCurrentCall();
+}
+
+export function getCurrentIndex() {
+  return currentIndex;
+}
+
+export function isDeckComplete() {
+  return currentIndex >= callDeck.length;
+}
+
 export function resetCalls() {
   currentIndex = 0;
 }
+
+export { callDeck as calls };
