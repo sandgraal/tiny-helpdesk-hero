@@ -4,8 +4,8 @@
 
 ## Current Status
 - ✅ Core documentation and scaffolding in place (public/, src/, tests/, package.json, GitHub hygiene).
-- ✅ Greybox loop implemented with LittleJS lifecycle, conversation MVP, placeholder UI/audio.
-- 🚧 Next milestone focuses on procedural content, animated UI, and adaptive audio layers.
+- ✅ Greybox loop implemented with LittleJS lifecycle, procedural conversations, animated UI, and adaptive audio cues.
+- 🚧 Next milestone focuses on richer content authoring, accessibility polish, and meta-humor systems.
 
 ## Game Vision
 - **Premise:** You are the lone support agent at TinyByte Helpdesk, fielding bite-sized tech catastrophes from larger-than-life callers.
@@ -32,10 +32,15 @@
 - `CONTRIBUTING.md` — contributor expectations, onboarding steps, and collaboration etiquette.
 
 ## Immediate Priorities
-1. Expand call content and start modular persona/problem/twist structures.
-2. Add lightweight animations and button states to the UI system while preserving accessibility.
-3. Layer additional audio cues (hold music loop, empathy-based feedback) via the audio system.
-4. Run `npm run test` regularly and add validation around conversation data as it grows.
+1. Expand call content and begin persona/problem/twist authoring guidelines.
+2. Build accessibility polish (text scaling, reduced motion preferences, hover alternatives).
+3. Layer richer audio motifs and ambient cues with mixing hooks.
+4. Run `npm run test` regularly and introduce validation around conversation data as it grows.
+
+## Running Locally
+1. `npm run serve`
+2. Open `http://localhost:8080/public/`
+3. Interact with the greybox build. Use the mouse to select responses; empathy score and audio cues respond in real time.
 
 Consult `IMPLEMENTATION_PLAN.md` for the detailed backlog and ownership notes. Once the foundational tasks above are underway we’ll reinstate the build pipeline and begin committing gameplay code again.
 

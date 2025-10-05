@@ -4,7 +4,7 @@
   "description": "Empathy-forward comedy game for the LittleJS Game Jam 2025.",
   "type": "module",
   "scripts": {
-    "serve": "npx http-server -c-1 public",
+    "serve": "npx http-server -c-1 .",
     "lint": "echo \"TODO: configure linting\"",
     "format": "echo \"TODO: configure formatter\"",
     "test": "node tests/smoke.test.mjs",
