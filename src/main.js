@@ -1,19 +1,37 @@
 /**
  * Entry point for Tiny Helpdesk Hero.
- * TODO: wire LittleJS lifecycle (init/update/render) once systems are implemented.
+ * Boots the LittleJS engine once globals are available.
  */
 
 import { createGameLifecycle } from './game/main.js';
 
-function bootstrap() {
-  const lifecycle = createGameLifecycle();
-  if (!lifecycle) {
-    console.info('[TinyHelpdeskHero] Game lifecycle not initialized yet.');
-    return;
+function startEngine(lifecycle) {
+  const { engineInit } = globalThis;
+  if (typeof engineInit !== 'function') {
+    return false;
   }
 
-  // TODO: call littlejs.engineInit with lifecycle callbacks when ready.
-  console.info('[TinyHelpdeskHero] Placeholder bootstrap executed.', lifecycle);
+  engineInit(
+    lifecycle.init,
+    lifecycle.update,
+    lifecycle.updatePost,
+    lifecycle.render,
+    lifecycle.renderPost,
+  );
+  return true;
+}
+
+function bootstrap() {
+  const lifecycle = createGameLifecycle();
+
+  function attemptStart() {
+    if (startEngine(lifecycle)) {
+      return;
+    }
+    globalThis.setTimeout?.(attemptStart, 0);
+  }
+
+  attemptStart();
 }
 
 bootstrap();

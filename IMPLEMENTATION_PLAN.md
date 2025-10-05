@@ -23,11 +23,11 @@ The project is kicking off with a documentation-first approach. This plan captur
 ## Milestone 1 — Systems Foundation
 **Target:** Deliver a playable greybox that proves core systems and tooling.
 
-- [ ] Implement LittleJS game loop shell (`init`, `update`, `render`) with placeholder UI panels loaded from `src/game/main`.
-- [ ] Build conversation engine MVP using static call data; expose APIs for sequencing, scoring, and state reset.
-- [ ] Integrate empathy scoring, score display, and end-of-shift summary using simple UI rendering helpers.
-- [ ] Stand up audio wrapper hitting ZzFX/LittleJS primitives for click + hold-music placeholders.
-- [ ] Wire `npm test` (or equivalent) to run automated validation for call data integrity and linting.
+- [x] Implement LittleJS game loop shell (`init`, `update`, `render`) with placeholder UI panels loaded from `src/game/main`.
+- [x] Build conversation engine MVP using static call data; expose APIs for sequencing, scoring, and state reset.
+- [x] Integrate empathy scoring, score display, and end-of-shift summary using simple UI rendering helpers.
+- [x] Stand up audio wrapper hitting ZzFX/LittleJS primitives for click + hold-music placeholders.
+- [x] Wire `npm test` (or equivalent) to run automated validation for call data integrity and linting.
 - [ ] Deploy preview build to GitHub Pages; verify LittleJS boots via CDN in production environment.
 
 ## Milestone 2 — Content & Expression
