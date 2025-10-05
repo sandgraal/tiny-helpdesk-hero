@@ -6,14 +6,16 @@
  *  - Add hold music loops and persona-specific motifs.
  */
 
-const { Sound } = globalThis;
-
 export function createUIClickSound() {
+  const { Sound } = globalThis;
+  if (!Sound) {
+    return null;
+  }
   return new Sound([1, 0.5]);
 }
 
 export function playUIClick(sound, position) {
-  if (!sound) {
+  if (!sound || !sound.play) {
     return;
   }
   sound.play(position);

@@ -9,17 +9,9 @@ import {
 import { getOptionIndexFromClick, renderCallScreen, resetLayout } from './ui.js';
 import { createUIClickSound, playUIClick, stopAllAudio } from './audio.js';
 
-const {
-  engineInit,
-  setShowSplashScreen,
-  mouseWasPressed,
-  mousePosScreen,
-  mainCanvasSize,
-} = globalThis;
-
 let empathyScore = 0;
 let ended = false;
-const soundClick = createUIClickSound();
+let soundClick = null;
 
 function restartGame() {
   resetCalls();
@@ -27,6 +19,9 @@ function restartGame() {
   stopAllAudio();
   empathyScore = 0;
   ended = false;
+  if (!soundClick) {
+    soundClick = createUIClickSound();
+  }
 }
 
 function progressAfterSelection(option, pointer) {
@@ -42,7 +37,7 @@ function progressAfterSelection(option, pointer) {
 }
 
 function gameInit() {
-  setShowSplashScreen(false);
+  globalThis.setShowSplashScreen?.(false);
   restartGame();
 }
 
@@ -57,9 +52,10 @@ function gameUpdate() {
     return;
   }
 
-  if (mouseWasPressed(0)) {
-    const pointer = mousePosScreen;
-    const optionIndex = getOptionIndexFromClick(currentCall, pointer, mainCanvasSize);
+  if (globalThis.mouseWasPressed?.(0)) {
+    const pointer = globalThis.mousePosScreen;
+    const canvasSize = globalThis.mainCanvasSize;
+    const optionIndex = getOptionIndexFromClick(currentCall, pointer, canvasSize);
     if (optionIndex === -1) {
       return;
     }
@@ -73,6 +69,7 @@ function gameRender() {
   const call = getCurrentCall();
   const callCount = getCallCount();
   const callIndex = Math.min(getCurrentIndex(), Math.max(0, callCount - 1));
+  const canvasSize = globalThis.mainCanvasSize;
 
   renderCallScreen({
     call,
@@ -80,10 +77,26 @@ function gameRender() {
     callIndex,
     callCount,
     ended: ended || isDeckComplete(),
+    canvasSize,
   });
 }
 
 function gameUpdatePost() {}
 function gameRenderPost() {}
 
-engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost);
+let engineStarted = false;
+function bootstrapLittleJS() {
+  if (engineStarted) {
+    return;
+  }
+
+  if (typeof globalThis.engineInit === 'function') {
+    engineStarted = true;
+    globalThis.engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost);
+    return;
+  }
+
+  globalThis.setTimeout?.(bootstrapLittleJS, 0);
+}
+
+bootstrapLittleJS();

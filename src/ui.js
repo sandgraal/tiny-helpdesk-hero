@@ -6,8 +6,6 @@
  *  - Support modular components for future screen transitions.
  */
 
-const { vec2, drawRectScreen, drawTextScreen, mainCanvasSize } = globalThis;
-
 const layout = {
   marginTop: 220,
   buttonHeight: 60,
@@ -21,9 +19,14 @@ export function getOptionIndexFromClick(call, pointer, canvasSize) {
     return -1;
   }
 
-  const buttonWidth = Math.min(canvasSize.x - layout.horizontalPadding * 2, layout.maxButtonWidth);
+  const size = canvasSize ?? globalThis.mainCanvasSize;
+  if (!size) {
+    return -1;
+  }
+
+  const buttonWidth = Math.min(size.x - layout.horizontalPadding * 2, layout.maxButtonWidth);
   for (let i = 0; i < call.options.length; i += 1) {
-    const x = (canvasSize.x - buttonWidth) / 2;
+    const x = (size.x - buttonWidth) / 2;
     const y = layout.marginTop + i * (layout.buttonHeight + layout.buttonSpacing);
 
     if (
@@ -39,18 +42,20 @@ export function getOptionIndexFromClick(call, pointer, canvasSize) {
   return -1;
 }
 
-export function renderCallScreen({ call, empathyScore, callIndex, callCount, ended }) {
-  // Background gradient color (drawn as single rect)
-  drawRectScreen(
-    vec2(mainCanvasSize.x / 2, mainCanvasSize.y / 2),
-    vec2(mainCanvasSize.x, mainCanvasSize.y),
-    '#051923',
-  );
+export function renderCallScreen({ call, empathyScore, callIndex, callCount, ended, canvasSize }) {
+  const { vec2, drawRectScreen, drawTextScreen } = globalThis;
+  const size = canvasSize ?? globalThis.mainCanvasSize;
+
+  if (!vec2 || !drawRectScreen || !drawTextScreen || !size) {
+    return;
+  }
+
+  drawRectScreen(vec2(size.x / 2, size.y / 2), vec2(size.x, size.y), '#051923');
 
   if (!ended && call) {
     drawTextScreen(
       `Call ${callIndex + 1} of ${callCount}`,
-      vec2(mainCanvasSize.x / 2, 40),
+      vec2(size.x / 2, 40),
       26,
       '#00e0ff',
       1,
@@ -62,7 +67,7 @@ export function renderCallScreen({ call, empathyScore, callIndex, callCount, end
 
     drawTextScreen(
       call.message,
-      vec2(mainCanvasSize.x / 2, 100),
+      vec2(size.x / 2, 100),
       20,
       '#ffffff',
       1,
@@ -72,10 +77,10 @@ export function renderCallScreen({ call, empathyScore, callIndex, callCount, end
       'center',
     );
 
-    const buttonWidth = Math.min(mainCanvasSize.x - layout.horizontalPadding * 2, layout.maxButtonWidth);
+    const buttonWidth = Math.min(size.x - layout.horizontalPadding * 2, layout.maxButtonWidth);
     for (let i = 0; i < call.options.length; i += 1) {
       const y = layout.marginTop + i * (layout.buttonHeight + layout.buttonSpacing);
-      const x = (mainCanvasSize.x - buttonWidth) / 2;
+      const x = (size.x - buttonWidth) / 2;
       const bgColor = '#76c893';
 
       drawRectScreen(
@@ -98,7 +103,7 @@ export function renderCallScreen({ call, empathyScore, callIndex, callCount, end
 
     drawTextScreen(
       `Empathy Score: ${empathyScore}`,
-      vec2(mainCanvasSize.x - 20, mainCanvasSize.y - 20),
+      vec2(size.x - 20, size.y - 20),
       18,
       '#FFB703',
       0,
@@ -110,7 +115,7 @@ export function renderCallScreen({ call, empathyScore, callIndex, callCount, end
   } else {
     drawTextScreen(
       'All calls resolved!',
-      vec2(mainCanvasSize.x / 2, mainCanvasSize.y / 2 - 40),
+      vec2(size.x / 2, size.y / 2 - 40),
       32,
       '#00ff88',
       1,
@@ -121,7 +126,7 @@ export function renderCallScreen({ call, empathyScore, callIndex, callCount, end
     );
     drawTextScreen(
       `Final Empathy Score: ${empathyScore} / ${callCount}`,
-      vec2(mainCanvasSize.x / 2, mainCanvasSize.y / 2 + 10),
+      vec2(size.x / 2, size.y / 2 + 10),
       24,
       '#ffffff',
       0,
@@ -132,7 +137,7 @@ export function renderCallScreen({ call, empathyScore, callIndex, callCount, end
     );
     drawTextScreen(
       'Refresh to play again or add more calls!',
-      vec2(mainCanvasSize.x / 2, mainCanvasSize.y / 2 + 50),
+      vec2(size.x / 2, size.y / 2 + 50),
       16,
       '#aaaaaa',
       0,
