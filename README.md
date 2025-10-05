@@ -38,7 +38,7 @@
 4. Run `npm run test` regularly and introduce validation around conversation data as it grows.
 
 ## Running Locally
-1. `npm run serve`
+1. `npm run serve` (uses `python3 -m http.server 8080`)
 2. Open `http://localhost:8080/public/`
 3. Interact with the greybox build. Use the mouse to select responses; empathy score and audio cues respond in real time.
 
