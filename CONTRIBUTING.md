@@ -1,48 +1,36 @@
 # Contributing to Tiny Helpdesk Hero
 
-Thank you for considering contributing to Tiny Helpdesk Hero! We welcome bug reports, feature suggestions, and code contributions from the community.
+Thanks for helping reboot Tiny Helpdesk Hero! The repository currently contains documentation only; code and assets will be reintroduced as we progress through the roadmap in `IMPLEMENTATION_PLAN.md`.
 
-## How to set up a local environment
+## Getting Started
+1. Fork and clone the repository.
+2. Read `README.md` for the product vision and `DEVELOPMENT.md` for engineering standards.
+3. Comment on or open a GitHub issue before starting work so tasks stay coordinated. Use the labels suggested in the implementation plan (`UI`, `Audio`, `Enhancement`, `Gameplay`, `Docs`).
 
-1. Fork this repository and clone it to your local machine.
-2. Install a simple HTTP server if you don’t have one.
-3. Serve the project root (this enables local loading of LittleJS). For example:
+## Local Environment (once scaffolding returns)
+- Primary workflow: `npx http-server -c-1` from the project root.
+- Source layout will follow the structure described in `DEVELOPMENT.md` (`public/`, `src/`, `assets/`, `tests/`).
+- Until that structure exists, contributions should focus on documentation, planning, and tooling setup.
 
-```bash
-npx http-server -c-1
-# or
-python3 -m http.server
-```
+## Contribution Types
+- **Documentation & Planning:** Expand design notes, narrative guidelines, or testing procedures. Update checklists when tasks complete.
+- **Infrastructure:** When Milestone 0 begins, help recreate the LittleJS bootstrap, tooling, or directory structure.
+- **Systems & Content:** Follow-on milestones will open issues for conversation engine features, UI polish, audio design, and meta-humor writing.
 
-4. Open `index.html` in your browser. The game should run locally; live reloads are not built in, so refresh the page after making changes.
+## Workflow Expectations
+- Branch per change (`docs/update-vision`, `feature/bootstrap-index-html`).
+- Write clear commit messages detailing intent and scope.
+- Keep pull requests small and focused; reference related issues in the description.
+- Request review from another contributor before merging into `main`.
+- Update documentation alongside code changes to keep the knowledge base accurate.
 
-## Project structure
-
-- `index.html` – entry point that loads LittleJS, your CSS and game script.
-- `src/` – JavaScript source code for the game. The main file is `src/main.js`.
-- `assets/` – static assets such as stylesheets, images and fonts.
-- `DEVELOPMENT.md` – coding conventions, project guidelines and recommended workflows.
-- `IMPLEMENTATION_PLAN.md` – current tasks and milestones.
-
-## Coding conventions
-
-- Use consistent indentation (2 spaces) and semicolons where appropriate.
-- Prefer `const`/`let` over `var`.
-- Split functionality into small, well‑named functions.
-- Document complex logic with inline comments or JSDoc when necessary.
-- Avoid hard‑coding data; store call scenarios and text in JSON or arrays.
-
-## Submitting changes
-
-- Create a new branch for your feature or fix.
-- Write clear commit messages explaining the “why” and “what.”
-- Test your changes locally.
-- Open a pull request targeting the `main` branch and describe your changes. The maintainers will review and may request adjustments.
-
-## Reporting issues & suggesting ideas
-
-If you encounter a bug or have an idea for a new call scenario, please open an issue using the GitHub Issues tab. Be as descriptive as possible and include screenshots or error messages if relevant.
+## Reporting Issues & Ideas
+Use GitHub Issues for:
+- Clarifying questions about requirements or tone.
+- Suggestions for new features, personas, or accessibility improvements.
+- Bugs discovered once the rebuild is underway (label appropriately).
 
 ## Code of Conduct
+Humor should aim upward and celebrate empathy. Be respectful, inclusive, and collaborative in all interactions. If conflicts arise, escalate via GitHub Issues or direct contact with the maintainers for mediation.
 
-Be respectful and inclusive. This project aims to foster empathy through humor; treat others with the same courtesy you’d offer to a caller on the line.
+We’re excited to rebuild this experience intentionally—thank you for being part of it!

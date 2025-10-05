@@ -1,55 +1,70 @@
 # Development Guidelines
 
-This document outlines best practices and guidelines for building Tiny Helpdesk Hero.
+These guidelines define how we will rebuild Tiny Helpdesk Hero after the project reset. Treat them as the living contract for code quality, accessibility, and collaboration.
 
-## Project Structure
+## Phased Development Roadmap
+1. **Bootstrap (Sprint 0)**
+   - Recreate the LittleJS entry point (`index.html`) and ES module scaffolding in `src/`.
+   - Stand up a minimal game loop that renders placeholder UI panels.
+   - Implement linting/formatting defaults (`eslint`, `prettier` optional) and restore `.gitignore`, `.nojekyll`.
+2. **Systems Foundation (Sprints 1‑2)**
+   - Conversation engine MVP with hard-coded call data and empathy scoring.
+   - UI layout system with responsive scaling and accessibility hooks (color contrast, font sizing helpers).
+   - Audio façade that wraps LittleJS/ZzFX primitives and supports layered playback.
+3. **Content & Polish (Sprints 3‑4)**
+   - Procedural call generator, persona library, and branching follow-ups.
+   - Animated UI feedback, achievement system, and adaptive audio cues.
+   - Jam build stabilization, optimization, and submission packaging.
 
-- `src/`: Contains core game code (.js) and logic components such as the game loop and conversation system.
-- `assets/`: Stores art assets, audio files, fonts and other resources.
-- `docs/`: Houses design documents, guidelines (including this file), and other non-code artifacts.
-- `dist/`: Holds the built version of the game ready for deployment (compiled scripts, minified assets).
-- Keep configuration files (like `.eslintrc`, `.gitignore`, `package.json`) at the project root.
+## Project Structure (Planned)
+```
+.
+├── public/        # Static hosting assets (index.html, .nojekyll, favicon)
+├── src/
+│   ├── game/      # Core loop (init/update/render) and state orchestration
+│   ├── systems/   # conversation/, ui/, audio/, progression/ modules
+│   ├── content/   # JSON/JS data for calls, personas, achievements
+│   └── util/      # shared helpers (math, random, accessibility)
+├── assets/        # Art, audio, fonts (added when created)
+├── tests/         # Optional automated checks (data validation, smoke tests)
+└── docs/          # Design notes, briefs, research (besides repo root markdown)
+```
+The structure above is aspirational until the codebase is reintroduced. When creating directories, mirror this layout.
 
-## Coding Conventions
+## Coding Standards
+- **Style:** JavaScript ES2022, modules only. Prefer `const`/`let`; avoid mutable singletons. Use 2-space indentation.
+- **Documentation:** Every module exports a default function or named API with top-level JSDoc describing purpose, inputs, outputs.
+- **State Management:** Keep transient gameplay state in dedicated `gameState` modules; pass explicit objects to systems instead of relying on globals. LittleJS globals should be wrapped in adapters to ease testing.
+- **Accessibility:** Provide text size constants, ensure contrast ratios meet WCAG AA by default, and allow future remapping of audio volume/haptics.
+- **Resilience:** Guard external calls (e.g., `engineInit`, `Sound`) so the game fails gracefully if LittleJS changes.
 
-- Use clear, descriptive names for variables and functions; avoid unnecessary abbreviations.
-- Stick to 2‑space indentation and consistent formatting. If using an ESLint configuration, enable it early.
-- Add JSDoc comments to functions and modules to clarify intent and expected data.
-- Keep modules small and focused; break large functions into smaller ones.
-- Prefer `const` and `let` over `var` and avoid introducing global variables except where required by LittleJS.
-- Document game state flows and key event sequences in comments for future reference.
+## Workflow Expectations
+- Branch per feature (`feature/bootstrap-canvas`, `feature/conversation-engine-mvp`).
+- Keep commits scoped and descriptive; mention GitHub issue numbers when closing tasks.
+- Draft pull requests early with checklist of outstanding work; request reviews before merging to `main`.
+- Update `IMPLEMENTATION_PLAN.md` as tasks start/complete; unresolved questions become GitHub issues with `question` label.
 
-## Version Control
+## Testing & Verification
+- **Local serving:** `npx http-server -c-1` from the repo root remains the baseline.
+- **Smoke tests:** Build a simple harness in `tests/` that instantiates the conversation engine with sample data.
+- **Content validation:** Add scripts that verify persona/problem/twist JSON combinations for completeness and tone guidelines.
+- **Playtesting cadence:** Schedule empathy-focused playtests every sprint; capture feedback in `docs/playtests/`.
 
-- Create a feature branch for each task (`feature/conversation-engine`, `bugfix/physics-tuning`, etc.).
-- Commit small, logical increments and write clear commit messages explaining what changed.
-- Merge into `main` through pull requests; request peer review for significant additions.
-- Tag releases using semantic versioning (e.g., `v0.1.0` for the first jam prototype).
+## Asset & Audio Handling
+- Maintain an `ATTRIBUTION.md` once third-party work is added.
+- Compress sprites with `pnpm spritezero` or similar pipeline where possible.
+- Generate placeholder audio with ZzFX presets but aim to evolve them into layered tracks.
+- Store source files (Aseprite, DAW project files) under `assets/source/` for reproducibility.
 
-## Assets & Licensing
+## LittleJS Integration Tips
+- Wrap engine globals (`engineInit`, `setShowSplashScreen`, `mouseWasPressed`, etc.) in adapter functions to simplify mocking.
+- Use `drawRectScreen`/`drawTextScreen` for UI and anchor everything to a virtual layout grid so resizing is trivial.
+- Keep update loops deterministic where possible; in tests, mock time deltas for repeatability.
+- Profile with the built-in LittleJS profiler each milestone to ensure performance headroom.
 
-- Only commit assets that are created by the team or licensed for use.  Maintain a list of third‑party assets and licences in an `ATTRIBUTION.md`.
-- Optimize images and audio to reduce load times; compress spritesheets and consider using web‑friendly formats (PNG, OGG).
-- Organize assets into subdirectories (`assets/sprites`, `assets/audio`, `assets/fonts`) with descriptive names.
+## Communication Norms
+- Weekly sync note in the project board summarizing progress and blockers.
+- Document tone and empathy guardrails in `docs/narrative/guide.md` (to be created).
+- Prefer asynchronous feedback (issues, PR comments); reserve synchronous calls for milestone planning.
 
-## Testing & Iteration
-
-- Playtest regularly to surface bugs and usability issues early.
-- Leverage LittleJS’s built‑in debug tools (press `F1`) to inspect performance and objects.
-- Keep iteration cycles short: implement one feature at a time, test it, then refine.
-- Write simple test scripts or harnesses to validate game systems (e.g., simulating call sequences).
-
-## Collaboration Workflow
-
-- Use the issue tracker or project board to assign and track tasks.
-- In your pull request description, explain the problem and how your changes address it; mention related issues.
-- Conduct code reviews to share knowledge and ensure consistency.
-- Communicate early if you encounter blockers or need feedback.
-
-## LittleJS Tips
-
-- Separate initialization, update, and rendering into `gameInit`, `gameUpdate`, and `gameRender` functions. This improves readability and helps manage game state.
-- Keep heavy logic out of `gameRender`; compute values during `gameUpdate` whenever possible.
-- Use screen‑space drawing functions (`drawTextScreen`, `drawRectScreen`) for UI, and world‑space functions for gameplay elements.
-- Generate sound effects with ZzFX or embed small audio files; reuse sources instead of creating many new ones.
-- Monitor performance with the built‑in profiler and avoid creating large numbers of objects in a single frame.
+The guidelines will evolve as the rebuilt codebase comes online. Propose edits through pull requests whenever workflow or tooling changes are introduced.
