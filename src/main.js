@@ -9,6 +9,14 @@ import {
 import { getOptionIndexFromClick, renderCallScreen, resetLayout } from './ui.js';
 import { createUIClickSound, playUIClick, stopAllAudio } from './audio.js';
 
+const {
+  engineInit,
+  setShowSplashScreen,
+  mouseWasPressed,
+  mousePosScreen,
+  mainCanvasSize,
+} = globalThis;
+
 let empathyScore = 0;
 let ended = false;
 const soundClick = createUIClickSound();

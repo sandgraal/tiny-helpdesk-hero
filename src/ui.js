@@ -6,6 +6,8 @@
  *  - Support modular components for future screen transitions.
  */
 
+const { vec2, drawRectScreen, drawTextScreen, mainCanvasSize } = globalThis;
+
 const layout = {
   marginTop: 220,
   buttonHeight: 60,
