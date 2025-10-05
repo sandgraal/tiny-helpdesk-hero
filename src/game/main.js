@@ -39,16 +39,22 @@ export function createGameLifecycle() {
   function restartShift() {
     gameState.conversation.reset();
     gameState.audio.stopAll();
+    gameState.audio.startHoldLoop();
+    gameState.audio.updateEmpathyLevel(0, gameState.conversation.getCallCount());
     gameState.lastSelection = null;
   }
 
-  function handleInput() {
+  function handleInput(delta) {
     const { mouseWasPressed, mousePosScreen } = globalThis;
     if (!mouseWasPressed?.(0)) {
+      const call = computeRenderState().call;
+      gameState.ui.update(delta, mousePosScreen, call);
       return;
     }
 
     const renderState = computeRenderState();
+
+    gameState.ui.update(delta, mousePosScreen, renderState.call);
 
     if (!renderState.hasCalls) {
       return;
@@ -70,6 +76,13 @@ export function createGameLifecycle() {
 
     gameState.lastSelection = gameState.conversation.chooseOption(optionIndex);
     gameState.audio.playClick(pointer);
+    gameState.audio.playOutcome(gameState.lastSelection.correct);
+
+    const postState = gameState.conversation.getState();
+    gameState.audio.updateEmpathyLevel(postState.empathyScore, postState.callCount);
+    if (postState.isComplete) {
+      gameState.audio.stopHoldLoop();
+    }
   }
 
   function render() {
@@ -83,7 +96,8 @@ export function createGameLifecycle() {
       restartShift();
     },
     update() {
-      handleInput();
+      const delta = globalThis.timeDelta ?? globalThis.frameTime ?? 1 / 60;
+      handleInput(delta);
     },
     render,
     renderPost() {},

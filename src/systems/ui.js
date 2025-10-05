@@ -1,3 +1,5 @@
+import { createHoverState } from './animation/tween.js';
+
 /**
  * UI system for the greybox build.
  * Renders calls, options, and empathy score using LittleJS screen-space helpers.
@@ -24,6 +26,21 @@ function getLittleJS() {
 }
 
 export function createUISystem() {
+  const hoverStates = new Map();
+
+  function getOptionKey(option, index) {
+    return option?.id ?? `option-${index}`;
+  }
+
+  function ensureHoverState(optionKey) {
+    let state = hoverStates.get(optionKey);
+    if (!state) {
+      state = createHoverState({ duration: 0.18 });
+      hoverStates.set(optionKey, state);
+    }
+    return state;
+  }
+
   function renderBackground() {
     const { drawRectScreen, vec2, mainCanvasSize } = getLittleJS();
     if (!drawRectScreen || !vec2 || !mainCanvasSize) {
@@ -83,11 +100,14 @@ export function createUISystem() {
       const x = (mainCanvasSize.x - optionWidth) / 2;
       const y = layout.optionStartY + index * (layout.optionHeight + layout.optionGap);
       const center = vec2(x + optionWidth / 2, y + layout.optionHeight / 2);
+      const hoverValue = ensureHoverState(getOptionKey(option, index)).getValue();
+      const bgColor = hoverValue > 0.01 ? '#56CCF2' : '#1B98E0';
+      const textYOffset = 6 - hoverValue * 4;
 
-      drawRectScreen(center, vec2(optionWidth, layout.optionHeight), '#1B98E0');
+      drawRectScreen(center, vec2(optionWidth, layout.optionHeight), bgColor);
       drawTextScreen(
         option.text,
-        vec2(center.x, center.y + 6),
+        vec2(center.x, center.y + textYOffset),
         18,
         '#041C32',
         0,
@@ -244,8 +264,31 @@ export function createUISystem() {
     return withinHeight ? index : -1;
   }
 
+  function update(delta = 0, pointer, call) {
+    const hoveredIndex = pointer ? getOptionIndexAtPoint(pointer) : -1;
+    const validHovered = call && hoveredIndex >= 0 && hoveredIndex < call.options.length ? hoveredIndex : -1;
+
+    if (call?.options) {
+      call.options.forEach((option, index) => {
+        const state = ensureHoverState(getOptionKey(option, index));
+        state.setActive(index === validHovered);
+        state.update(delta);
+      });
+
+      const currentKeys = new Set(call.options.map((option, index) => getOptionKey(option, index)));
+      hoverStates.forEach((_, key) => {
+        if (!currentKeys.has(key)) {
+          hoverStates.delete(key);
+        }
+      });
+    } else {
+      hoverStates.clear();
+    }
+  }
+
   return {
     render,
+    update,
     getOptionIndexAtPoint,
   };
 }
