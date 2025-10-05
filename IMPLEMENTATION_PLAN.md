@@ -4,21 +4,21 @@ The project is kicking off with a documentation-first approach. This plan captur
 
 ## Status Snapshot
 - [x] Establish documentation baseline (README, DEVELOPMENT, CONTRIBUTING, IMPLEMENTATION_PLAN).
-- [ ] Stand up project scaffolding (tooling, directories, LittleJS bootstrap).
-- [ ] Deliver the jam-ready playable build.
+- [x] Stand up project scaffolding (tooling, directories, LittleJS bootstrap placeholders).
+- [ ] Build systems foundation and deliver the jam-ready playable build.
 
 ## Milestone 0 — Bootstrap Infrastructure
 **Target:** Establish the foundational project structure, tooling, and workflows.
 
-- [ ] Confirm toolchain baseline (Node.js version, preferred package manager) and document it in `DEVELOPMENT.md`.
-- [ ] Initialize `package.json` (or `pnpm-workspace.yaml`) with scripts for `serve`, `lint`, `format`, and `test` (even if placeholders).
-- [ ] Recreate `public/index.html` that loads LittleJS via CDN and boots an empty ES module entry point.
-- [ ] Restore repository hygiene files (`.gitignore`, `.nojekyll`, LICENSE placeholder, ATTRIBUTION stub, optional `CHANGELOG.md`).
-- [ ] Scaffold `src/` with empty modules (`game/main`, `systems/ui`, `systems/audio`, `systems/conversation`, `content/calls`), exporting TODO placeholders.
-- [ ] Add `tests/` directory with a starter smoke-test harness (can be a TODO) and record testing intentions in `DEVELOPMENT.md`.
-- [ ] Create `docs/` subdirectories for narrative, playtests, and art direction notes (`docs/narrative/`, `docs/playtests/`, `docs/art/`).
-- [ ] Update README “Immediate Priorities” once scaffolding is complete and capture workflow updates.
-- [ ] Configure GitHub project hygiene (issue labels, project board, branch protection rules) and log decisions in `CONTRIBUTING.md`.
+- [x] Confirm toolchain baseline (Node.js version, preferred package manager) and document it in `DEVELOPMENT.md`.
+- [x] Initialize `package.json` (or `pnpm-workspace.yaml`) with scripts for `serve`, `lint`, `format`, and `test` (even if placeholders).
+- [x] Recreate `public/index.html` that loads LittleJS via CDN and boots an empty ES module entry point.
+- [x] Restore repository hygiene files (`.gitignore`, `.nojekyll`, LICENSE placeholder, ATTRIBUTION stub, optional `CHANGELOG.md`).
+- [x] Scaffold `src/` with empty modules (`game/main`, `systems/ui`, `systems/audio`, `systems/conversation`, `content/calls`), exporting TODO placeholders.
+- [x] Add `tests/` directory with a starter smoke-test harness (can be a TODO) and record testing intentions in `DEVELOPMENT.md`.
+- [x] Create `docs/` subdirectories for narrative, playtests, and art direction notes (`docs/narrative/`, `docs/playtests/`, `docs/art/`).
+- [x] Update README “Immediate Priorities” once scaffolding is complete and capture workflow updates.
+- [x] Configure GitHub project hygiene (issue templates, recommended labels, project board guidance, branch policy notes) and log decisions in `CONTRIBUTING.md`.
 
 ## Milestone 1 — Systems Foundation
 **Target:** Deliver a playable greybox that proves core systems and tooling.

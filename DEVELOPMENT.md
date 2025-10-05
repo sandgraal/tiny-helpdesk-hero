@@ -2,6 +2,11 @@
 
 These guidelines define how we will build Tiny Helpdesk Hero from the ground up. Treat them as the living contract for code quality, accessibility, and collaboration.
 
+## Toolchain Baseline
+- **Node.js:** v18 or newer (see the `engines` field in `package.json`).
+- **Package manager:** npm by default; keep lockfiles consistent if you use an alternative.
+- **Scripts:** `package.json` includes placeholder commands for `serve`, `lint`, `format`, and `test`. Replace the `echo` placeholders once real tooling is selected.
+
 ## Phased Development Roadmap
 1. **Bootstrap (Sprint 0)**
    - Recreate the LittleJS entry point (`index.html`) and ES module scaffolding in `src/`.
@@ -28,8 +33,11 @@ These guidelines define how we will build Tiny Helpdesk Hero from the ground up.
 ├── assets/        # Art, audio, fonts (added when created)
 ├── tests/         # Optional automated checks (data validation, smoke tests)
 └── docs/          # Design notes, briefs, research (besides repo root markdown)
+    ├── narrative/
+    ├── playtests/
+    └── art/
 ```
-The structure above is aspirational until we begin committing implementation work. Mirror this layout as directories are introduced.
+The structure above is aspirational until we begin committing implementation work. Mirror this layout as directories are introduced and keep each subdirectory README current.
 
 ## Coding Standards
 - **Style:** JavaScript ES2022, modules only. Prefer `const`/`let`; avoid mutable singletons. Use 2-space indentation.
@@ -45,8 +53,8 @@ The structure above is aspirational until we begin committing implementation wor
 - Update `IMPLEMENTATION_PLAN.md` as tasks start/complete; unresolved questions become GitHub issues with `question` label.
 
 ## Testing & Verification
-- **Local serving:** `npx http-server -c-1` from the repo root remains the baseline.
-- **Smoke tests:** Build a simple harness in `tests/` that instantiates the conversation engine with sample data.
+- **Local serving:** `npm run serve` currently echoes a TODO. Replace it with a real dev-server command (e.g., `http-server public -c-1`) once tooling is selected; document any prerequisites.
+- **Smoke tests:** Build a simple harness in `tests/` that instantiates the conversation engine with sample data (see `tests/smoke.test.mjs` placeholder).
 - **Content validation:** Add scripts that verify persona/problem/twist JSON combinations for completeness and tone guidelines.
 - **Playtesting cadence:** Schedule empathy-focused playtests every sprint; capture feedback in `docs/playtests/`.
 

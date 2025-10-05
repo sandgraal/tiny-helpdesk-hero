@@ -1,0 +1,15 @@
+{
+  "name": "tiny-helpdesk-hero",
+  "version": "0.0.1",
+  "description": "Empathy-forward comedy game for the LittleJS Game Jam 2025.",
+  "type": "module",
+  "scripts": {
+    "serve": "echo \"TODO: add dev server command (e.g. http-server public)\"",
+    "lint": "echo \"TODO: configure linting\"",
+    "format": "echo \"TODO: configure formatter\"",
+    "test": "echo \"TODO: add automated tests\""
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

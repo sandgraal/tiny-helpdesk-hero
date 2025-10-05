@@ -1,21 +1,29 @@
 # Contributing to Tiny Helpdesk Hero
 
-Thanks for helping build Tiny Helpdesk Hero! The repository currently contains documentation only; code and assets will be introduced as we progress through the roadmap in `IMPLEMENTATION_PLAN.md`.
+Thanks for helping build Tiny Helpdesk Hero! The project now includes baseline scaffolding (public entry point, `src/` modules, `tests/`, and docs) and is heading into systems development as outlined in `IMPLEMENTATION_PLAN.md`.
 
 ## Getting Started
 1. Fork and clone the repository.
 2. Read `README.md` for the product vision and `DEVELOPMENT.md` for engineering standards.
 3. Comment on or open a GitHub issue before starting work so tasks stay coordinated. Use the labels suggested in the implementation plan (`UI`, `Audio`, `Enhancement`, `Gameplay`, `Docs`).
 
-## Local Environment (once scaffolding returns)
-- Primary workflow: `npx http-server -c-1` from the project root.
-- Source layout will follow the structure described in `DEVELOPMENT.md` (`public/`, `src/`, `assets/`, `tests/`).
-- Until that structure exists, contributions should focus on documentation, planning, and tooling setup.
+## Local Environment
+- Install Node.js v18+ and use npm (or keep lockfiles consistent if you prefer another manager).
+- Run `npm install` once real dependencies are added (none yet).
+- Use `npm run serve` (currently a TODO placeholder) or `npx http-server -c-1 public` until the dev-server script is finalized.
+- Keep the structure described in `DEVELOPMENT.md` (`public/`, `src/`, `assets/`, `tests/`, `docs/…`) when adding files.
 
 ## Contribution Types
 - **Documentation & Planning:** Expand design notes, narrative guidelines, or testing procedures. Update checklists when tasks complete.
-- **Infrastructure:** When Milestone 0 begins, help recreate the LittleJS bootstrap, tooling, or directory structure.
-- **Systems & Content:** Follow-on milestones will open issues for conversation engine features, UI polish, audio design, and meta-humor writing.
+- **Infrastructure:** Help evolve the LittleJS bootstrap, tooling, and directory structure as Milestones 0–1 progress.
+- **Systems & Content:** Milestones 1–2 cover the conversation engine, UI polish, audio design, and meta-humor writing.
+
+## Project Hygiene
+- **Issue templates:** Feature and bug templates live in `.github/ISSUE_TEMPLATE/`; blank issues are disabled.
+- **Labels:** Use existing labels (`bug`, `Enhancement`, `UI`, `Audio`, `Gameplay`, `Docs`, `question`, `help wanted`, etc.) to keep tasks triaged.
+- **Project board:** Track active work on the GitHub project board (`Projects` tab) with columns Backlog → In Progress → Review → Done.
+- **Branch policy:** Treat `main` as protected—open a feature branch per change, request review, and ensure CI (once configured) passes before merge.
+- **Pull requests:** Follow `.github/pull_request_template.md` and link related issues.
 
 ## Workflow Expectations
 - Branch per change (`docs/update-vision`, `feature/bootstrap-index-html`).
