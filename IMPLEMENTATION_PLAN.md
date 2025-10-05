@@ -33,7 +33,7 @@ The project is kicking off with a documentation-first approach. This plan captur
 ## Milestone 2 — Content & Expression
 **Target:** Elevate the experience into the jam-feature set.
 
-- [ ] Create modular persona/problem/twist pools (JSON/JS) and integrate into conversation engine for procedural calls.
+- [x] Create modular persona/problem/twist pools (JSON/JS) and integrate into conversation engine for procedural calls.
 - [ ] Add animated UI states (button hover/press, queue pulses, empathy meter) with accessibility-safe motion defaults.
 - [ ] Layer adaptive audio cues (persona motifs, empathy filters, office ambience) with mixing controls.
 - [ ] Implement achievement/meta-humor tracking and UI presentation layer.

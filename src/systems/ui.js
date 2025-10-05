@@ -8,8 +8,9 @@ const layout = {
   optionHeight: 60,
   optionGap: 16,
   headerY: 48,
-  promptY: 120,
-  optionStartY: 200,
+  personaY: 96,
+  promptY: 156,
+  optionStartY: 240,
 };
 
 function getLittleJS() {
@@ -98,6 +99,40 @@ export function createUISystem() {
     });
   }
 
+  function renderPersonaDetails(call) {
+    const { drawTextScreen, vec2, mainCanvasSize } = getLittleJS();
+    if (!drawTextScreen || !vec2 || !mainCanvasSize || !call?.persona) {
+      return;
+    }
+
+    const personaLine = `${call.persona.name} (${call.persona.mood})`;
+    drawTextScreen(
+      personaLine,
+      vec2(mainCanvasSize.x / 2, layout.personaY),
+      18,
+      '#FFE45E',
+      0,
+      null,
+      1,
+      0,
+      'center',
+    );
+
+    if (call.twist?.promptModifier) {
+      drawTextScreen(
+        call.twist.promptModifier,
+        vec2(mainCanvasSize.x / 2, layout.personaY + 26),
+        16,
+        '#B8E1FF',
+        0,
+        null,
+        1,
+        0,
+        'center',
+      );
+    }
+  }
+
   function renderEmpathyScore(score) {
     const { drawTextScreen, vec2, mainCanvasSize } = getLittleJS();
     if (!drawTextScreen || !vec2 || !mainCanvasSize) {
@@ -178,6 +213,7 @@ export function createUISystem() {
     }
 
     renderHeader(state);
+    renderPersonaDetails(state.call);
     renderPrompt(state.call);
     renderOptions(state.call);
     renderEmpathyScore(state.empathyScore);
