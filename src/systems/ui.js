@@ -1,4 +1,4 @@
-import { createHoverState } from './animation/tween.js';
+import { createHoverState, createPulseState } from './animation/tween.js';
 
 /**
  * UI system for the greybox build.
@@ -27,6 +27,8 @@ function getLittleJS() {
 
 export function createUISystem() {
   const hoverStates = new Map();
+  const empathyPulse = createPulseState({ duration: 0.6 });
+  const callPulse = createPulseState({ duration: 0.5 });
 
   function getOptionKey(option, index) {
     return option?.id ?? `option-${index}`;
@@ -58,9 +60,10 @@ export function createUISystem() {
     if (!drawTextScreen || !vec2 || !mainCanvasSize) {
       return;
     }
+    const pulseOffset = callPulse.getValue() * 6;
     drawTextScreen(
       `Call ${callIndex + 1} of ${callCount}`,
-      vec2(mainCanvasSize.x / 2, layout.headerY),
+      vec2(mainCanvasSize.x / 2, layout.headerY - pulseOffset),
       26,
       '#7FDBFF',
       1,
@@ -76,9 +79,10 @@ export function createUISystem() {
     if (!drawTextScreen || !vec2 || !mainCanvasSize || !call) {
       return;
     }
+    const pulseOffset = callPulse.getValue() * 12;
     drawTextScreen(
       call.prompt,
-      vec2(mainCanvasSize.x / 2, layout.promptY),
+      vec2(mainCanvasSize.x / 2, layout.promptY - pulseOffset),
       20,
       '#FFFFFF',
       1,
@@ -161,7 +165,7 @@ export function createUISystem() {
 
     drawTextScreen(
       `Empathy: ${score}`,
-      vec2(mainCanvasSize.x - layout.canvasPadding, mainCanvasSize.y - layout.canvasPadding),
+      vec2(mainCanvasSize.x - layout.canvasPadding, mainCanvasSize.y - layout.canvasPadding - 40),
       18,
       '#F5EE9E',
       0,
@@ -169,6 +173,69 @@ export function createUISystem() {
       1,
       0,
       'right',
+    );
+  }
+
+  function renderEmpathyMeter({ empathyScore, callCount }) {
+    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize } = getLittleJS();
+    if (!drawRectScreen || !vec2 || !mainCanvasSize) {
+      return;
+    }
+
+    const ratio = callCount > 0 ? Math.min(Math.max(empathyScore / callCount, 0), 1) : 0;
+    const baseWidth = 220;
+    const baseHeight = 16;
+    const x = layout.canvasPadding + baseWidth / 2;
+    const y = mainCanvasSize.y - layout.canvasPadding - baseHeight / 2;
+    const pulse = empathyPulse.getValue();
+    const fillWidth = Math.max(4, ratio * baseWidth);
+
+    drawRectScreen(vec2(x, y), vec2(baseWidth, baseHeight), '#0F4C75');
+    drawRectScreen(
+      vec2(x - baseWidth / 2 + fillWidth / 2, y),
+      vec2(fillWidth, baseHeight - 4),
+      pulse > 0.01 ? '#65FFDA' : '#4CC9F0',
+    );
+
+    drawTextScreen(
+      `${Math.round(ratio * 100)}%`,
+      vec2(x, y - 20),
+      16,
+      '#E9F1F7',
+      0,
+      null,
+      1,
+      0,
+      'center',
+    );
+  }
+
+  function renderQueueIndicator({ callCount, currentIndex, isComplete }) {
+    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize } = getLittleJS();
+    if (!drawRectScreen || !vec2 || !mainCanvasSize) {
+      return;
+    }
+
+    const remaining = isComplete ? 0 : Math.max(callCount - currentIndex - 1, 0);
+    const width = 160;
+    const height = 28;
+    const x = mainCanvasSize.x - layout.canvasPadding - width / 2;
+    const y = layout.headerY + 16;
+    const pulse = callPulse.getValue();
+    const bg = pulse > 0.01 ? '#FFD166' : '#F7B801';
+
+    drawRectScreen(vec2(x, y), vec2(width, height), '#1F1F3B');
+    drawRectScreen(vec2(x, y), vec2(width - 6, height - 6), bg);
+    drawTextScreen(
+      remaining > 0 ? `${remaining} in queue` : isComplete ? 'Queue clear' : 'Last caller',
+      vec2(x, y + 4),
+      16,
+      '#091540',
+      0,
+      null,
+      1,
+      0,
+      'center',
     );
   }
 
@@ -237,6 +304,8 @@ export function createUISystem() {
     renderPrompt(state.call);
     renderOptions(state.call);
     renderEmpathyScore(state.empathyScore);
+    renderEmpathyMeter(state);
+    renderQueueIndicator(state);
   }
 
   function getOptionIndexAtPoint(pointer) {
@@ -284,11 +353,24 @@ export function createUISystem() {
     } else {
       hoverStates.clear();
     }
+
+    empathyPulse.update(delta);
+    callPulse.update(delta);
+  }
+
+  function notifySelection(result) {
+    if (result?.correct) {
+      empathyPulse.trigger();
+    }
+    if (result?.nextCall) {
+      callPulse.trigger();
+    }
   }
 
   return {
     render,
     update,
     getOptionIndexAtPoint,
+    notifySelection,
   };
 }

@@ -6,6 +6,8 @@ import assert from 'node:assert/strict';
 import { createConversationSystem } from '../src/systems/conversation.js';
 import { createUISystem } from '../src/systems/ui.js';
 import { placeholderCalls } from '../src/content/calls.js';
+import { createPulseState } from '../src/systems/animation/tween.js';
+import { createAudioSystem } from '../src/systems/audio.js';
 
 const conversation = createConversationSystem({ calls: placeholderCalls });
 
@@ -56,3 +58,21 @@ const pointerOutside = { x: 120, y: 50 };
 assert.equal(ui.getOptionIndexAtPoint(pointerOutside), -1, 'Pointer outside buttons should return -1.');
 
 console.log('Smoke tests passed.');
+
+// Animation utility smoke test
+const pulse = createPulseState({ duration: 0.5 });
+pulse.update(0.1);
+assert.equal(pulse.getValue(), 0, 'Pulse should be zero before trigger.');
+pulse.trigger();
+pulse.update(0.1);
+assert(pulse.getValue() > 0, 'Pulse value should increase after trigger.');
+pulse.update(0.6);
+assert(pulse.getValue() <= 0.01, 'Pulse value should decay over time.');
+
+// Audio system persona motif smoke
+const originalSound = globalThis.Sound;
+delete globalThis.Sound; // ensure graceful no-op without LittleJS
+const audioSystem = createAudioSystem();
+audioSystem.playPersonaMotif('overwhelmed-designer');
+audioSystem.playPersonaMotif('unknown-persona');
+globalThis.Sound = originalSound;

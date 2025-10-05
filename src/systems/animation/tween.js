@@ -42,3 +42,32 @@ export function createHoverState({ duration = 0.2 } = {}) {
     getValue,
   };
 }
+
+export function createPulseState({ duration = 0.4 } = {}) {
+  let remaining = 0;
+
+  function trigger() {
+    remaining = duration;
+  }
+
+  function update(delta) {
+    if (shouldReduceMotion()) {
+      remaining = 0;
+      return;
+    }
+    remaining = Math.max(0, remaining - delta);
+  }
+
+  function getValue() {
+    if (duration === 0) {
+      return remaining > 0 ? 1 : 0;
+    }
+    return easeOutCubic(remaining / duration);
+  }
+
+  return {
+    trigger,
+    update,
+    getValue,
+  };
+}

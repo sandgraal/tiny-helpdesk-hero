@@ -46,12 +46,25 @@ function createHoldMusic() {
   return createSound([1, 0, 220, 0.2, 0.8, 1.2, 0.1, 0.4, 0.05, 0.2, , , , 0.5, , 0.4]);
 }
 
+const personaMotifPresets = {
+  'overwhelmed-designer': [1.06, 0.11, 523.25, 0.02, 0.12, 0.18, 0.2, 0.3, , , , , , 0.4, , 0.2],
+  'sleep-deprived-gamer': [0.9, 0.05, 329.63, 0.01, 0.2, 0.34, 0.1, 0.4, , , , , , 0.3, , 0.3],
+  'mascot-coordinator': [1.15, 0.08, 392, 0.015, 0.14, 0.22, 0.3, 0.2, , , , , , 0.25, , 0.25],
+  'miniature-roboticist': [0.8, 0.12, 261.63, 0.02, 0.18, 0.3, -0.2, 2.5, , , , , , 0.45, , 0.35],
+};
+
+function createPersonaMotif(id) {
+  const preset = personaMotifPresets[id];
+  return preset ? createSound(preset) : null;
+}
+
 export function createAudioSystem() {
   let clickSound = createClickSound();
   let successCue = createSuccessCue();
   let failCue = createFailCue();
   let holdMusic = createHoldMusic();
   let holdSource = null;
+  const motifCache = new Map();
 
   function ensureSounds() {
     if (!clickSound) {
@@ -66,6 +79,14 @@ export function createAudioSystem() {
     if (!holdMusic) {
       holdMusic = createHoldMusic();
     }
+    if (motifCache.size === 0 && canUseSound()) {
+      Object.keys(personaMotifPresets).forEach((id) => {
+        const sound = createPersonaMotif(id);
+        if (sound) {
+          motifCache.set(id, sound);
+        }
+      });
+    }
   }
 
   function playClick(position) {
@@ -76,6 +97,21 @@ export function createAudioSystem() {
   function playOutcome(correct) {
     ensureSounds();
     playSound(correct ? successCue : failCue, { volume: correct ? 0.8 : 0.6, pitch: correct ? 1.05 : 0.9 });
+  }
+
+  function playPersonaMotif(personaId) {
+    if (!personaId) {
+      return;
+    }
+    ensureSounds();
+    let motif = motifCache.get(personaId);
+    if (!motif) {
+      motif = createPersonaMotif(personaId);
+      if (motif) {
+        motifCache.set(personaId, motif);
+      }
+    }
+    playSound(motif, { volume: 0.4, pitch: 1 });
   }
 
   function startHoldLoop() {
@@ -118,6 +154,7 @@ export function createAudioSystem() {
   return {
     playClick,
     playOutcome,
+    playPersonaMotif,
     startHoldLoop,
     stopHoldLoop,
     updateEmpathyLevel,

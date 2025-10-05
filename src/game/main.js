@@ -41,14 +41,18 @@ export function createGameLifecycle() {
     gameState.audio.stopAll();
     gameState.audio.startHoldLoop();
     gameState.audio.updateEmpathyLevel(0, gameState.conversation.getCallCount());
+    const firstCall = gameState.conversation.getCurrentCall();
+    if (firstCall?.persona?.id) {
+      gameState.audio.playPersonaMotif(firstCall.persona.id);
+    }
     gameState.lastSelection = null;
   }
 
   function handleInput(delta) {
     const { mouseWasPressed, mousePosScreen } = globalThis;
     if (!mouseWasPressed?.(0)) {
-      const call = computeRenderState().call;
-      gameState.ui.update(delta, mousePosScreen, call);
+      const currentState = computeRenderState();
+      gameState.ui.update(delta, mousePosScreen, currentState.call);
       return;
     }
 
@@ -77,8 +81,14 @@ export function createGameLifecycle() {
     gameState.lastSelection = gameState.conversation.chooseOption(optionIndex);
     gameState.audio.playClick(pointer);
     gameState.audio.playOutcome(gameState.lastSelection.correct);
+    gameState.ui.notifySelection(gameState.lastSelection);
 
     const postState = gameState.conversation.getState();
+    const nextCall = gameState.conversation.getCurrentCall();
+    if (gameState.lastSelection.nextCall?.persona?.id) {
+      gameState.audio.playPersonaMotif(gameState.lastSelection.nextCall.persona.id);
+    }
+    gameState.ui.update(delta, mousePosScreen, nextCall);
     gameState.audio.updateEmpathyLevel(postState.empathyScore, postState.callCount);
     if (postState.isComplete) {
       gameState.audio.stopHoldLoop();
