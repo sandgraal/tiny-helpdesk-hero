@@ -56,6 +56,7 @@ The structure above is aspirational until we begin committing implementation wor
 - Run `npm run build` to stage the static site into `dist/` for local inspection.
 - `.github/workflows/deploy.yml` publishes the build to GitHub Pages on every push to `main` (and via manual dispatch).
 - Ensure the repository's Pages settings use the GitHub Actions workflow source; verify the published URL after deployments complete.
+- If a deploy lands but the site returns a 404, recheck that the Pages source is set to "GitHub Actions" and that the latest workflow run succeeded without errors.
 
 ## Testing & Verification
 - **Local serving:** `npm run serve` currently echoes a TODO. Replace it with a real dev-server command (e.g., `http-server public -c-1`) once tooling is selected; document any prerequisites.
