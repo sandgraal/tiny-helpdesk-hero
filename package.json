@@ -8,6 +8,7 @@
     "lint": "echo \"TODO: configure linting\"",
     "format": "echo \"TODO: configure formatter\"",
     "test": "node tests/smoke.test.mjs",
+    "build": "node scripts/build.mjs",
     "test:watch": "node --watch tests/smoke.test.mjs"
   },
   "engines": {

@@ -52,6 +52,11 @@ The structure above is aspirational until we begin committing implementation wor
 - Draft pull requests early with checklist of outstanding work; request reviews before merging to `main`.
 - Update `IMPLEMENTATION_PLAN.md` as tasks start/complete; unresolved questions become GitHub issues with `question` label.
 
+## Deployment
+- Run `npm run build` to stage the static site into `dist/` for local inspection.
+- `.github/workflows/deploy.yml` publishes the build to GitHub Pages on every push to `main` (and via manual dispatch).
+- Ensure the repository's Pages settings use the GitHub Actions workflow source; verify the published URL after deployments complete.
+
 ## Testing & Verification
 - **Local serving:** `npm run serve` currently echoes a TODO. Replace it with a real dev-server command (e.g., `http-server public -c-1`) once tooling is selected; document any prerequisites.
 - **Smoke tests:** Build a simple harness in `tests/` that instantiates the conversation engine with sample data (see `tests/smoke.test.mjs` placeholder).

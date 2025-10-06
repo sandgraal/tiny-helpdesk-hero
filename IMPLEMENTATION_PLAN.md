@@ -28,7 +28,7 @@ The project is kicking off with a documentation-first approach. This plan captur
 - [x] Integrate empathy scoring, score display, and end-of-shift summary using simple UI rendering helpers.
 - [x] Stand up audio wrapper hitting ZzFX/LittleJS primitives for click + hold-music placeholders.
 - [x] Wire `npm test` (or equivalent) to run automated validation for call data integrity and linting.
-- [ ] Deploy preview build to GitHub Pages; verify LittleJS boots via CDN in production environment.
+- [x] Deploy preview build to GitHub Pages; verify LittleJS boots via CDN in production environment. *(Initial workflow created; confirm first deploy succeeds on GitHub.)*
 
 ## Milestone 2 — Content & Expression
 **Target:** Elevate the experience into the jam-feature set.
