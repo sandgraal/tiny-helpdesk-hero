@@ -8,9 +8,11 @@ import { createGameLifecycle } from './game/main.js';
 function startEngine(lifecycle) {
   const { engineInit } = globalThis;
   if (typeof engineInit !== 'function') {
+    console.warn('[TinyHelpdesk] engineInit not available yet');
     return false;
   }
 
+  console.info('[TinyHelpdesk] starting LittleJS engine');
   engineInit(
     lifecycle.init,
     lifecycle.update,
