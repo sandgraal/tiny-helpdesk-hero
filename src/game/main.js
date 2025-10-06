@@ -100,6 +100,8 @@ export function createGameLifecycle() {
     const renderState = computeRenderState();
     if (!hasLoggedFirstRender) {
       console.info('[TinyHelpdesk] rendering with state', renderState);
+      console.info('[TinyHelpdesk] drawRectScreen type:', typeof globalThis.drawRectScreen);
+      console.info('[TinyHelpdesk] mainCanvasSize:', globalThis.mainCanvasSize);
       hasLoggedFirstRender = true;
     }
     gameState.ui.render(renderState);
