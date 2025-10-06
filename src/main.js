@@ -14,6 +14,7 @@ function startEngine(lifecycle) {
   engineInit(
     lifecycle.init,
     lifecycle.update,
+    lifecycle.updatePost,
     lifecycle.render,
     lifecycle.renderPost,
   );
