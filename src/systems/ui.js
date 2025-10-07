@@ -24,57 +24,59 @@ function getLittleJS() {
     ?? globalThis.document?.querySelector?.('canvas');
   const context = globalThis.overlayContext ?? globalThis.mainContext ?? canvas?.getContext?.('2d');
 
-  const mainCanvasSize = globalThis.mainCanvasSize
-    ?? (canvas ? vec2(canvas.width, canvas.height) : null);
+  const mainCanvasSize = (globalThis.mainCanvasSize?.x && globalThis.mainCanvasSize?.y)
+    ? globalThis.mainCanvasSize
+    : (canvas ? vec2(canvas.width, canvas.height) : vec2(1280, 720));
 
-  const drawRectScreen = typeof globalThis.drawRectScreen === 'function'
-    ? globalThis.drawRectScreen
-    : (center, size, color = '#ffffff') => {
-        if (!context || !center || !size) {
-          return;
-        }
-        const width = size.x ?? 0;
-        const height = size.y ?? 0;
-        const x = (center.x ?? 0) - width / 2;
-        const y = (center.y ?? 0) - height / 2;
-        context.save?.();
-        context.fillStyle = color;
-        context.fillRect?.(x, y, width, height);
-        context.restore?.();
-      };
+  const drawRectScreen = (center, size, color = '#ffffff') => {
+    if (!context || !center || !size) {
+      return;
+    }
+    const width = size.x ?? 0;
+    const height = size.y ?? 0;
+    const x = (center.x ?? 0) - width / 2;
+    const y = (center.y ?? 0) - height / 2;
+    context.save?.();
+    context.globalAlpha = 1;
+    context.fillStyle = color;
+    context.fillRect?.(x, y, width, height);
+    context.restore?.();
+  };
 
-  const drawTextScreen = typeof globalThis.drawTextScreen === 'function'
-    ? globalThis.drawTextScreen
-    : (
-        text,
-        position,
-        size = 16,
-        color = '#ffffff',
-        lineWidth = 0,
-        lineColor = '#000000',
-        alpha = 1,
-        angle = 0,
-        align = 'left',
-      ) => {
-        if (!context || !position) {
-          return;
-        }
-        const x = position.x ?? 0;
-        const y = position.y ?? 0;
-        context.save?.();
-        context.font = `${size}px sans-serif`;
-        context.textAlign = align ?? 'left';
-        context.textBaseline = 'middle';
-        context.globalAlpha = alpha ?? 1;
-        if (lineWidth && lineColor) {
-          context.lineWidth = lineWidth;
-          context.strokeStyle = lineColor;
-          context.strokeText?.(text, x, y);
-        }
-        context.fillStyle = color;
-        context.fillText?.(text, x, y);
-        context.restore?.();
-      };
+  const drawTextScreen = (
+    text,
+    position,
+    size = 16,
+    color = '#ffffff',
+    lineWidth = 0,
+    lineColor = '#000000',
+    alpha = 1,
+    angle = 0,
+    align = 'left',
+  ) => {
+    if (!context || !position) {
+      return;
+    }
+    const x = position.x ?? 0;
+    const y = position.y ?? 0;
+    context.save?.();
+    context.translate?.(x, y);
+    if (angle) {
+      context.rotate?.(angle);
+    }
+    context.font = `${size}px sans-serif`;
+    context.textAlign = align ?? 'left';
+    context.textBaseline = 'middle';
+    context.globalAlpha = alpha ?? 1;
+    if (lineWidth && lineColor) {
+      context.lineWidth = lineWidth;
+      context.strokeStyle = lineColor || '#000000';
+      context.strokeText?.(text, 0, 0);
+    }
+    context.fillStyle = color;
+    context.fillText?.(text, 0, 0);
+    context.restore?.();
+  };
 
   return { drawRectScreen, drawTextScreen, mainCanvasSize, vec2 };
 }
