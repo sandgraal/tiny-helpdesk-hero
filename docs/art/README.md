@@ -35,7 +35,7 @@
 
 ## TODO
 
-- [ ] Define final UI style guide (pixel density, button states, graffiti accent set).
+- [x] Define final UI style guide (pixel density, button states, graffiti accent set).
 - [ ] Finalize hybrid sound palette and loudness targets (-14 LUFS for streaming balance).
 - [ ] Track asset production tasks and their sources.
 - [ ] Maintain a music and SFX license log for auditability.
