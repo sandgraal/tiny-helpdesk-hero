@@ -6,7 +6,7 @@ Milestone 2.5 converts the art-direction documentation into in-game visual upgra
 - [ ] Palette and motion language reviewed against `docs/art/ui-style-guide.md` and `docs/art/README.md`.
 - [x] UI/theme module scaffolded to centralize colors, typography, and motion tokens (`src/ui/theme.js`).
 - [x] On-canvas UI rendering consumes shared palette tokens (`src/systems/ui.js`).
-- [ ] Asset audit created (icons, backgrounds, particles, typography) with ownership notes.
+- [x] Asset audit created (icons, backgrounds, particles, typography) with ownership notes (`docs/art/asset-backlog.md`).
 - [ ] Rendering tweaks (pixel snap, parallax prototype, low-power toggle) still in discovery.
 - [ ] Art iteration log (`docs/art/iteration-log.md`) not yet populated with before/after captures.
 
@@ -18,7 +18,7 @@ Milestone 2.5 converts the art-direction documentation into in-game visual upgra
 - [ ] Align motion timings/easings with the style guide’s motion tables; document defaults alongside the tokens.
 
 ### Asset Production
-- [ ] Build an asset backlog covering placeholder replacements (HUD icons, achievements, empathy meter, background treatments).
+- [x] Build an asset backlog covering placeholder replacements (HUD icons, achievements, empathy meter, background treatments) — see `docs/art/asset-backlog.md`.
 - [ ] Produce first pass of “tiny-scale” iconography that matches the chosen palette and line weight.
 - [ ] Update achievements panel and accessibility UI to use new iconography once ready.
 - [ ] Plan parallax/background layers; secure concept references in `docs/art/iteration-log.md`.
