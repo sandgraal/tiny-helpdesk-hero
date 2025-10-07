@@ -6,16 +6,20 @@ import { createConversationSystem } from '../systems/conversation.js';
 import { createUISystem } from '../systems/ui.js';
 import { createAudioSystem } from '../systems/audio.js';
 import { placeholderCalls } from '../content/calls.js';
+import { achievementDefinitions } from '../content/achievements.js';
+import { createAchievementSystem } from '../systems/achievements.js';
 
 function createGameState() {
   const conversation = createConversationSystem({ calls: placeholderCalls });
   const ui = createUISystem();
   const audio = createAudioSystem();
+  const achievements = createAchievementSystem({ definitions: achievementDefinitions });
 
   return {
     conversation,
     ui,
     audio,
+    achievements,
     lastSelection: null,
   };
 }
@@ -33,6 +37,7 @@ export function createGameLifecycle() {
       hasCalls: conversation.getCallCount() > 0,
       call,
       lastSelection: gameState.lastSelection,
+      achievements: gameState.achievements.getState(),
     };
   }
 
@@ -41,6 +46,7 @@ export function createGameLifecycle() {
     gameState.audio.stopAll();
     gameState.audio.startHoldLoop();
     gameState.audio.updateEmpathyLevel(0, gameState.conversation.getCallCount());
+    gameState.achievements.startShift({ callCount: gameState.conversation.getCallCount() });
     const firstCall = gameState.conversation.getCurrentCall();
     if (firstCall?.persona?.id) {
       gameState.audio.playPersonaMotif(firstCall.persona.id);
@@ -79,6 +85,7 @@ export function createGameLifecycle() {
     }
 
     gameState.lastSelection = gameState.conversation.chooseOption(optionIndex);
+    gameState.achievements.recordSelection(gameState.lastSelection);
     gameState.audio.playClick(pointer);
     gameState.audio.playOutcome(gameState.lastSelection.correct);
     gameState.ui.notifySelection(gameState.lastSelection);
@@ -92,6 +99,13 @@ export function createGameLifecycle() {
     gameState.audio.updateEmpathyLevel(postState.empathyScore, postState.callCount);
     if (postState.isComplete) {
       gameState.audio.stopHoldLoop();
+      const unlocks = gameState.achievements.completeShift({
+        empathyScore: postState.empathyScore,
+        callCount: postState.callCount,
+      });
+      if (Array.isArray(unlocks) && unlocks.length) {
+        gameState.ui.notifyAchievements(unlocks);
+      }
     }
   }
 

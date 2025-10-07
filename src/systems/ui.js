@@ -85,6 +85,7 @@ export function createUISystem() {
   const hoverStates = new Map();
   const empathyPulse = createPulseState({ duration: 0.6 });
   const callPulse = createPulseState({ duration: 0.5 });
+  const achievementPulse = createPulseState({ duration: 0.8 });
 
   function getOptionKey(option, index) {
     return option?.id ?? `option-${index}`;
@@ -346,6 +347,87 @@ export function createUISystem() {
     );
   }
 
+  function renderAchievements(achievementsState) {
+    if (!achievementsState) {
+      return;
+    }
+    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize } = getLittleJS();
+    if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize) {
+      return;
+    }
+
+    const panelWidth = Math.min(340, Math.max(260, mainCanvasSize.x * 0.28));
+    const entries = achievementsState.entries ?? [];
+    const visible = entries.slice(0, 3);
+    if (!visible.length) {
+      return;
+    }
+
+    const panelHeight = 64 + visible.length * 44;
+    const centerX = mainCanvasSize.x - layout.canvasPadding - panelWidth / 2;
+    const centerY = layout.canvasPadding + panelHeight / 2;
+    const accent = achievementPulse.getValue();
+    const headerColor = accent > 0 ? '#FFD166' : '#7FDBFF';
+    const headerAlpha = 0.9 + accent * 0.1;
+
+    drawRectScreen(
+      vec2(centerX, centerY),
+      vec2(panelWidth, panelHeight),
+      '#0D1E30',
+    );
+
+    drawTextScreen(
+      `Achievements ${achievementsState.unlockedCount}/${achievementsState.total}`,
+      vec2(centerX, centerY - panelHeight / 2 + 26),
+      18,
+      headerColor,
+      0,
+      '#001F3F',
+      headerAlpha,
+      0,
+      'center',
+    );
+
+    const recentSet = new Set(achievementsState.recentUnlocks ?? []);
+    const contentLeft = centerX - panelWidth / 2 + 24;
+    let rowY = centerY - panelHeight / 2 + 58;
+
+    visible.forEach((entry) => {
+      const unlocked = entry.unlocked;
+      const fresh = recentSet.has(entry.id);
+      const titleColor = fresh ? '#FFD166' : unlocked ? '#4CE0D2' : '#7A8BA3';
+      const bodyColor = unlocked ? '#D8F3FF' : '#7A8BA3';
+      const alpha = fresh ? 1 : unlocked ? 0.95 : 0.8;
+      const bullet = unlocked ? '✓' : '•';
+
+      drawTextScreen(
+        `${bullet} ${entry.title}`,
+        vec2(contentLeft, rowY),
+        16,
+        titleColor,
+        0,
+        '#001F3F',
+        alpha,
+        0,
+        'left',
+      );
+
+      drawTextScreen(
+        entry.description,
+        vec2(contentLeft + 8, rowY + 18),
+        12,
+        bodyColor,
+        0,
+        '#001F3F',
+        alpha,
+        0,
+        'left',
+      );
+
+      rowY += 44;
+    });
+  }
+
   function render(state) {
     renderBackground();
     if (!state.hasCalls) {
@@ -365,6 +447,7 @@ export function createUISystem() {
     renderEmpathyScore(state.empathyScore);
     renderEmpathyMeter(state);
     renderQueueIndicator(state);
+    renderAchievements(state.achievements);
   }
 
   function getOptionIndexAtPoint(pointer) {
@@ -415,6 +498,7 @@ export function createUISystem() {
 
     empathyPulse.update(delta);
     callPulse.update(delta);
+    achievementPulse.update(delta);
   }
 
   function notifySelection(result) {
@@ -426,10 +510,17 @@ export function createUISystem() {
     }
   }
 
+  function notifyAchievements(unlocks) {
+    if (Array.isArray(unlocks) && unlocks.length) {
+      achievementPulse.trigger();
+    }
+  }
+
   return {
     render,
     update,
     getOptionIndexAtPoint,
     notifySelection,
+    notifyAchievements,
   };
 }

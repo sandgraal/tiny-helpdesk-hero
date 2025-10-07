@@ -36,9 +36,9 @@ The project is kicking off with a documentation-first approach. This plan captur
 - [x] Create modular persona/problem/twist pools (JSON/JS) and integrate into conversation engine for procedural calls.
 - [x] Add animated UI states (button hover/press, queue pulses, empathy meter) with accessibility-safe motion defaults.
 - [x] Layer adaptive audio cues (persona motifs, empathy filters, office ambience) with mixing controls. *(Hold music loop + empathy volume in place; persona motifs forthcoming.)*
-- [ ] Implement achievement/meta-humor tracking and UI presentation layer.
+- [x] Implement achievement/meta-humor tracking and UI presentation layer.
 - [ ] Expand call library to minimum viable jam scope (≥ 30 unique combinations) with tone review checklist.
-- [ ] Produce first draft of narrative/style guide in `docs/narrative/guide.md` and ensure content adheres.
+- [x] Produce first draft of narrative/style guide in `docs/narrative/guide.md` and ensure content adheres.
 
 ## Milestone 3 — Polish & Submission
 **Target:** Ship-quality jam build with supporting materials.
@@ -51,8 +51,9 @@ The project is kicking off with a documentation-first approach. This plan captur
 
 ## Cross-Cutting Tasks
 - [ ] Maintain GitHub issues for open tasks using labels (`UI`, `Audio`, `Enhancement`, `Gameplay`, `Docs`).
+- [x] Automate content validation in local/CI workflows (`npm run lint` / `validate:content`, including seed cross-checks).
 - [ ] Keep documentation in sync after each milestone (README + DEVELOPMENT updates).
-- [ ] Track narrative tone and empathy guidelines in a dedicated `docs/narrative/guide.md` file.
+- [x] Track narrative tone and empathy guidelines in a dedicated `docs/narrative/guide.md` file.
 - [ ] Configure continuous integration once scripts exist (lint/test on pull requests, optional deploy checks).
 - [ ] Hold milestone retrospectives and record action items in `docs/retros/`.
 

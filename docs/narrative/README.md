@@ -2,8 +2,9 @@
 
 Use this space to define personas, tonal guardrails, and empathy guidelines for Tiny Helpdesk Hero.
 
-- TODO: add caller archetypes and reference dialogue snippets.
-- TODO: document humor boundaries and inclusive language principles.
+- ✅ Narrative framework lives in [`guide.md`](./guide.md).
+- TODO: expand caller archetype variations and add reference dialogue snippets.
+- TODO: document humor boundaries and inclusive language principles in more granular scenarios.
 
 ---
 

@@ -5,7 +5,7 @@ These guidelines define how we will build Tiny Helpdesk Hero from the ground up.
 ## Toolchain Baseline
 - **Node.js:** v18 or newer (see the `engines` field in `package.json`).
 - **Package manager:** npm by default; keep lockfiles consistent if you use an alternative.
-- **Scripts:** `package.json` includes placeholder commands for `serve`, `lint`, `format`, and `test`. Replace the `echo` placeholders once real tooling is selected.
+- **Scripts:** `npm run lint` executes the content validator, `npm run validate:content` is callable directly, and the remaining placeholders (`serve`, `format`) will be replaced once tooling is selected.
 
 ## Phased Development Roadmap
 1. **Bootstrap (Sprint 0)**
@@ -61,7 +61,7 @@ The structure above is aspirational until we begin committing implementation wor
 ## Testing & Verification
 - **Local serving:** `npm run serve` currently echoes a TODO. Replace it with a real dev-server command (e.g., `http-server public -c-1`) once tooling is selected; document any prerequisites.
 - **Smoke tests:** Build a simple harness in `tests/` that instantiates the conversation engine with sample data (see `tests/smoke.test.mjs` placeholder).
-- **Content validation:** Add scripts that verify persona/problem/twist JSON combinations for completeness and tone guidelines.
+- **Content validation:** `npm run lint` (or directly `npm run validate:content`) checks personas, problems, twists, and default seeds. Required fields must be non-empty strings, incorrect answer pools need ≥2 entries, IDs must be unique, empathy boosts are trimmed/validated, and seed assignments must reference defined content.
 - **Playtesting cadence:** Schedule empathy-focused playtests every sprint; capture feedback in `docs/playtests/`.
 
 ## Asset & Audio Handling

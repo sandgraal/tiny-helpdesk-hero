@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "serve": "python3 -m http.server 8080",
-    "lint": "echo \"TODO: configure linting\"",
+    "lint": "npm run validate:content",
     "format": "echo \"TODO: configure formatter\"",
-    "test": "node tests/smoke.test.mjs",
+    "test": "node --test --test-concurrency=1 \"tests/**/*.test.mjs\"",
     "build": "node scripts/build.mjs",
-    "test:watch": "node --watch tests/smoke.test.mjs"
+    "test:watch": "node --test --test-concurrency=1 --watch \"tests/**/*.test.mjs\"",
+    "validate:content": "node scripts/validate-content.mjs"
   },
   "engines": {
     "node": ">=18.0.0"

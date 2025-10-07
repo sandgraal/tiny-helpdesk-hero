@@ -1,78 +1,151 @@
-/**
- * Smoke tests for early systems.
- */
-
+import test from 'node:test';
 import assert from 'node:assert/strict';
+
+import { buildCall, generateCallDeck, placeholderCalls, personas, problems, twists, defaultCallSeeds } from '../src/content/calls.js';
 import { createConversationSystem } from '../src/systems/conversation.js';
 import { createUISystem } from '../src/systems/ui.js';
-import { placeholderCalls } from '../src/content/calls.js';
-import { createPulseState } from '../src/systems/animation/tween.js';
-import { createAudioSystem } from '../src/systems/audio.js';
+import { createHoverState, createPulseState } from '../src/systems/animation/tween.js';
 
-const conversation = createConversationSystem({ calls: placeholderCalls });
-
-assert.equal(conversation.getCallCount(), placeholderCalls.length, 'Conversation should load placeholder calls.');
-
-const firstCall = conversation.getCurrentCall();
-assert.ok(firstCall, 'First call should exist.');
-assert.ok(firstCall.persona?.name, 'Persona should include a name.');
-assert.ok(firstCall.options.length === 3, 'Each call should present three options.');
-assert.ok(firstCall.options.some((option) => option.correct), 'At least one option must be correct.');
-
-const { empathyScore } = conversation.getState();
-assert.equal(empathyScore, 0, 'Initial empathy score should be zero.');
-
-const result = conversation.chooseOption(0);
-assert.ok(result.advanced, 'Selecting an option should advance the conversation.');
-assert.ok(typeof result.correct === 'boolean', 'Result correctness should be boolean.');
-
-assert.equal(conversation.getState().currentIndex, 1, 'Conversation should move to the next call.');
-
-// Complete remaining calls to validate state transitions
-const totalCalls = conversation.getCallCount();
-for (let i = 1; i < totalCalls; i += 1) {
-  conversation.chooseOption(0);
+function withPatchedGlobals(patches, fn) {
+  const originals = {};
+  for (const [key, value] of Object.entries(patches)) {
+    originals[key] = key in globalThis ? globalThis[key] : undefined;
+    if (value === undefined) {
+      delete globalThis[key];
+    } else {
+      globalThis[key] = value;
+    }
+  }
+  try {
+    return fn();
+  } finally {
+    for (const [key, value] of Object.entries(originals)) {
+      if (value === undefined) {
+        delete globalThis[key];
+      } else {
+        globalThis[key] = value;
+      }
+    }
+  }
 }
-const finalState = conversation.getState();
-assert.ok(finalState.isComplete, 'Conversation should report completion after final call.');
 
-conversation.reset();
-const resetCall = conversation.getCurrentCall();
-assert.ok(resetCall, 'Call should exist after reset.');
-const resetState = conversation.getState();
-assert.equal(resetState.currentIndex, 0, 'Reset should return to the first call.');
-assert.equal(resetState.empathyScore, 0, 'Reset should clear empathy score.');
+test('generateCallDeck produces complete, distinct calls', () => {
+  const deck = generateCallDeck();
+  assert.equal(deck.length, defaultCallSeeds.length, 'Deck should include each seeded scenario.');
+  const ids = new Set(deck.map((call) => call.id));
+  assert.equal(ids.size, deck.length, 'Call ids should be unique.');
+  deck.forEach((call) => {
+    assert.ok(call.persona?.id, 'Each call has a persona.');
+    assert.ok(call.problem?.id, 'Each call has a problem.');
+    assert.equal(call.options.length, 3, 'Each call exposes three options.');
+    assert.ok(call.options.some((option) => option.correct), 'At least one option is correct.');
+  });
+});
 
-// UI hit detection smoke test
-globalThis.mainCanvasSize = { x: 800, y: 600 };
-globalThis.drawRectScreen = () => {};
-globalThis.drawTextScreen = () => {};
-globalThis.vec2 = (x, y) => ({ x, y });
+test('buildCall composes empathy outcomes with twists', () => {
+  const persona = personas[0];
+  const problem = problems[0];
+  const twist = twists.find((entry) => entry.id === 'micro-coffee');
+  const call = buildCall({ persona, problem, twist });
+  assert.ok(call.prompt.includes(persona.opener), 'Prompt includes persona opener.');
+  assert.ok(call.prompt.includes(problem.summary), 'Prompt includes problem summary.');
+  assert.ok(call.empathyWin.includes(problem.empathyWin), 'Empathy win carries problem guidance.');
+  assert.ok(call.empathyWin.includes(twist.empathyBoost), 'Empathy win layers twist boost.');
+});
 
-const ui = createUISystem();
-const pointerFirst = { x: 400, y: 250 };
-assert.equal(ui.getOptionIndexAtPoint(pointerFirst), 0, 'Pointer near first option should map to index 0.');
-const pointerThird = { x: 400, y: 402 };
-assert.equal(ui.getOptionIndexAtPoint(pointerThird), 2, 'Pointer near third option should map to index 2.');
-const pointerOutside = { x: 120, y: 50 };
-assert.equal(ui.getOptionIndexAtPoint(pointerOutside), -1, 'Pointer outside buttons should return -1.');
+test('conversation system tracks empathy and reset flow', { concurrency: false }, () => {
+  const randomStub = () => 0; // deterministic option order
+  const system = createConversationSystem({ calls: placeholderCalls, random: randomStub });
+  assert.equal(system.getCallCount(), placeholderCalls.length, 'Call count matches placeholder deck.');
+  let state = system.getState();
+  assert.equal(state.currentIndex, 0);
+  assert.equal(state.empathyScore, 0);
 
-console.log('Smoke tests passed.');
+  const firstCall = system.getCurrentCall();
+  const correctIndex = firstCall.options.findIndex((option) => option.correct);
+  const firstResult = system.chooseOption(correctIndex);
+  assert.ok(firstResult.correct, 'Choosing the correct option increments empathy.');
+  state = system.getState();
+  assert.equal(state.empathyScore, 1, 'Empathy increments on correct selection.');
+  assert.equal(state.currentIndex, 1, 'Index advances after selection.');
 
-// Animation utility smoke test
-const pulse = createPulseState({ duration: 0.5 });
-pulse.update(0.1);
-assert.equal(pulse.getValue(), 0, 'Pulse should be zero before trigger.');
-pulse.trigger();
-pulse.update(0.1);
-assert(pulse.getValue() > 0, 'Pulse value should increase after trigger.');
-pulse.update(0.6);
-assert(pulse.getValue() <= 0.01, 'Pulse value should decay over time.');
+  for (let i = 1; i < system.getCallCount(); i += 1) {
+    system.chooseOption(1);
+  }
+  state = system.getState();
+  assert.equal(state.isComplete, true, 'System reports completion at end of deck.');
 
-// Audio system persona motif smoke
-const originalSound = globalThis.Sound;
-delete globalThis.Sound; // ensure graceful no-op without LittleJS
-const audioSystem = createAudioSystem();
-audioSystem.playPersonaMotif('overwhelmed-designer');
-audioSystem.playPersonaMotif('unknown-persona');
-globalThis.Sound = originalSound;
+  system.reset();
+  state = system.getState();
+  assert.equal(state.currentIndex, 0, 'Reset returns to start of deck.');
+  assert.equal(state.empathyScore, 0, 'Reset clears empathy score.');
+});
+
+test('UI system maps pointer coordinates to option indices', { concurrency: false }, () => {
+  return withPatchedGlobals({
+    mainCanvasSize: { x: 800, y: 600 },
+    vec2: (x, y) => ({ x, y }),
+    overlayContext: {
+      save() {},
+      restore() {},
+      fillRect() {},
+      translate() {},
+      rotate() {},
+      strokeText() {},
+      fillText() {},
+    },
+    document: {
+      getElementById() { return null; },
+      querySelector() { return null; },
+    },
+  }, () => {
+    const ui = createUISystem();
+    const pointerFirst = { x: 400, y: 260 };
+    assert.equal(ui.getOptionIndexAtPoint(pointerFirst), 0, 'Pointer near first option maps to 0.');
+    const pointerSecond = { x: 400, y: 340 };
+    assert.equal(ui.getOptionIndexAtPoint(pointerSecond), 1, 'Pointer near second option maps to 1.');
+    const pointerOutside = { x: 100, y: 100 };
+    assert.equal(ui.getOptionIndexAtPoint(pointerOutside), -1, 'Pointer outside returns -1.');
+
+    const call = {
+      options: [
+        { id: 'a', text: 'A', correct: true },
+        { id: 'b', text: 'B', correct: false },
+        { id: 'c', text: 'C', correct: false },
+      ],
+    };
+
+    ui.update(0.16, pointerFirst, call);
+    ui.render({
+      hasCalls: true,
+      isComplete: false,
+      empathyScore: 0,
+      callCount: call.options.length,
+      currentIndex: 0,
+      call,
+      lastSelection: null,
+    });
+
+    ui.update(0.16, null, { options: [] });
+    ui.render({ hasCalls: false });
+  });
+});
+
+test('animation helpers respect reduced motion preferences', { concurrency: false }, () => {
+  return withPatchedGlobals({
+    matchMedia: (query) => ({ matches: query === '(prefers-reduced-motion: reduce)' }),
+  }, () => {
+    const hover = createHoverState({ duration: 0.5 });
+    hover.setActive(true);
+    hover.update(0.1);
+    assert.equal(hover.getValue(), 1, 'Hover snaps active when motion reduced.');
+    hover.setActive(false);
+    hover.update(0.1);
+    assert.equal(hover.getValue(), 0, 'Hover snaps inactive when motion reduced.');
+
+    const pulse = createPulseState({ duration: 0.5 });
+    pulse.trigger();
+    pulse.update(0.1);
+    assert.equal(pulse.getValue(), 0, 'Pulse stays inactive when motion reduced.');
+  });
+});
