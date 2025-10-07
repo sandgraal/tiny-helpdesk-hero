@@ -9,6 +9,7 @@ import { placeholderCalls } from '../content/calls.js';
 import { achievementDefinitions } from '../content/achievements.js';
 import { createAchievementSystem } from '../systems/achievements.js';
 import { createAccessibilitySettings } from '../systems/accessibility.js';
+import { createMonitorDisplay } from './monitor-display.js';
 
 function triggerHaptic(pattern, warningLabel = 'Haptic trigger failed') {
   const vibrate = globalThis.navigator?.vibrate;
@@ -60,6 +61,24 @@ function createGameState() {
 export function createGameLifecycle() {
   const gameState = createGameState();
   let lastDelta = 1 / 60;
+  const monitorDisplay = createMonitorDisplay({
+    width: globalThis.mainCanvasSize?.x ?? 640,
+    height: globalThis.mainCanvasSize?.y ?? 360,
+    devicePixelRatio: globalThis.devicePixelRatio ?? 1,
+  });
+
+  function getMainCanvasSize() {
+    const size = globalThis.mainCanvasSize;
+    if (size?.x && size?.y) {
+      return { width: size.x, height: size.y };
+    }
+    const canvas = globalThis.mainCanvas
+      ?? globalThis.document?.getElementById?.('mainCanvas');
+    if (canvas) {
+      return { width: canvas.width ?? 640, height: canvas.height ?? 360 };
+    }
+    return { width: 640, height: 360 };
+  }
 
   function bindKeyboardHandlers(renderState) {
     if (renderState.isComplete) {
@@ -179,7 +198,36 @@ export function createGameLifecycle() {
 
   function render() {
     const renderState = computeRenderState();
-    gameState.ui.render(renderState);
+    const originalOverlay = globalThis.overlayContext;
+    const monitorContext = monitorDisplay.getContext();
+    const monitorCanvas = monitorDisplay.getCanvas();
+    const { width: canvasWidth, height: canvasHeight } = getMainCanvasSize();
+
+    if (monitorContext && monitorCanvas) {
+      monitorDisplay.resize(canvasWidth, canvasHeight);
+      monitorDisplay.clear('#071629');
+
+      globalThis.overlayContext = monitorContext;
+      try {
+        gameState.ui.render(renderState);
+      } finally {
+        globalThis.overlayContext = originalOverlay;
+      }
+
+      const targetContext = originalOverlay
+        ?? globalThis.overlayContext
+        ?? globalThis.mainContext
+        ?? monitorContext;
+
+      monitorDisplay.drawTo(targetContext, {
+        dx: 0,
+        dy: 0,
+        dWidth: canvasWidth,
+        dHeight: canvasHeight,
+      });
+    } else {
+      gameState.ui.render(renderState);
+    }
   }
 
   return {

@@ -12,3 +12,4 @@ All notable changes to this project will be documented in this file.
 - Shortened achievements auto-hide delay when navigating with keyboard-only input.
 - Added optional haptic feedback for incorrect selections while respecting reduced-motion preferences.
 - Integrated shared palette/motion tokens into on-canvas LittleJS UI rendering.
+- Scaffolded monitor display helper and routed UI rendering through an off-screen canvas for upcoming over-the-shoulder composition.
