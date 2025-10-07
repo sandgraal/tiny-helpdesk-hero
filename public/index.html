@@ -55,8 +55,8 @@
 
       .accessibility-panel {
         position: absolute;
-        top: calc(16px + env(safe-area-inset-top, 0px));
-        right: calc(16px + env(safe-area-inset-right, 0px));
+        top: calc(24px + env(safe-area-inset-top, 0px));
+        right: calc(24px + env(safe-area-inset-right, 0px));
         display: flex;
         flex-direction: column;
         gap: 8px;
@@ -101,9 +101,9 @@
 
       @media (max-width: 900px) and (orientation: landscape) {
         .accessibility-panel {
-          top: auto;
-          bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-          right: calc(16px + env(safe-area-inset-right, 0px));
+          top: calc(16px + env(safe-area-inset-top, 0px) + 40px);
+          bottom: auto;
+          right: calc(24px + env(safe-area-inset-right, 0px));
           left: auto;
           transform: none;
           flex-direction: row;

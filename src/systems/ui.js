@@ -148,25 +148,29 @@ export function createUISystem({ accessibility } = {}) {
   let keyboardOptionsLength = 0;
   let keyboardSelectHandler = null;
   let keyboardRestartHandler = null;
+  let keyboardStubAvailable = false;
   let lastCallId = null;
 
+  function getFocusCount() {
+    return keyboardOptionsLength + (keyboardStubAvailable ? 1 : 0);
+  }
+
   function focusNext(step) {
-    if (keyboardOptionsLength <= 0) {
+    const total = getFocusCount();
+    if (total <= 0) {
       keyboardFocusIndex = -1;
       return;
     }
     if (keyboardFocusIndex < 0) {
-      keyboardFocusIndex = step > 0 ? 0 : keyboardOptionsLength - 1;
+      keyboardFocusIndex = step > 0 ? 0 : total - 1;
       return;
     }
-    keyboardFocusIndex = (keyboardFocusIndex + step + keyboardOptionsLength) % keyboardOptionsLength;
+    keyboardFocusIndex = (keyboardFocusIndex + step + total) % total;
   }
 
   const handleKeyboardEvent = (event) => {
-    if (!keyboardSelectHandler) {
-      if (!keyboardRestartHandler) {
-        return;
-      }
+    if (!keyboardSelectHandler && !keyboardRestartHandler) {
+      return;
     }
     const target = event.target;
     if (target && typeof target.closest === 'function' && target.closest('[data-accessibility-panel]')) {
@@ -175,7 +179,8 @@ export function createUISystem({ accessibility } = {}) {
     if (event.altKey || event.metaKey || event.ctrlKey) {
       return;
     }
-    const hasOptions = keyboardOptionsLength > 0;
+    const total = getFocusCount();
+    const hasOptions = total > 0;
 
     switch (event.key) {
       case 'Tab':
@@ -201,21 +206,23 @@ export function createUISystem({ accessibility } = {}) {
       case 'Home':
         if (hasOptions) {
           event.preventDefault();
-          keyboardFocusIndex = keyboardOptionsLength > 0 ? 0 : -1;
+          keyboardFocusIndex = 0;
         }
         break;
       case 'End':
         if (hasOptions) {
           event.preventDefault();
-          keyboardFocusIndex = keyboardOptionsLength > 0 ? keyboardOptionsLength - 1 : -1;
+          keyboardFocusIndex = total - 1;
         }
         break;
       case 'Enter':
       case ' ':
         if (hasOptions) {
           event.preventDefault();
-          if (keyboardFocusIndex >= 0) {
-            keyboardSelectHandler(keyboardFocusIndex);
+          if (keyboardStubAvailable && keyboardFocusIndex === keyboardOptionsLength) {
+            toggleAchievementsVisibility();
+          } else if (keyboardFocusIndex >= 0) {
+            keyboardSelectHandler?.(keyboardFocusIndex);
           }
         } else if (keyboardRestartHandler) {
           event.preventDefault();
@@ -722,6 +729,9 @@ export function createUISystem({ accessibility } = {}) {
     const bgColor = layout.highContrast ? 'rgba(0,0,0,0.9)' : 'rgba(7, 22, 41, 0.8)';
     const textColor = layout.highContrast ? '#FFFFFF' : '#D8F3FF';
 
+    if (keyboardStubAvailable && keyboardFocusIndex === keyboardOptionsLength) {
+      drawRectScreen(vec2(centerX, centerY), vec2(stubWidth + 12, stubHeight + 12), layout.highContrast ? '#FFD166' : '#FFE45E');
+    }
     drawRectScreen(vec2(centerX, centerY), vec2(stubWidth, stubHeight), bgColor);
     drawTextScreen('Achievements', vec2(centerX, centerY), Math.round(16 * layout.fontScale), textColor, 0, null, 1, 0, 'center');
 
@@ -793,9 +803,7 @@ export function createUISystem({ accessibility } = {}) {
       if (layout.achievementsPosition === 'bottom' && panelState.collapseBounds) {
         const { left, right, top, bottom } = panelState.collapseBounds;
         if (pointer.x >= left && pointer.x <= right && pointer.y >= top && pointer.y <= bottom) {
-          panelState.achievementVisible = !panelState.achievementVisible;
-          panelState.achievementTimer = panelState.achievementVisible ? 4 : 0;
-          panelState.touchInteractionTimer = 0;
+          toggleAchievementsVisibility();
           pointerConsumed = true;
         }
       }
@@ -860,6 +868,11 @@ export function createUISystem({ accessibility } = {}) {
           panelState.achievementTimer = Math.max(0, panelState.achievementTimer - delta);
         }
 
+        if (keyboardFocusIndex >= 0 && keyboardOptionsLength > 0 && !pointerConsumed) {
+          panelState.achievementVisible = true;
+          panelState.achievementTimer = Math.min(panelState.achievementTimer + delta, 3);
+        }
+
         if (panelState.achievementTimer === 0 && panelState.touchInteractionTimer === 0) {
           panelState.achievementVisible = false;
         }
@@ -870,8 +883,26 @@ export function createUISystem({ accessibility } = {}) {
       panelState.touchInteractionTimer = 0;
     }
 
+    keyboardStubAvailable = layout.achievementsPosition === 'bottom' && !panelState.achievementVisible;
+
     if (empathyHintState.cooldown > 0) {
       empathyHintState.cooldown = Math.max(0, empathyHintState.cooldown - delta);
+    }
+  }
+
+  function toggleAchievementsVisibility() {
+    const { layout } = useLittleJS();
+    const nextVisible = !panelState.achievementVisible;
+    panelState.achievementVisible = nextVisible;
+    panelState.touchInteractionTimer = 0;
+    panelState.achievementTimer = nextVisible ? 4 : 0;
+    panelState.autoHideInitialized = true;
+    keyboardStubAvailable = layout.achievementsPosition === 'bottom' && !nextVisible;
+    if (nextVisible) {
+      keyboardFocusIndex = keyboardOptionsLength > 0 ? Math.min(keyboardFocusIndex, keyboardOptionsLength - 1) : -1;
+    } else {
+      const total = getFocusCount();
+      keyboardFocusIndex = total > 0 ? total - 1 : -1;
     }
   }
 
