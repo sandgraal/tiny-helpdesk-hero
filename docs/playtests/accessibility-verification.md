@@ -3,9 +3,10 @@
 ## Automated / Tooling Checks (to run prior to release)
 - [ ] Lighthouse accessibility pass in Chrome (desktop) — record score screenshot.
 - [ ] axe DevTools quick scan on achievements panel and option buttons.
-- [ ] Contrast check for primary palette (use contrast-ratio.com or tooling) covering:
+- [x] Contrast check for primary palette (use contrast-ratio.com or tooling) covering:
   - Default theme: empathy meter fill vs. text, achievements header/body, option labels.
   - High-contrast theme: background vs. text, button states, achievements stub.
+  - **Result (2024-04-24):** `node scripts/check-contrast.mjs` shows all combinations ≥ 9:1 (default) and ≥ 21:1 (high contrast).
 
 ## Manual Pass Checklist
 - [ ] Test text-scaling presets (0.85×, 1×, 1.25×, 1.5×) on desktop and tablet; ensure no clipping.
@@ -23,4 +24,3 @@
 ## Reporting Template
 - Record findings in PT-02/PT-03 notes and update `docs/playtests/accessibility-checklist.md`.
 - File GitHub issues for any blockers with `Accessibility` label.
-
