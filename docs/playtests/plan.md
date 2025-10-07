@@ -13,8 +13,8 @@
 ## Schedule
 | Session | Date | Participants | Focus |
 |---------|------|--------------|-------|
-| PT-01   | TBD  | Returning players | Achievement feedback, empathy pacing |
-| PT-02   | TBD  | New players       | Onboarding comprehension, UI clarity |
+| PT-01   | 2024-04-24 | Returning + New | Achievement feedback, empathy pacing, accessibility panel |
+| PT-02   | 2024-04-28 (tentative) | New players | Onboarding comprehension, UI clarity |
 | PT-03   | TBD  | Mixed             | Mobile/tablet responsiveness, accessibility notes |
 
 ## Success Metrics
@@ -26,4 +26,4 @@
 - Record session notes using `session-template.md`.
 - Capture screen recordings (with consent) for UI review.
 - Log follow-up tickets in project board within 24 hours.
-
+- Update this plan after each session (status, next date).
