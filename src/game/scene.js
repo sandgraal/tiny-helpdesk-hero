@@ -3,11 +3,13 @@
  * Applies empathy-driven ambient tints and monitor glow before/after blitting the UI texture.
  */
 
+import { drawDesk, drawMonitorFrame } from './desk-assets.js';
+
 function toRgba({ r, g, b }, alpha) {
   return `rgba(${r}, ${g}, ${b}, ${alpha.toFixed(3)})`;
 }
 
-export function createDeskScene({ monitorDisplay, camera, lighting }) {
+export function createDeskScene({ monitorDisplay, camera, lighting, props }) {
   function render({ context, canvasSize }) {
     if (!context || !monitorDisplay) {
       return;
@@ -15,6 +17,7 @@ export function createDeskScene({ monitorDisplay, camera, lighting }) {
     const { width = 640, height = 360 } = canvasSize ?? {};
     const cameraState = camera?.getState?.() ?? {};
     const lightingState = lighting?.getAmbientLayers?.() ?? {};
+    const propsState = props?.getState?.() ?? {};
     const offset = cameraState.offset ?? { x: 0, y: 0 };
     const layers = lightingState.layers ?? [];
     const glow = lightingState.glow;
@@ -33,15 +36,18 @@ export function createDeskScene({ monitorDisplay, camera, lighting }) {
       context.restore();
     }
 
+    const frame = drawMonitorFrame(context, width, height);
+    drawDesk(context, width, height, propsState);
+
     context.save?.();
     if (context.translate && (offset.x !== 0 || offset.y !== 0)) {
-      context.translate(offset.x, offset.y);
+      context.translate(offset.x * 0.4, offset.y * 0.4);
     }
     monitorDisplay.drawTo(context, {
-      dx: 0,
-      dy: 0,
-      dWidth: width,
-      dHeight: height,
+      dx: frame?.x ?? 0,
+      dy: frame?.y ?? 0,
+      dWidth: frame?.width ?? width,
+      dHeight: frame?.height ?? height,
     });
     context.restore?.();
 

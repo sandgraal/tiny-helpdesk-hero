@@ -13,6 +13,7 @@ import { createMonitorDisplay } from './monitor-display.js';
 import { createDeskScene } from './scene.js';
 import { createCameraState } from './camera.js';
 import { createLightingController } from '../systems/lighting/lighting-controller.js';
+import { createPropsController } from './props-controller.js';
 import { subscribe as subscribeSettings, getSettings } from './settings.js';
 
 function triggerHaptic(pattern, warningLabel = 'Haptic trigger failed') {
@@ -72,7 +73,13 @@ export function createGameLifecycle() {
   });
   const cameraState = createCameraState();
   const lightingController = createLightingController();
-  const deskScene = createDeskScene({ monitorDisplay, camera: cameraState, lighting: lightingController });
+  const propsController = createPropsController();
+  const deskScene = createDeskScene({
+    monitorDisplay,
+    camera: cameraState,
+    lighting: lightingController,
+    props: propsController,
+  });
   subscribeSettings(({ lowPower }) => {
     cameraState.setLowPower(lowPower);
   });
@@ -188,6 +195,11 @@ export function createGameLifecycle() {
         callCount: currentState.callCount,
         lowPowerMode: getSettings().lowPower,
       });
+      propsController.update({
+        empathyScore: currentState.empathyScore,
+        callCount: currentState.callCount,
+        lowPowerMode: getSettings().lowPower,
+      });
       return;
     }
 
@@ -197,6 +209,11 @@ export function createGameLifecycle() {
     gameState.ui.update(delta, mousePosScreen, renderState.call);
     cameraState.update({ pointer: mousePosScreen, canvasSize: getMainCanvasSize() });
     lightingController.update({
+      empathyScore: renderState.empathyScore,
+      callCount: renderState.callCount,
+      lowPowerMode: getSettings().lowPower,
+    });
+    propsController.update({
       empathyScore: renderState.empathyScore,
       callCount: renderState.callCount,
       lowPowerMode: getSettings().lowPower,
