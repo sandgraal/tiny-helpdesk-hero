@@ -31,10 +31,21 @@ export function createGameLifecycle() {
   const gameState = createGameState();
   let lastDelta = 1 / 60;
 
-  gameState.ui.setKeyboardSelectHandler?.((optionIndex) => {
-    const renderState = computeRenderState();
-    applySelection(renderState, optionIndex, null, lastDelta);
-  });
+  function bindKeyboardHandlers(renderState) {
+    if (renderState.isComplete) {
+      gameState.ui.setKeyboardSelectHandler?.(() => {});
+      gameState.ui.setKeyboardRestartHandler?.(() => {
+        gameState.audio.playClick();
+        restartShift();
+      });
+    } else {
+      gameState.ui.setKeyboardRestartHandler?.(null);
+      gameState.ui.setKeyboardSelectHandler?.((optionIndex) => {
+        const latestState = computeRenderState();
+        applySelection(latestState, optionIndex, null, lastDelta);
+      });
+    }
+  }
 
   function computeRenderState() {
     const conversation = gameState.conversation;
@@ -114,11 +125,13 @@ export function createGameLifecycle() {
     const { mouseWasPressed, mousePosScreen } = globalThis;
     if (!mouseWasPressed?.(0)) {
       const currentState = computeRenderState();
+      bindKeyboardHandlers(currentState);
       gameState.ui.update(delta, mousePosScreen, currentState.call);
       return;
     }
 
     const renderState = computeRenderState();
+    bindKeyboardHandlers(renderState);
 
     gameState.ui.update(delta, mousePosScreen, renderState.call);
 
@@ -129,6 +142,7 @@ export function createGameLifecycle() {
     if (renderState.isComplete) {
       restartShift();
       gameState.audio.playClick();
+      bindKeyboardHandlers(computeRenderState());
       return;
     }
 
@@ -148,6 +162,7 @@ export function createGameLifecycle() {
       const loading = globalThis.document?.querySelector('.loading-state');
       loading?.remove();
       restartShift();
+      bindKeyboardHandlers(computeRenderState());
     },
     update() {
       const delta = globalThis.timeDelta ?? globalThis.frameTime ?? 1 / 60;

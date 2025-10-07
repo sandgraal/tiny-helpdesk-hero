@@ -147,6 +147,7 @@ export function createUISystem({ accessibility } = {}) {
   let keyboardFocusIndex = -1;
   let keyboardOptionsLength = 0;
   let keyboardSelectHandler = null;
+  let keyboardRestartHandler = null;
   let lastCallId = null;
 
   function focusNext(step) {
@@ -163,7 +164,9 @@ export function createUISystem({ accessibility } = {}) {
 
   const handleKeyboardEvent = (event) => {
     if (!keyboardSelectHandler) {
-      return;
+      if (!keyboardRestartHandler) {
+        return;
+      }
     }
     const target = event.target;
     if (target && typeof target.closest === 'function' && target.closest('[data-accessibility-panel]')) {
@@ -172,37 +175,51 @@ export function createUISystem({ accessibility } = {}) {
     if (event.altKey || event.metaKey || event.ctrlKey) {
       return;
     }
-    if (keyboardOptionsLength <= 0) {
-      return;
-    }
+    const hasOptions = keyboardOptionsLength > 0;
+
     switch (event.key) {
       case 'Tab':
-        event.preventDefault();
-        focusNext(event.shiftKey ? -1 : 1);
+        if (hasOptions) {
+          event.preventDefault();
+          focusNext(event.shiftKey ? -1 : 1);
+        }
         break;
       case 'ArrowUp':
       case 'ArrowLeft':
-        event.preventDefault();
-        focusNext(-1);
+        if (hasOptions) {
+          event.preventDefault();
+          focusNext(-1);
+        }
         break;
       case 'ArrowDown':
       case 'ArrowRight':
-        event.preventDefault();
-        focusNext(1);
+        if (hasOptions) {
+          event.preventDefault();
+          focusNext(1);
+        }
         break;
       case 'Home':
-        event.preventDefault();
-        keyboardFocusIndex = keyboardOptionsLength > 0 ? 0 : -1;
+        if (hasOptions) {
+          event.preventDefault();
+          keyboardFocusIndex = keyboardOptionsLength > 0 ? 0 : -1;
+        }
         break;
       case 'End':
-        event.preventDefault();
-        keyboardFocusIndex = keyboardOptionsLength > 0 ? keyboardOptionsLength - 1 : -1;
+        if (hasOptions) {
+          event.preventDefault();
+          keyboardFocusIndex = keyboardOptionsLength > 0 ? keyboardOptionsLength - 1 : -1;
+        }
         break;
       case 'Enter':
       case ' ':
-        event.preventDefault();
-        if (keyboardFocusIndex >= 0) {
-          keyboardSelectHandler(keyboardFocusIndex);
+        if (hasOptions) {
+          event.preventDefault();
+          if (keyboardFocusIndex >= 0) {
+            keyboardSelectHandler(keyboardFocusIndex);
+          }
+        } else if (keyboardRestartHandler) {
+          event.preventDefault();
+          keyboardRestartHandler();
         }
         break;
       default:
@@ -214,6 +231,10 @@ export function createUISystem({ accessibility } = {}) {
 
   function setKeyboardSelectHandler(handler) {
     keyboardSelectHandler = handler;
+  }
+
+  function setKeyboardRestartHandler(handler) {
+    keyboardRestartHandler = handler;
   }
 
   const empathyHintState = {
