@@ -137,6 +137,11 @@ export function createUISystem({ accessibility } = {}) {
   const empathyPulse = createPulseState({ duration: 0.6 });
   const callPulse = createPulseState({ duration: 0.5 });
   const achievementPulse = createPulseState({ duration: 0.8 });
+  const panelState = {
+    autoHideInitialized: false,
+    achievementTimer: 0,
+    achievementVisible: true,
+  };
   let accessibilityState = accessibility?.getState?.() ?? {
     fontScale: 1,
     dyslexiaFriendly: false,
@@ -446,6 +451,11 @@ export function createUISystem({ accessibility } = {}) {
       return;
     }
 
+    const shouldAutoHide = layout.achievementsPosition === 'bottom';
+    if (shouldAutoHide && !panelState.achievementVisible) {
+      return;
+    }
+
     const panelHeight = 64 + visible.length * 44;
     const centerX = layout.achievementsPosition === 'bottom'
       ? mainCanvasSize.x / 2
@@ -592,6 +602,23 @@ export function createUISystem({ accessibility } = {}) {
     empathyPulse.update(delta);
     callPulse.update(delta);
     achievementPulse.update(delta);
+
+    const { layout } = useLittleJS();
+    if (layout.achievementsPosition === 'bottom') {
+      if (!panelState.autoHideInitialized) {
+        panelState.achievementVisible = true;
+        panelState.achievementTimer = 5;
+        panelState.autoHideInitialized = true;
+      } else if (panelState.achievementTimer > 0) {
+        panelState.achievementTimer = Math.max(0, panelState.achievementTimer - delta);
+        if (panelState.achievementTimer === 0) {
+          panelState.achievementVisible = false;
+        }
+      }
+    } else {
+      panelState.achievementVisible = true;
+      panelState.achievementTimer = 0;
+    }
   }
 
   function notifySelection(result) {
@@ -606,6 +633,11 @@ export function createUISystem({ accessibility } = {}) {
   function notifyAchievements(unlocks) {
     if (Array.isArray(unlocks) && unlocks.length) {
       achievementPulse.trigger();
+      const { layout } = useLittleJS();
+      if (layout.achievementsPosition === 'bottom') {
+        panelState.achievementVisible = true;
+        panelState.achievementTimer = 6;
+      }
     }
   }
 
