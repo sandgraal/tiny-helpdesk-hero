@@ -427,7 +427,7 @@ export function createUISystem({ accessibility } = {}) {
     drawRectScreen(vec2(centerX, centerY), vec2(panelWidth, panelHeight), bgColor);
     drawRectScreen(vec2(centerX, centerY), vec2(panelWidth, panelHeight), borderColor);
 
-    const hintText = 'Tip: Listen for the caller\'s emotion. Empathetic replies lift your score.';
+    const hintText = 'Tip: Match their vibe—empathetic replies boost score.';
     drawTextScreen(
       hintText,
       vec2(centerX, centerY),
@@ -521,7 +521,7 @@ export function createUISystem({ accessibility } = {}) {
 
     const panelWidth = shouldAutoHide
       ? Math.min(mainCanvasSize.x - layout.canvasPadding * 2, 360)
-      : Math.min(340, Math.max(260, mainCanvasSize.x * 0.28));
+      : Math.min(360, Math.max(260, mainCanvasSize.x * 0.28));
     const panelHeight = 64 + visible.length * 44;
     const centerX = layout.achievementsPosition === 'bottom'
       ? mainCanvasSize.x / 2
@@ -597,12 +597,12 @@ export function createUISystem({ accessibility } = {}) {
     });
 
     if (shouldAutoHide) {
-      const buttonSize = 28;
-      const buttonX = centerX + panelWidth / 2 - buttonSize / 2 - 12;
-      const buttonY = centerY - panelHeight / 2 + buttonSize / 2 + 12;
+      const buttonSize = 36;
+      const buttonX = centerX + panelWidth / 2 - buttonSize / 2 - 16;
+      const buttonY = centerY - panelHeight / 2 + buttonSize / 2 + 16;
       const buttonColor = layout.highContrast ? '#FFD166' : '#7FDBFF';
       drawRectScreen(vec2(buttonX, buttonY), vec2(buttonSize, buttonSize), buttonColor);
-      drawTextScreen('×', vec2(buttonX, buttonY), Math.round(18 * layout.fontScale), layout.highContrast ? '#000000' : '#0D1E30', 0, null, 1, 0, 'center');
+      drawTextScreen('×', vec2(buttonX, buttonY), Math.round(22 * layout.fontScale), layout.highContrast ? '#000000' : '#0D1E30', 0, null, 1, 0, 'center');
       panelState.collapseBounds = {
         left: buttonX - buttonSize / 2,
         right: buttonX + buttonSize / 2,
@@ -617,15 +617,15 @@ export function createUISystem({ accessibility } = {}) {
     if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
       return;
     }
-    const stubWidth = Math.min(mainCanvasSize.x - layout.canvasPadding * 2, 220);
-    const stubHeight = 32;
+    const stubWidth = Math.min(mainCanvasSize.x - layout.canvasPadding * 2, 260);
+    const stubHeight = 48;
     const centerX = mainCanvasSize.x / 2;
     const centerY = mainCanvasSize.y - layout.canvasPadding - stubHeight / 2;
     const bgColor = layout.highContrast ? 'rgba(0,0,0,0.9)' : 'rgba(7, 22, 41, 0.8)';
     const textColor = layout.highContrast ? '#FFFFFF' : '#D8F3FF';
 
     drawRectScreen(vec2(centerX, centerY), vec2(stubWidth, stubHeight), bgColor);
-    drawTextScreen('Achievements', vec2(centerX, centerY), Math.round(14 * layout.fontScale), textColor, 0, null, 1, 0, 'center');
+    drawTextScreen('Achievements', vec2(centerX, centerY), Math.round(16 * layout.fontScale), textColor, 0, null, 1, 0, 'center');
 
     panelState.collapseBounds = {
       left: centerX - stubWidth / 2,
