@@ -663,7 +663,8 @@ export function createUISystem({ accessibility } = {}) {
     );
 
     const recentSet = new Set(achievementsState.recentUnlocks ?? []);
-    const contentLeft = centerX - panelWidth / 2 + 24;
+    const iconX = centerX - panelWidth / 2 + 28;
+    const contentLeft = iconX + 20;
     let rowY = centerY - panelHeight / 2 + 58;
 
     visible.forEach((entry) => {
@@ -677,6 +678,22 @@ export function createUISystem({ accessibility } = {}) {
       const bodyColor = unlocked ? palette.stubCollapsedText : palette.stubCollapsedInactive;
       const alpha = fresh ? 1 : unlocked ? 0.95 : 0.8;
       const bullet = unlocked ? '✓' : '•';
+
+      const iconColor = fresh
+        ? palette.achievementActive
+        : unlocked
+          ? palette.headerAccent
+          : palette.stubCollapsedInactive;
+      drawRectScreen(
+        vec2(iconX, rowY - 4),
+        vec2(16, 16),
+        iconColor,
+      );
+      drawRectScreen(
+        vec2(iconX, rowY - 4),
+        vec2(10, 10),
+        palette.stubBg ?? '#0D1E30',
+      );
 
       drawTextScreen(
         `${bullet} ${entry.title}`,

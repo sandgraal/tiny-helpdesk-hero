@@ -148,6 +148,12 @@ export function createGameLifecycle() {
 
     const postState = gameState.conversation.getState();
     const nextCall = gameState.conversation.getCurrentCall();
+    propsController.update({
+      empathyScore: postState.empathyScore,
+      callCount: postState.callCount,
+      lowPowerMode: getSettings().lowPower,
+      lastSelection: gameState.lastSelection,
+    });
 
     if (nextCall?.persona?.id) {
       gameState.audio.playPersonaMotif(nextCall.persona.id);

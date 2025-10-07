@@ -45,6 +45,24 @@ export function initAccessibilityPanel(accessibility) {
   const lowPowerInput = lowPowerToggle.querySelector('[data-low-power-toggle-input]')
     ?? lowPowerToggle.querySelector('input[type="checkbox"]');
 
+  function ensureIcon(label, glyph) {
+    if (!label || !glyph) {
+      return;
+    }
+    let icon = label.querySelector('[data-accessibility-icon]');
+    if (!icon) {
+      icon = doc.createElement('span');
+      icon.dataset.accessibilityIcon = 'true';
+      icon.setAttribute('aria-hidden', 'true');
+      icon.style.marginRight = '6px';
+      label.style.display = 'flex';
+      label.style.flexDirection = 'row';
+      label.style.alignItems = 'center';
+      label.insertBefore(icon, label.firstChild);
+    }
+    icon.textContent = glyph;
+  }
+
   function applyState(state) {
     if (fontScaleSelect) {
       const scaleOption = Array.from(fontScaleSelect.options).find(
@@ -65,6 +83,11 @@ export function initAccessibilityPanel(accessibility) {
     }
   }
 
+  ensureIcon(fontScaleSelect?.parentElement, '🔠');
+  ensureIcon(dyslexiaCheckbox?.parentElement, '📘');
+  ensureIcon(contrastCheckbox?.parentElement, '🔆');
+  ensureIcon(lowPowerToggle, '💡');
+
   const initialState = accessibility.getState?.() ?? {};
   applyState(initialState);
 
@@ -80,9 +103,10 @@ export function initAccessibilityPanel(accessibility) {
     accessibility.setHighContrast?.(event.target.checked);
   });
 
-  lowPowerInput?.addEventListener('change', (event) => {
+  const handleLowPowerChange = (event) => {
     setLowPower(event.target.checked);
-  });
+  };
+  lowPowerInput?.addEventListener('change', handleLowPowerChange);
 
   accessibility.subscribe?.((state) => {
     applyState(state);
@@ -96,7 +120,6 @@ export function initAccessibilityPanel(accessibility) {
 
   return () => {
     unsubscribeLowPower();
-    lowPowerInput?.removeEventListener('change', setLowPower);
+    lowPowerInput?.removeEventListener('change', handleLowPowerChange);
   };
 }
-
