@@ -1,0 +1,43 @@
+# .github/dependabot.yml
+version: 2
+updates:
+  # 1) App dependencies (npm / package.json at repo root)
+  - package-ecosystem: "npm"
+    directory: "/"                # where your package.json lives
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/New_York"
+    target-branch: "main"
+    open-pull-requests-limit: 10
+    rebase-strategy: "auto"
+    labels: ["dependencies", "npm"]
+    reviewers: ["sandgraal"]      # optional; remove or edit
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    # keep majors out of the noise; you can still bump them manually
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    # combine minors/patches into a single PR to reduce churn
+    groups:
+      npm-minor-and-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+
+  # 2) CI dependencies (GitHub Actions used in .github/workflows)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:30"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 10
+    labels: ["dependencies", "github-actions"]
+    groups:
+      actions-minor-and-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
