@@ -26,7 +26,7 @@ Milestone 2.5 converts the art-direction documentation into in-game visual upgra
 
 ### Rendering & Performance
 - [ ] Evaluate LittleJS render settings (pixel snap, scale ratio) and record chosen defaults in `DEVELOPMENT.md`.
-- [ ] Prototype optional parallax/camera drift that preserves readability at small resolutions.
+- [ ] Prototype optional parallax/camera drift that preserves readability at small resolutions (see `docs/art/camera-monitor-plan.md`).
 - [ ] Scope a low-power toggle that disables expensive particles/shaders; document the feature brief.
 - [ ] Review sprite atlas approach and decide whether to script atlas generation during the jam.
 
