@@ -22,7 +22,6 @@ function createGameState() {
 
 export function createGameLifecycle() {
   const gameState = createGameState();
-  let hasLoggedFirstRender = false;
 
   function computeRenderState() {
     const conversation = gameState.conversation;
@@ -98,18 +97,11 @@ export function createGameLifecycle() {
 
   function render() {
     const renderState = computeRenderState();
-    if (!hasLoggedFirstRender) {
-      console.info('[TinyHelpdesk] rendering with state', renderState);
-      console.info('[TinyHelpdesk] drawRectScreen type:', typeof globalThis.drawRectScreen);
-      console.info('[TinyHelpdesk] mainCanvasSize:', globalThis.mainCanvasSize);
-      hasLoggedFirstRender = true;
-    }
     gameState.ui.render(renderState);
   }
 
   return {
     init() {
-      console.info('[TinyHelpdesk] lifecycle init');
       globalThis.setShowSplashScreen?.(false);
       const loading = globalThis.document?.querySelector('.loading-state');
       loading?.remove();
