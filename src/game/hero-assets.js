@@ -5,7 +5,7 @@
 import { drawRoundedRect, drawEllipse, hsl } from './draw-utils.js';
 import { getImage } from './image-loader.js';
 
-const heroImageResource = getImage('../../assets/hero-placeholder.svg');
+const heroImageResource = getImage('assets/hero-placeholder.svg');
 
 export function drawHero(ctx, deskTopY, width, propsState) {
   if (!ctx) {

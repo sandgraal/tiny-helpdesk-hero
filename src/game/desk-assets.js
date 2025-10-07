@@ -6,8 +6,8 @@ import { drawRoundedRect, drawEllipse, hsl } from './draw-utils.js';
 import { drawHero } from './hero-assets.js';
 import { getImage } from './image-loader.js';
 
-const deskBackground = getImage('../../assets/desk-placeholder.svg');
-const monitorFrameImage = getImage('../../assets/monitor-frame.svg');
+const deskBackground = getImage('assets/desk-placeholder.svg');
+const monitorFrameImage = getImage('assets/monitor-frame.svg');
 
 export function drawDesk(ctx, width, height, propsState) {
   if (!ctx) {

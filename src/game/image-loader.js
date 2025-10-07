@@ -22,7 +22,9 @@ export function getImage(relativePath) {
     return { ready: false, image: null, error: true };
   }
   try {
-    const resolved = new URL(relativePath, import.meta.url).href;
+    const base = globalThis.document?.baseURI
+      ?? (globalThis.location ? `${globalThis.location.origin}${globalThis.location.pathname.replace(/[^/]*$/, '')}` : import.meta.url);
+    const resolved = new URL(relativePath, base).href;
     if (cache.has(resolved)) {
       return cache.get(resolved);
     }
