@@ -8,7 +8,7 @@ Milestone 2.5 converts the art-direction documentation into in-game visual upgra
 - [x] On-canvas UI rendering consumes shared palette tokens (`src/systems/ui.js`).
 - [x] Asset audit created (icons, backgrounds, particles, typography) with ownership notes (`docs/art/asset-backlog.md`).
 - [ ] Rendering tweaks (pixel snap, parallax prototype, low-power toggle) still in discovery.
-- [ ] Art iteration log (`docs/art/iteration-log.md`) not yet populated with before/after captures.
+- [ ] Art iteration log (`docs/art/iteration-log.md`) scaffolded; populate with before/after captures once assets land.
 
 ## Workstreams & Tasks
 
