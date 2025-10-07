@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="180" viewBox="0 0 120 180">
+  <defs>
+    <linearGradient id="torso" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3a5ba9" />
+      <stop offset="100%" stop-color="#1f3473" />
+    </linearGradient>
+  </defs>
+  <rect x="46" y="70" width="28" height="64" rx="12" fill="url(#torso)" />
+  <rect x="36" y="86" width="12" height="46" rx="6" fill="#1b2a57" />
+  <rect x="72" y="76" width="12" height="54" rx="6" fill="#1b2a57" />
+  <ellipse cx="60" cy="58" rx="18" ry="18" fill="#f3d6c1" />
+  <path d="M36 58 Q60 44 84 58" fill="#2c1f54" />
+  <rect x="32" y="50" width="56" height="14" rx="7" fill="#15192f" />
+  <circle cx="52" cy="62" r="4" fill="#e96c80" opacity="0.85" />
+  <circle cx="68" cy="62" r="4" fill="#e96c80" opacity="0.85" />
+  <rect x="54" y="132" width="12" height="12" fill="#ffbd59" opacity="0.3" />
+</svg>

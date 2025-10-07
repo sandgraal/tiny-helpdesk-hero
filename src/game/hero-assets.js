@@ -3,6 +3,9 @@
  */
 
 import { drawRoundedRect, drawEllipse, hsl } from './draw-utils.js';
+import { getImage } from './image-loader.js';
+
+const heroImageResource = getImage('../../assets/hero-placeholder.svg');
 
 export function drawHero(ctx, deskTopY, width, propsState) {
   if (!ctx) {
@@ -19,6 +22,17 @@ export function drawHero(ctx, deskTopY, width, propsState) {
 
   ctx.save();
   ctx.translate(baseX + lean, baseY - torsoHeight - raise);
+
+  if (heroImageResource.ready && heroImageResource.image) {
+    const spriteWidth = heroImageResource.image.width;
+    const spriteHeight = heroImageResource.image.height;
+    const scale = torsoHeight / spriteHeight;
+    const drawWidth = spriteWidth * scale;
+    const drawHeight = spriteHeight * scale;
+    ctx.drawImage(heroImageResource.image, -drawWidth / 2, -drawHeight + 12, drawWidth, drawHeight);
+    ctx.restore();
+    return;
+  }
 
   // Torso
   ctx.fillStyle = '#253B6E';

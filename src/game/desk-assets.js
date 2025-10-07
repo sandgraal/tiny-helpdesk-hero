@@ -4,6 +4,10 @@
 
 import { drawRoundedRect, drawEllipse, hsl } from './draw-utils.js';
 import { drawHero } from './hero-assets.js';
+import { getImage } from './image-loader.js';
+
+const deskBackground = getImage('../../assets/desk-placeholder.svg');
+const monitorFrameImage = getImage('../../assets/monitor-frame.svg');
 
 export function drawDesk(ctx, width, height, propsState) {
   if (!ctx) {
@@ -14,10 +18,14 @@ export function drawDesk(ctx, width, height, propsState) {
   const deskTopY = height - deskHeight;
 
   ctx.save();
-  ctx.fillStyle = '#1F1F3B';
-  ctx.fillRect(0, deskTopY, width, deskHeight);
-  ctx.fillStyle = '#152238';
-  ctx.fillRect(0, deskTopY - 6, width, 6);
+  if (deskBackground.ready && deskBackground.image) {
+    ctx.drawImage(deskBackground.image, 0, deskTopY - Math.round(deskBackground.image.height * 0.5), width, Math.round(deskBackground.image.height * 0.5 + deskHeight));
+  } else {
+    ctx.fillStyle = '#1F1F3B';
+    ctx.fillRect(0, deskTopY, width, deskHeight);
+    ctx.fillStyle = '#152238';
+    ctx.fillRect(0, deskTopY - 6, width, 6);
+  }
 
   const mugTemp = propsState?.mugTemperature ?? 0;
   const mugX = Math.round(width * 0.3);
@@ -67,12 +75,16 @@ export function drawMonitorFrame(ctx, width, height) {
   const frameY = Math.round(height * 0.14);
 
   ctx.save();
-  drawRoundedRect(ctx, frameX, frameY, frameWidth, frameHeight, 18);
-  ctx.fillStyle = '#0B1220';
-  ctx.fill();
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
-  ctx.lineWidth = 3;
-  ctx.stroke();
+  if (monitorFrameImage.ready && monitorFrameImage.image) {
+    ctx.drawImage(monitorFrameImage.image, frameX - 16, frameY - 16, frameWidth + 32, frameHeight + 32);
+  } else {
+    drawRoundedRect(ctx, frameX, frameY, frameWidth, frameHeight, 18);
+    ctx.fillStyle = '#0B1220';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+  }
   drawRoundedRect(ctx, frameX + 8, frameY + 8, frameWidth - 16, frameHeight - 16, 12);
   ctx.clip();
   ctx.restore();

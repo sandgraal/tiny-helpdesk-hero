@@ -37,6 +37,7 @@ Defines the technical approach for Milestone 2.6 goals around the over-the-shoul
 2. Integrate new sprite layers for desk, hero, background; hook into existing update/render pipeline. *(Scene scaffolding lives in `src/game/scene.js`; parallax offsets managed by `src/game/camera.js`.)*
 3. Wire empathy-driven lighting variables (`renderState.empathyScore`) to shader uniforms / tint functions. *(Ambient tint + monitor glow placeholder implemented via `src/systems/lighting/lighting-controller.js` + `src/game/scene.js`.)*
 4. Connect prop controller to empathy ratio for desk elements. *(See `src/game/props-controller.js` + `src/game/desk-assets.js`.)*
+5. Render hero placeholder sprite while awaiting final art (`public/assets/hero-placeholder.svg`, `src/game/hero-assets.js`).
 4. Add configuration flags for low-power mode (disable bloom, limit parallax to 1px).
 5. Document performance metrics (FPS, draw calls) per configuration in `docs/art/iteration-log.md` entries.
 
