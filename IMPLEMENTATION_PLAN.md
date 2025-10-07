@@ -43,7 +43,7 @@ The project is kicking off with a documentation-first approach. This plan captur
 ## Milestone 3 — Polish & Submission
 **Target:** Ship-quality jam build with supporting materials.
 
-- [ ] Conduct structured playtests; iterate on pacing, clarity, and humor balance. Capture findings in `docs/playtests/`. *(PT-01 completed 2024-04-24; PT-02 planned 2024-04-28.)*
+- [ ] Conduct structured playtests; iterate on pacing, clarity, and humor balance. Capture findings in `docs/playtests/`. *(PT-01 completed 2024-04-24; PT-02 completed 2024-04-28; PT-03 forthcoming.)*
 - [ ] Optimize for performance and readability on small screens (mobile + desktop) and document device test matrix.
 - [ ] Finalize accessibility pass (text scaling options, dyslexia-friendly font toggle, colorblind-safe palette) with checklist sign-off.
 - [ ] Prepare itch.io submission package and GitHub Pages release (build scripts, release notes, marketing copy).
