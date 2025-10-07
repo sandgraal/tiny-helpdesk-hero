@@ -26,7 +26,7 @@ This milestone brings the over-the-shoulder composition, monitor projection, and
 
 ### Empathy Feedback
 - [x] Map empathy score to lighting tint, monitor glow, and prop states.
-- [ ] Author failure feedback effects (screen static, light flicker) respecting performance cap.
+- [x] Author failure feedback effects (screen static, light flicker) respecting performance cap.
 
 ### Animation
 - [ ] Produce hero micro-acting sprites (typing, head turn, celebration).

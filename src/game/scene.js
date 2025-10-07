@@ -9,6 +9,21 @@ function toRgba({ r, g, b }, alpha) {
   return `rgba(${r}, ${g}, ${b}, ${alpha.toFixed(3)})`;
 }
 
+function drawStaticOverlay(context, width, height, intensity) {
+  if (!context?.save || intensity <= 0) {
+    return;
+  }
+  const clamped = Math.min(Math.max(intensity, 0), 0.6);
+  context.save();
+  context.globalAlpha = clamped;
+  for (let y = 0; y < height; y += 4) {
+    const value = Math.floor(160 + Math.random() * 80);
+    context.fillStyle = `rgba(${value}, ${value}, ${value}, 0.35)`;
+    context.fillRect(0, y, width, 2);
+  }
+  context.restore();
+}
+
 export function createDeskScene({ monitorDisplay, camera, lighting, props }) {
   function render({ context, canvasSize }) {
     if (!context || !monitorDisplay) {
@@ -22,6 +37,8 @@ export function createDeskScene({ monitorDisplay, camera, lighting, props }) {
     const layers = lightingState.layers ?? [];
     const glow = lightingState.glow;
     const lowPower = cameraState.lowPower ?? false;
+    const lastSelection = propsState.lastSelection ?? null;
+    const failureIntensity = propsState.failureIntensity ?? 0;
 
     if (context.save) {
       context.save();
@@ -59,6 +76,8 @@ export function createDeskScene({ monitorDisplay, camera, lighting, props }) {
       context.fillRect(inset, inset, width - inset * 2, height - inset * 2);
       context.restore();
     }
+
+    drawStaticOverlay(context, width, height, failureIntensity);
   }
 
   return {

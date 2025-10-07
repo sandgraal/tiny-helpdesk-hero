@@ -60,7 +60,7 @@ The project is kicking off with a documentation-first approach. This plan captur
 - [ ] Create hero idle / reaction animations driven by conversation outcomes.
 - [ ] Add screen-in-screen projection with subtle post-processing effects.
 - [ ] Animate ambient background silhouettes and day-night tinting.
-- [ ] Connect props (mug, notes, LEDs) to empathy state variables.
+- [x] Connect props (mug, notes, LEDs) to empathy state variables.
 - [ ] Document and screenshot all visual motion in `docs/art/iteration-log.md`.
 
 ## Milestone 3 — Polish & Submission

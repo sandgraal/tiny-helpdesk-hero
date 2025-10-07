@@ -199,6 +199,7 @@ export function createGameLifecycle() {
         empathyScore: currentState.empathyScore,
         callCount: currentState.callCount,
         lowPowerMode: getSettings().lowPower,
+        lastSelection: currentState.lastSelection,
       });
       return;
     }
@@ -217,6 +218,7 @@ export function createGameLifecycle() {
       empathyScore: renderState.empathyScore,
       callCount: renderState.callCount,
       lowPowerMode: getSettings().lowPower,
+      lastSelection: renderState.lastSelection,
     });
 
     if (!renderState.hasCalls) {
