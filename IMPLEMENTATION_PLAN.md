@@ -51,6 +51,11 @@ The project is kicking off with a documentation-first approach. This plan captur
 - [ ] Add low-power toggle that disables heavy particle or shader effects for mobile devices.
 - [ ] Run art consistency audit using the docs/art/style-checklist.md before playtest sign-off.
 - [ ] Capture before/after screenshots and embed them in docs/art/iteration-log.md for visual tracking.
+- [ ] Shift camera to over-the-shoulder perspective showing hero, desk, and monitor.
+- [ ] Render existing UI layer within monitor surface using off-screen canvas.
+- [ ] Create modular office background assets matching docs/art palette.
+- [ ] Add ambient idle animations (hero, chair, lighting pulse).
+- [ ] Integrate soft focus vignette and color-grading overlay.
 
 ## Milestone 3 — Polish & Submission
 **Target:** Ship-quality jam build with supporting materials.
