@@ -494,7 +494,7 @@ export function createUISystem({ accessibility } = {}) {
       remaining > 0 ? `${remaining} in queue` : isComplete ? 'Queue clear' : 'Last caller',
       vec2(x, y + 4),
       Math.round(16 * layout.fontScale),
-      layout.highContrast ? palette.textPrimary : palette.stubBg,
+      layout.highContrast ? palette.textPrimary : palette.stubText,
       0,
       null,
       1,
@@ -531,8 +531,8 @@ export function createUISystem({ accessibility } = {}) {
     const offsetFromBottom = layout.achievementsPosition === 'bottom' ? 120 : 80;
     const centerX = mainCanvasSize.x / 2;
     const centerY = mainCanvasSize.y - layout.canvasPadding - offsetFromBottom;
-    const bgColor = layout.highContrast ? 'rgba(0, 0, 0, 0.92)' : 'rgba(7, 22, 41, 0.88)';
-    const borderColor = layout.highContrast ? 'rgba(255, 255, 255, 0.6)' : 'rgba(255, 255, 255, 0.18)';
+    const bgColor = palette.panelOverlay;
+    const borderColor = palette.panelBorder;
     const textColor = palette.textOverlay;
 
     drawRectScreen(vec2(centerX, centerY), vec2(panelWidth, panelHeight), bgColor);
@@ -647,7 +647,7 @@ export function createUISystem({ accessibility } = {}) {
     drawRectScreen(
       vec2(centerX, centerY),
       vec2(panelWidth, panelHeight),
-      palette.stubBg,
+      palette.panel,
     );
 
     drawTextScreen(
@@ -730,7 +730,7 @@ export function createUISystem({ accessibility } = {}) {
     const stubHeight = 48;
     const centerX = mainCanvasSize.x / 2;
     const centerY = mainCanvasSize.y - layout.canvasPadding - stubHeight / 2;
-    const bgColor = layout.highContrast ? 'rgba(0,0,0,0.9)' : 'rgba(7, 22, 41, 0.8)';
+    const bgColor = palette.panelOverlay;
     const textColor = palette.stubCollapsedText;
 
     if (keyboardStubAvailable && keyboardFocusIndex === keyboardOptionsLength) {

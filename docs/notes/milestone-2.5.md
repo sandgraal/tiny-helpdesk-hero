@@ -14,6 +14,7 @@ Milestone 2.5 converts the art-direction documentation into in-game visual upgra
 
 ### Palette & Theme Tokens
 - [x] Catalogue palette constants and typography scales into `src/ui/theme.js` for reuse across systems.
+- [x] Align palette tokens with `docs/art/ui-style-guide.md` (backgrounds, button states, accents).
 - [ ] Confirm contrast ratios for primary/secondary colors against WCAG AA before finalizing tokens.
 - [ ] Align motion timings/easings with the style guide’s motion tables; document defaults alongside the tokens.
 
