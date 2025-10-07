@@ -144,6 +144,77 @@ export function createUISystem({ accessibility } = {}) {
     touchInteractionTimer: 0,
     collapseBounds: null,
   };
+  let keyboardFocusIndex = -1;
+  let keyboardOptionsLength = 0;
+  let keyboardSelectHandler = null;
+  let lastCallId = null;
+
+  function focusNext(step) {
+    if (keyboardOptionsLength <= 0) {
+      keyboardFocusIndex = -1;
+      return;
+    }
+    if (keyboardFocusIndex < 0) {
+      keyboardFocusIndex = step > 0 ? 0 : keyboardOptionsLength - 1;
+      return;
+    }
+    keyboardFocusIndex = (keyboardFocusIndex + step + keyboardOptionsLength) % keyboardOptionsLength;
+  }
+
+  const handleKeyboardEvent = (event) => {
+    if (!keyboardSelectHandler) {
+      return;
+    }
+    const target = event.target;
+    if (target && typeof target.closest === 'function' && target.closest('[data-accessibility-panel]')) {
+      return;
+    }
+    if (event.altKey || event.metaKey || event.ctrlKey) {
+      return;
+    }
+    if (keyboardOptionsLength <= 0) {
+      return;
+    }
+    switch (event.key) {
+      case 'Tab':
+        event.preventDefault();
+        focusNext(event.shiftKey ? -1 : 1);
+        break;
+      case 'ArrowUp':
+      case 'ArrowLeft':
+        event.preventDefault();
+        focusNext(-1);
+        break;
+      case 'ArrowDown':
+      case 'ArrowRight':
+        event.preventDefault();
+        focusNext(1);
+        break;
+      case 'Home':
+        event.preventDefault();
+        keyboardFocusIndex = keyboardOptionsLength > 0 ? 0 : -1;
+        break;
+      case 'End':
+        event.preventDefault();
+        keyboardFocusIndex = keyboardOptionsLength > 0 ? keyboardOptionsLength - 1 : -1;
+        break;
+      case 'Enter':
+      case ' ':
+        event.preventDefault();
+        if (keyboardFocusIndex >= 0) {
+          keyboardSelectHandler(keyboardFocusIndex);
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+  globalThis.addEventListener?.('keydown', handleKeyboardEvent);
+
+  function setKeyboardSelectHandler(handler) {
+    keyboardSelectHandler = handler;
+  }
 
   const empathyHintState = {
     visible: false,
@@ -251,6 +322,12 @@ export function createUISystem({ accessibility } = {}) {
       const x = (mainCanvasSize.x - optionWidth) / 2;
       const y = layout.optionStartY + index * (layout.optionHeight + layout.optionGap);
       const center = vec2(x + optionWidth / 2, y + layout.optionHeight / 2);
+      if (keyboardFocusIndex === index) {
+        const outlineWidth = optionWidth + 12;
+        const outlineHeight = layout.optionHeight + 12;
+        const outlineColor = layout.highContrast ? '#FFD166' : '#FFE45E';
+        drawRectScreen(center, vec2(outlineWidth, outlineHeight), outlineColor);
+      }
       const hoverValue = ensureHoverState(getOptionKey(option, index)).getValue();
       const bgColor = layout.highContrast
         ? hoverValue > 0.01 ? '#FFFFFF' : '#CCCCCC'
@@ -723,6 +800,21 @@ export function createUISystem({ accessibility } = {}) {
       hoverStates.clear();
     }
 
+    const optionsLength = Array.isArray(call?.options) ? call.options.length : 0;
+    keyboardOptionsLength = optionsLength;
+    if (call?.id !== lastCallId) {
+      lastCallId = call?.id ?? null;
+      keyboardFocusIndex = optionsLength > 0 ? 0 : -1;
+    }
+    if (optionsLength === 0) {
+      keyboardFocusIndex = -1;
+    } else if (keyboardFocusIndex >= optionsLength) {
+      keyboardFocusIndex = optionsLength - 1;
+    }
+    if (!pointerConsumed && pointer && validHovered >= 0) {
+      keyboardFocusIndex = validHovered;
+    }
+
     empathyPulse.update(delta);
     callPulse.update(delta);
     achievementPulse.update(delta);
@@ -790,5 +882,6 @@ export function createUISystem({ accessibility } = {}) {
     getOptionIndexAtPoint,
     notifySelection,
     notifyAchievements,
+    setKeyboardSelectHandler,
   };
 }

@@ -29,6 +29,12 @@ function createGameState() {
 
 export function createGameLifecycle() {
   const gameState = createGameState();
+  let lastDelta = 1 / 60;
+
+  gameState.ui.setKeyboardSelectHandler?.((optionIndex) => {
+    const renderState = computeRenderState();
+    applySelection(renderState, optionIndex, null, lastDelta);
+  });
 
   function computeRenderState() {
     const conversation = gameState.conversation;
@@ -43,6 +49,44 @@ export function createGameLifecycle() {
       achievements: gameState.achievements.getState(),
       accessibility: gameState.accessibility.getState(),
     };
+  }
+
+  function applySelection(renderState, optionIndex, pointerPosition, delta) {
+    if (!renderState.hasCalls || renderState.isComplete) {
+      return;
+    }
+    const call = renderState.call;
+    if (!call || optionIndex < 0 || optionIndex >= call.options.length) {
+      return;
+    }
+
+    gameState.lastSelection = gameState.conversation.chooseOption(optionIndex);
+    gameState.achievements.recordSelection(gameState.lastSelection);
+    gameState.audio.playClick(pointerPosition);
+    gameState.audio.playOutcome(gameState.lastSelection.correct);
+    gameState.ui.notifySelection(gameState.lastSelection);
+
+    const postState = gameState.conversation.getState();
+    const nextCall = gameState.conversation.getCurrentCall();
+
+    if (nextCall?.persona?.id) {
+      gameState.audio.playPersonaMotif(nextCall.persona.id);
+    }
+
+    gameState.ui.update(delta, pointerPosition ?? null, nextCall);
+    gameState.audio.updateEmpathyLevel(postState.empathyScore, postState.callCount);
+
+    if (postState.isComplete) {
+      gameState.audio.stopHoldLoop();
+      const unlocks = gameState.achievements.completeShift({
+        empathyScore: postState.empathyScore,
+        callCount: postState.callCount,
+      });
+      if (Array.isArray(unlocks) && unlocks.length) {
+        gameState.ui.notifyAchievements(unlocks);
+        gameState.audio.playAchievementChime?.();
+      }
+    }
   }
 
   function restartShift() {
@@ -82,36 +126,7 @@ export function createGameLifecycle() {
 
     const pointer = mousePosScreen;
     const optionIndex = gameState.ui.getOptionIndexAtPoint(pointer);
-    const call = renderState.call;
-
-    if (!call || optionIndex < 0 || optionIndex >= call.options.length) {
-      return;
-    }
-
-    gameState.lastSelection = gameState.conversation.chooseOption(optionIndex);
-    gameState.achievements.recordSelection(gameState.lastSelection);
-    gameState.audio.playClick(pointer);
-    gameState.audio.playOutcome(gameState.lastSelection.correct);
-    gameState.ui.notifySelection(gameState.lastSelection);
-
-    const postState = gameState.conversation.getState();
-    const nextCall = gameState.conversation.getCurrentCall();
-    if (gameState.lastSelection.nextCall?.persona?.id) {
-      gameState.audio.playPersonaMotif(gameState.lastSelection.nextCall.persona.id);
-    }
-    gameState.ui.update(delta, mousePosScreen, nextCall);
-    gameState.audio.updateEmpathyLevel(postState.empathyScore, postState.callCount);
-    if (postState.isComplete) {
-      gameState.audio.stopHoldLoop();
-      const unlocks = gameState.achievements.completeShift({
-        empathyScore: postState.empathyScore,
-        callCount: postState.callCount,
-      });
-      if (Array.isArray(unlocks) && unlocks.length) {
-        gameState.ui.notifyAchievements(unlocks);
-        gameState.audio.playAchievementChime?.();
-      }
-    }
+    applySelection(renderState, optionIndex, pointer, delta);
   }
 
   function render() {
@@ -128,6 +143,7 @@ export function createGameLifecycle() {
     },
     update() {
       const delta = globalThis.timeDelta ?? globalThis.frameTime ?? 1 / 60;
+      lastDelta = delta;
       handleInput(delta);
     },
     render,

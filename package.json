@@ -7,9 +7,9 @@
     "serve": "python3 -m http.server 8080",
     "lint": "npm run validate:content",
     "format": "echo \"TODO: configure formatter\"",
-    "test": "node --test --test-concurrency=1 tests",
+    "test": "node --test --test-concurrency=1 \"tests/**/*.test.mjs\"",
     "build": "node scripts/build.mjs",
-    "test:watch": "node --test --test-concurrency=1 --watch tests",
+    "test:watch": "node --test --test-concurrency=1 --watch \"tests/**/*.test.mjs\"",
     "validate:content": "node scripts/validate-content.mjs"
   },
   "engines": {

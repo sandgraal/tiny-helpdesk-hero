@@ -1,20 +1,19 @@
 # Keyboard Navigation Plan
 
 ## Current State
-- Canvas UI is mouse/touch driven; no focusable elements exist in the LittleJS overlay.
-- Accessibility panel (DOM) already supports native focus/keyboard.
+- Canvas UI now supports arrow/tab navigation with an on-canvas focus ring and Enter/Space activation.
+- Restart button focus target still pending; accessibility panel (DOM) already supports native focus/keyboard.
 
 ## Short-Term Enhancements (Jam scope)
-1. Add invisible but focusable buttons for each option.
-2. Map `Tab`/`Shift+Tab` to cycle options; `Enter`/`Space` to select.
-3. Provide visible focus ring (2px outline) respecting high-contrast mode.
-4. Add restart button focus target when shift completes.
+- [ ] Add optional DOM/ARIA overlay for screen readers (post-jam if time allows).
+- [x] Map `Tab`/`Shift+Tab` and arrow keys to cycle options.
+- [x] Provide visible focus ring respecting high-contrast mode.
+- [ ] Add restart button focus target when shift completes.
 
 ## Implementation Tasks
-- [ ] Create DOM overlay for option focus targets synced with canvas layout.
-- [ ] Wire keyboard events to call existing selection logic.
-- [ ] Style focus outline matching `#FFD166` (default) and `#FFFFFF` (high-contrast).
-- [ ] Update tests to cover keyboard selection path.
+- [ ] Extend keyboard handler to focus restart/collapse controls.
+- [ ] Consider DOM overlay for accessibility panel toggle (optional).
+- [ ] Update tests or manual checklist to cover keyboard selection path (documented in PT-03).
 
 ## Post-Jam Considerations
 - Full navigation menu (settings, accessibility panel toggle via keyboard).
