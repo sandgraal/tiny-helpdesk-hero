@@ -51,6 +51,8 @@ const personaMotifPresets = {
   'sleep-deprived-gamer': [0.9, 0.05, 329.63, 0.01, 0.2, 0.34, 0.1, 0.4, , , , , , 0.3, , 0.3],
   'mascot-coordinator': [1.15, 0.08, 392, 0.015, 0.14, 0.22, 0.3, 0.2, , , , , , 0.25, , 0.25],
   'miniature-roboticist': [0.8, 0.12, 261.63, 0.02, 0.18, 0.3, -0.2, 2.5, , , , , , 0.45, , 0.35],
+  'puzzle-streamer': [1.05, 0.07, 659.25, 0.015, 0.2, 0.28, 0.3, 0.2, , , , , , 0.35, , 0.22],
+  'remote-thereminist': [0.92, 0.09, 440, 0.018, 0.24, 0.4, -0.1, 3.2, , , , , , 0.5, , 0.3],
 };
 
 function createPersonaMotif(id) {
@@ -109,6 +111,12 @@ export function createAudioSystem() {
       motif = createPersonaMotif(personaId);
       if (motif) {
         motifCache.set(personaId, motif);
+      } else if (!personaMotifPresets[personaId]) {
+        console.warn(`[AudioSystem] Missing persona motif preset for id "${personaId}"`);
+        return;
+      } else {
+        // preset exists but Sound unavailable; silently return
+        return;
       }
     }
     playSound(motif, { volume: 0.4, pitch: 1 });

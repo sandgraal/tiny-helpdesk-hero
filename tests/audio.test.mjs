@@ -109,10 +109,9 @@ test('audio system caches sounds and updates empathy volume', { concurrency: fal
   });
 });
 
-
-
 test('audio system ignores unknown persona motifs gracefully', { concurrency: false }, () => {
   const playEvents = [];
+  const warnings = [];
 
   class FakeSound {
     constructor(params) {
@@ -130,11 +129,19 @@ test('audio system ignores unknown persona motifs gracefully', { concurrency: fa
     }
   }
 
-  withPatchedGlobals({ Sound: FakeSound }, () => {
-    const audio = createAudioSystem();
-    audio.playPersonaMotif('nonexistent-persona');
-    assert.equal(playEvents.length, 0, 'Unknown persona should not trigger playback.');
-    audio.playPersonaMotif('');
-    assert.equal(playEvents.length, 0, 'Empty persona id should be ignored.');
-  });
+  const originalWarn = console.warn;
+  console.warn = (...args) => warnings.push(args.join(' '));
+  try {
+    withPatchedGlobals({ Sound: FakeSound }, () => {
+      const audio = createAudioSystem();
+      audio.playPersonaMotif('nonexistent-persona');
+      assert.equal(playEvents.length, 0, 'Unknown persona should not trigger playback.');
+      audio.playPersonaMotif('');
+      assert.equal(playEvents.length, 0, 'Empty persona id should be ignored.');
+    });
+  } finally {
+    console.warn = originalWarn;
+  }
+  assert.ok(warnings.some((message) => message.includes('Missing persona motif preset')));
 });
+
