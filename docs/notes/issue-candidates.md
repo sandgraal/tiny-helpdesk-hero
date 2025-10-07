@@ -7,3 +7,5 @@
 | Tune achievement chime mix | Gather playtest feedback on chime volume/tone and tweak if necessary. | Task | Low |
 | Enlarge collapsed achievements stub button | Increase button size/padding for touch users (Pixel feedback). | UI Bug | Medium |
 | Review accessibility panel landscape layout | Adjust panel positioning to avoid URL bar overlap on mobile landscape. | UI Enhancement | Low |
+| Shorten empathy hint text | Provide concise version for mobile to avoid double wrap. | Narrative | Low |
+| Implement keyboard navigation MVP | Add focusable DOM nodes and keyboard handlers for options/restart. | Enhancement (Accessibility) | Medium |
