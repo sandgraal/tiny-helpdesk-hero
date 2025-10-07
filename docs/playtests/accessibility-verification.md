@@ -1,27 +1,23 @@
 # Accessibility Verification Plan (Milestone 3)
 
-## Automated / Tooling Checks (to run prior to release)
+## Automated / Tooling Checks
 - [ ] Lighthouse accessibility pass in Chrome (desktop) — record score screenshot.
 - [ ] axe DevTools quick scan on achievements panel and option buttons.
-- [x] Contrast check for primary palette (use contrast-ratio.com or tooling) covering:
-  - Default theme: empathy meter fill vs. text, achievements header/body, option labels.
-  - High-contrast theme: background vs. text, button states, achievements stub.
-  - **Result (2024-04-24):** `node scripts/check-contrast.mjs` shows all combinations ≥ 9:1 (default) and ≥ 21:1 (high contrast).
+- [x] Contrast check (`node scripts/check-contrast.mjs`) — 2024-04-24 results: default palette ≥ 9:1, high contrast ≥ 21:1.
 
 ## Manual Pass Checklist
-- [x] Test text-scaling presets (0.85×, 1×, 1.25×, 1.5×) on desktop and tablet; ensure no clipping. *(PT-02)*
-- [x] Toggle dyslexia-friendly font and confirm alignment/line height. *(PT-02)*
-- [x] Enable high-contrast mode and confirm panel toggle text remains legible. *(PT-02)*
-- [x] Verify reduced-motion preference disables achievement pulse and hover scaling. *(Desktop manual check)*
-- [x] Validate touch targets ≥ 48px by attempting option selection with stylus/finger. *(PT-02 Pixel run)*
-- [ ] High-contrast OS mode (macOS/Windows) with screen magnifier active — ensure text remains readable.
+- [x] Text scaling presets (0.85×, 1×, 1.25×, 1.5×) — PT-02.
+- [x] Dyslexia-friendly font alignment/line height — PT-02.
+- [x] High-contrast mode readability — PT-02.
+- [x] Reduced-motion preference disables pulses — desktop manual.
+- [x] Touch targets ≥ 48px — PT-02 (Pixel).
+- [ ] High-contrast OS mode + screen magnifier (macOS/Windows).
 
-## Keyboard Navigation Plan
-- [ ] Map focus order (achievements toggle, options, restart) and note gaps.
-- [ ] Ensure space/enter activate responses; add visible focus ring.
-- [ ] Capture TODOs for post-jam if full keyboard support is out of scope.
+## Keyboard Navigation
+- [x] Initial keyboard navigation support (canvas focus ring, enter selection) — implemented 2024-04-29.
+- [ ] Add restart focus target & accessible DOM overlays (post-PT-03 TBD).
 
 ## Reporting Template
-- Record findings in PT-02/PT-03 notes and update `docs/playtests/accessibility-checklist.md`.
+- Record findings in PT-03 notes and update `docs/playtests/accessibility-checklist.md`.
 - File GitHub issues for any blockers with `Accessibility` label.
 
