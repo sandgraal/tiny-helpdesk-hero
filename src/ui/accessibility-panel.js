@@ -2,6 +2,8 @@
  * Wires DOM controls to accessibility settings.
  */
 
+import { subscribe as settingsSubscribe, setLowPower, getSettings } from '../game/settings.js';
+
 export function initAccessibilityPanel(accessibility) {
   if (!accessibility) {
     return;
@@ -20,6 +22,28 @@ export function initAccessibilityPanel(accessibility) {
   const fontScaleSelect = panel.querySelector('[data-accessibility-font-scale]');
   const dyslexiaCheckbox = panel.querySelector('[data-accessibility-dyslexia]');
   const contrastCheckbox = panel.querySelector('[data-accessibility-contrast]');
+  let lowPowerToggle = panel.querySelector('[data-low-power-toggle]');
+
+  if (!lowPowerToggle) {
+    lowPowerToggle = doc.createElement('label');
+    lowPowerToggle.dataset.lowPowerToggle = 'true';
+    lowPowerToggle.style.display = 'flex';
+    lowPowerToggle.style.flexDirection = 'row';
+    lowPowerToggle.style.alignItems = 'center';
+    lowPowerToggle.style.gap = '6px';
+    lowPowerToggle.style.fontWeight = '600';
+    lowPowerToggle.textContent = 'Low Power';
+
+    const toggle = doc.createElement('input');
+    toggle.type = 'checkbox';
+    toggle.dataset.lowPowerToggleInput = 'true';
+    toggle.style.accentColor = '#FFD166';
+    lowPowerToggle.appendChild(toggle);
+    panel.appendChild(lowPowerToggle);
+  }
+
+  const lowPowerInput = lowPowerToggle.querySelector('[data-low-power-toggle-input]')
+    ?? lowPowerToggle.querySelector('input[type="checkbox"]');
 
   function applyState(state) {
     if (fontScaleSelect) {
@@ -35,6 +59,9 @@ export function initAccessibilityPanel(accessibility) {
     }
     if (contrastCheckbox) {
       contrastCheckbox.checked = Boolean(state.highContrast);
+    }
+    if (lowPowerInput) {
+      lowPowerInput.checked = Boolean(getSettings().lowPower);
     }
   }
 
@@ -53,8 +80,23 @@ export function initAccessibilityPanel(accessibility) {
     accessibility.setHighContrast?.(event.target.checked);
   });
 
+  lowPowerInput?.addEventListener('change', (event) => {
+    setLowPower(event.target.checked);
+  });
+
   accessibility.subscribe?.((state) => {
     applyState(state);
   });
+
+  const unsubscribeLowPower = settingsSubscribe((state) => {
+    if (lowPowerInput) {
+      lowPowerInput.checked = Boolean(state.lowPower);
+    }
+  });
+
+  return () => {
+    unsubscribeLowPower();
+    lowPowerInput?.removeEventListener('change', setLowPower);
+  };
 }
 
