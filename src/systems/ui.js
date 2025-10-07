@@ -142,6 +142,7 @@ export function createUISystem({ accessibility } = {}) {
     achievementTimer: 0,
     achievementVisible: true,
     touchInteractionTimer: 0,
+    collapseBounds: null,
   };
 
   const empathyHintState = {
@@ -489,28 +490,38 @@ export function createUISystem({ accessibility } = {}) {
   }
 
   function renderAchievements(achievementsState) {
-    if (!achievementsState) {
-      return;
-    }
     const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
     if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
       return;
     }
 
-    const panelWidth = layout.achievementsPosition === 'bottom'
-      ? Math.min(mainCanvasSize.x - layout.canvasPadding * 2, 360)
-      : Math.min(340, Math.max(260, mainCanvasSize.x * 0.28));
+    panelState.collapseBounds = null;
+
+    if (!achievementsState) {
+      if (layout.achievementsPosition === 'bottom') {
+        renderCollapsedAchievementsStub();
+      }
+      return;
+    }
+
     const entries = achievementsState.entries ?? [];
     const visible = entries.slice(0, layout.achievementsMaxVisible ?? 3);
     if (!visible.length) {
+      if (layout.achievementsPosition === 'bottom') {
+        renderCollapsedAchievementsStub();
+      }
       return;
     }
 
     const shouldAutoHide = layout.achievementsPosition === 'bottom';
     if (shouldAutoHide && !panelState.achievementVisible) {
+      renderCollapsedAchievementsStub();
       return;
     }
 
+    const panelWidth = shouldAutoHide
+      ? Math.min(mainCanvasSize.x - layout.canvasPadding * 2, 360)
+      : Math.min(340, Math.max(260, mainCanvasSize.x * 0.28));
     const panelHeight = 64 + visible.length * 44;
     const centerX = layout.achievementsPosition === 'bottom'
       ? mainCanvasSize.x / 2
@@ -584,6 +595,44 @@ export function createUISystem({ accessibility } = {}) {
 
       rowY += 44;
     });
+
+    if (shouldAutoHide) {
+      const buttonSize = 28;
+      const buttonX = centerX + panelWidth / 2 - buttonSize / 2 - 12;
+      const buttonY = centerY - panelHeight / 2 + buttonSize / 2 + 12;
+      const buttonColor = layout.highContrast ? '#FFD166' : '#7FDBFF';
+      drawRectScreen(vec2(buttonX, buttonY), vec2(buttonSize, buttonSize), buttonColor);
+      drawTextScreen('×', vec2(buttonX, buttonY), Math.round(18 * layout.fontScale), layout.highContrast ? '#000000' : '#0D1E30', 0, null, 1, 0, 'center');
+      panelState.collapseBounds = {
+        left: buttonX - buttonSize / 2,
+        right: buttonX + buttonSize / 2,
+        top: buttonY - buttonSize / 2,
+        bottom: buttonY + buttonSize / 2,
+      };
+    }
+  }
+
+  function renderCollapsedAchievementsStub() {
+    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
+    if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
+      return;
+    }
+    const stubWidth = Math.min(mainCanvasSize.x - layout.canvasPadding * 2, 220);
+    const stubHeight = 32;
+    const centerX = mainCanvasSize.x / 2;
+    const centerY = mainCanvasSize.y - layout.canvasPadding - stubHeight / 2;
+    const bgColor = layout.highContrast ? 'rgba(0,0,0,0.9)' : 'rgba(7, 22, 41, 0.8)';
+    const textColor = layout.highContrast ? '#FFFFFF' : '#D8F3FF';
+
+    drawRectScreen(vec2(centerX, centerY), vec2(stubWidth, stubHeight), bgColor);
+    drawTextScreen('Achievements', vec2(centerX, centerY), Math.round(14 * layout.fontScale), textColor, 0, null, 1, 0, 'center');
+
+    panelState.collapseBounds = {
+      left: centerX - stubWidth / 2,
+      right: centerX + stubWidth / 2,
+      top: centerY - stubHeight / 2,
+      bottom: centerY + stubHeight / 2,
+    };
   }
 
   function render(state) {
@@ -640,7 +689,21 @@ export function createUISystem({ accessibility } = {}) {
   }
 
   function update(delta = 0, pointer, call) {
-    const hoveredIndex = pointer ? getOptionIndexAtPoint(pointer) : -1;
+    let pointerConsumed = false;
+    if (pointer) {
+      const { layout } = useLittleJS();
+      if (layout.achievementsPosition === 'bottom' && panelState.collapseBounds) {
+        const { left, right, top, bottom } = panelState.collapseBounds;
+        if (pointer.x >= left && pointer.x <= right && pointer.y >= top && pointer.y <= bottom) {
+          panelState.achievementVisible = !panelState.achievementVisible;
+          panelState.achievementTimer = panelState.achievementVisible ? 4 : 0;
+          panelState.touchInteractionTimer = 0;
+          pointerConsumed = true;
+        }
+      }
+    }
+
+    const hoveredIndex = pointer && !pointerConsumed ? getOptionIndexAtPoint(pointer) : -1;
     const validHovered = call && hoveredIndex >= 0 && hoveredIndex < call.options.length ? hoveredIndex : -1;
 
     if (call?.options) {
