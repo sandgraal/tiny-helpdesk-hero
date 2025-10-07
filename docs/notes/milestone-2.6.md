@@ -8,7 +8,7 @@ This milestone brings the over-the-shoulder composition, monitor projection, and
 - [x] Monitor display scaffold created (`src/game/monitor-display.js`).
 - [x] Camera parallax state scaffolded (`src/game/camera.js`).
 - [x] Off-screen UI render integrated into LittleJS render pipeline.
-- [ ] Empathy-driven lighting variables connected to rendering layer.
+- [x] Empathy-driven lighting variables connected to rendering layer.
 - [ ] Hero + prop animation sets drafted.
 - [ ] Parallax + low-power modes implemented.
 - [ ] Dynamic visuals documented in `docs/art/iteration-log.md`.
