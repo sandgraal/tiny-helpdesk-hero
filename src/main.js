@@ -4,6 +4,7 @@
  */
 
 import { createGameLifecycle } from './game/main.js';
+import { initAccessibilityPanel } from './ui/accessibility-panel.js';
 
 function startEngine(lifecycle) {
   const { engineInit } = globalThis;
@@ -22,6 +23,7 @@ function startEngine(lifecycle) {
 
 function bootstrap() {
   const lifecycle = createGameLifecycle();
+  initAccessibilityPanel(lifecycle.accessibility);
 
   function attemptStart() {
     if (!startEngine(lifecycle)) {

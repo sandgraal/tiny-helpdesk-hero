@@ -52,7 +52,7 @@ function getLayoutForSize(mainCanvasSize) {
   };
 }
 
-function getLittleJS() {
+function getLittleJS(overrides = {}) {
   const fallbackVec2 = (x = 0, y = 0) => ({ x, y });
   const vec2 = typeof globalThis.vec2 === 'function' ? globalThis.vec2 : fallbackVec2;
 
@@ -101,7 +101,11 @@ function getLittleJS() {
     if (angle) {
       context.rotate?.(angle);
     }
-    context.font = `${size}px sans-serif`;
+    const fontFamily = overrides.fontFamily
+      ?? (overrides.dyslexiaFriendly
+        ? "Atkinson Hyperlegible, OpenDyslexic, 'Segoe UI', sans-serif"
+        : "'Segoe UI', sans-serif");
+    context.font = `${size}px ${fontFamily}`;
     context.textAlign = align ?? 'left';
     context.textBaseline = 'middle';
     context.globalAlpha = alpha ?? 1;
@@ -116,6 +120,8 @@ function getLittleJS() {
   };
 
   const layout = getLayoutForSize(mainCanvasSize);
+  layout.fontScale *= overrides.fontScale ?? 1;
+  layout.highContrast = Boolean(overrides.highContrast);
 
   return {
     drawRectScreen,
@@ -126,11 +132,35 @@ function getLittleJS() {
   };
 }
 
-export function createUISystem() {
+export function createUISystem({ accessibility } = {}) {
   const hoverStates = new Map();
   const empathyPulse = createPulseState({ duration: 0.6 });
   const callPulse = createPulseState({ duration: 0.5 });
   const achievementPulse = createPulseState({ duration: 0.8 });
+  let accessibilityState = accessibility?.getState?.() ?? {
+    fontScale: 1,
+    dyslexiaFriendly: false,
+    highContrast: false,
+  };
+
+  accessibility?.subscribe?.((next) => {
+    accessibilityState = {
+      fontScale: next.fontScale ?? 1,
+      dyslexiaFriendly: Boolean(next.dyslexiaFriendly),
+      highContrast: Boolean(next.highContrast),
+    };
+  });
+
+  function useLittleJS() {
+    const dyslexiaStack = '"Atkinson Hyperlegible", "OpenDyslexic", "Segoe UI", sans-serif';
+    const defaultStack = '"Segoe UI", sans-serif';
+    return getLittleJS({
+      fontScale: accessibilityState.fontScale,
+      dyslexiaFriendly: accessibilityState.dyslexiaFriendly,
+      highContrast: accessibilityState.highContrast,
+      fontFamily: accessibilityState.dyslexiaFriendly ? dyslexiaStack : defaultStack,
+    });
+  }
 
   function getOptionKey(option, index) {
     return option?.id ?? `option-${index}`;
@@ -146,19 +176,20 @@ export function createUISystem() {
   }
 
   function renderBackground() {
-    const { drawRectScreen, vec2, mainCanvasSize } = getLittleJS();
-    if (!drawRectScreen || !vec2 || !mainCanvasSize) {
+    const { drawRectScreen, vec2, mainCanvasSize, layout } = useLittleJS();
+    if (!drawRectScreen || !vec2 || !mainCanvasSize || !layout) {
       return;
     }
+    const bgColor = layout.highContrast ? '#000000' : '#0A2239';
     drawRectScreen(
       vec2(mainCanvasSize.x / 2, mainCanvasSize.y / 2),
       vec2(mainCanvasSize.x, mainCanvasSize.y),
-      '#0A2239',
+      bgColor,
     );
   }
 
   function renderHeader({ currentIndex, callCount }) {
-    const { drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    const { drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
     if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
       return;
     }
@@ -169,9 +200,9 @@ export function createUISystem() {
       `Call ${safeIndex + 1} of ${safeCount}`,
       vec2(mainCanvasSize.x / 2, layout.headerY - pulseOffset),
       Math.round(26 * layout.fontScale),
-      '#7FDBFF',
+      layout.highContrast ? '#FFD166' : '#7FDBFF',
       1,
-      '#001F3F',
+      layout.highContrast ? '#000000' : '#001F3F',
       2,
       0,
       'center',
@@ -179,7 +210,7 @@ export function createUISystem() {
   }
 
   function renderPrompt(call) {
-    const { drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    const { drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
     if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout || !call) {
       return;
     }
@@ -188,9 +219,9 @@ export function createUISystem() {
       call.prompt,
       vec2(mainCanvasSize.x / 2, layout.promptY - pulseOffset),
       Math.round(20 * layout.fontScale),
-      '#FFFFFF',
+      layout.highContrast ? '#FFFFFF' : '#FFFFFF',
       1,
-      '#000000',
+      layout.highContrast ? '#000000' : '#000000',
       1,
       0,
       'center',
@@ -198,7 +229,7 @@ export function createUISystem() {
   }
 
   function renderOptions(call) {
-    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
     if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout || !call) {
       return;
     }
@@ -209,7 +240,9 @@ export function createUISystem() {
       const y = layout.optionStartY + index * (layout.optionHeight + layout.optionGap);
       const center = vec2(x + optionWidth / 2, y + layout.optionHeight / 2);
       const hoverValue = ensureHoverState(getOptionKey(option, index)).getValue();
-      const bgColor = hoverValue > 0.01 ? '#56CCF2' : '#1B98E0';
+      const bgColor = layout.highContrast
+        ? hoverValue > 0.01 ? '#FFFFFF' : '#CCCCCC'
+        : hoverValue > 0.01 ? '#56CCF2' : '#1B98E0';
       const textYOffset = 6 - hoverValue * 4;
 
       drawRectScreen(center, vec2(optionWidth, layout.optionHeight), bgColor);
@@ -217,7 +250,7 @@ export function createUISystem() {
         option.text,
         vec2(center.x, center.y + textYOffset),
         Math.round(18 * layout.fontScale),
-        '#041C32',
+        layout.highContrast ? '#000000' : '#041C32',
         0,
         null,
         1,
@@ -228,7 +261,7 @@ export function createUISystem() {
   }
 
   function renderPersonaDetails(call) {
-    const { drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    const { drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
     if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout || !call?.persona) {
       return;
     }
@@ -238,7 +271,7 @@ export function createUISystem() {
       personaLine,
       vec2(mainCanvasSize.x / 2, layout.personaY),
       Math.round(18 * layout.fontScale),
-      '#FFE45E',
+      layout.highContrast ? '#FFD166' : '#FFE45E',
       0,
       null,
       1,
@@ -251,7 +284,7 @@ export function createUISystem() {
         call.twist.promptModifier,
         vec2(mainCanvasSize.x / 2, layout.personaY + 26 * layout.fontScale),
         Math.round(16 * layout.fontScale),
-        '#B8E1FF',
+        layout.highContrast ? '#FFFFFF' : '#B8E1FF',
         0,
         null,
         1,
@@ -262,7 +295,7 @@ export function createUISystem() {
   }
 
   function renderEmpathyScore(score) {
-    const { drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    const { drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
     if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
       return;
     }
@@ -271,7 +304,7 @@ export function createUISystem() {
       `Empathy: ${score}`,
       vec2(mainCanvasSize.x - layout.canvasPadding, mainCanvasSize.y - layout.canvasPadding - 40 * layout.fontScale),
       Math.round(18 * layout.fontScale),
-      '#F5EE9E',
+      layout.highContrast ? '#FFD166' : '#F5EE9E',
       0,
       null,
       1,
@@ -281,7 +314,7 @@ export function createUISystem() {
   }
 
   function renderEmpathyMeter({ empathyScore, callCount }) {
-    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
     if (!drawRectScreen || !vec2 || !mainCanvasSize || !layout) {
       return;
     }
@@ -294,18 +327,20 @@ export function createUISystem() {
     const pulse = empathyPulse.getValue();
     const fillWidth = Math.max(4, ratio * baseWidth);
 
-    drawRectScreen(vec2(x, y), vec2(baseWidth, baseHeight), '#0F4C75');
+    drawRectScreen(vec2(x, y), vec2(baseWidth, baseHeight), layout.highContrast ? '#FFFFFF' : '#0F4C75');
     drawRectScreen(
       vec2(x - baseWidth / 2 + fillWidth / 2, y),
       vec2(fillWidth, baseHeight - 4),
-      pulse > 0.01 ? '#65FFDA' : '#4CC9F0',
+      layout.highContrast
+        ? (pulse > 0.01 ? '#FFD166' : '#F7B801')
+        : (pulse > 0.01 ? '#65FFDA' : '#4CC9F0'),
     );
 
     drawTextScreen(
       `${Math.round(ratio * 100)}%`,
       vec2(x, y - 20),
       Math.round(16 * layout.fontScale),
-      '#E9F1F7',
+      layout.highContrast ? '#FFFFFF' : '#E9F1F7',
       0,
       null,
       1,
@@ -315,7 +350,7 @@ export function createUISystem() {
   }
 
   function renderQueueIndicator({ callCount, currentIndex, isComplete }) {
-    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
     if (!drawRectScreen || !vec2 || !mainCanvasSize || !layout) {
       return;
     }
@@ -327,15 +362,16 @@ export function createUISystem() {
     const x = mainCanvasSize.x - layout.canvasPadding - width / 2;
     const y = layout.headerY + 16;
     const pulse = callPulse.getValue();
+    const frameColor = layout.highContrast ? '#FFFFFF' : '#1F1F3B';
     const bg = pulse > 0.01 ? '#FFD166' : '#F7B801';
 
-    drawRectScreen(vec2(x, y), vec2(width, height), '#1F1F3B');
-    drawRectScreen(vec2(x, y), vec2(width - 6, height - 6), bg);
+    drawRectScreen(vec2(x, y), vec2(width, height), frameColor);
+    drawRectScreen(vec2(x, y), vec2(width - 6, height - 6), layout.highContrast ? '#000000' : bg);
     drawTextScreen(
       remaining > 0 ? `${remaining} in queue` : isComplete ? 'Queue clear' : 'Last caller',
       vec2(x, y + 4),
       Math.round(16 * layout.fontScale),
-      '#091540',
+      layout.highContrast ? '#FFFFFF' : '#091540',
       0,
       null,
       1,
@@ -345,7 +381,7 @@ export function createUISystem() {
   }
 
   function renderCompletion({ empathyScore, callCount }) {
-    const { drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    const { drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
     if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
       return;
     }
@@ -354,7 +390,7 @@ export function createUISystem() {
       'Shift complete!',
       vec2(mainCanvasSize.x / 2, mainCanvasSize.y / 2 - 24),
       Math.round(32 * layout.fontScale),
-      '#4CE0D2',
+      layout.highContrast ? '#FFFFFF' : '#4CE0D2',
       1,
       '#001F3F',
       2,
@@ -365,7 +401,7 @@ export function createUISystem() {
       `Empathy Score: ${empathyScore} / ${callCount}`,
       vec2(mainCanvasSize.x / 2, mainCanvasSize.y / 2 + 16),
       Math.round(22 * layout.fontScale),
-      '#FFFFFF',
+      layout.highContrast ? '#FFFFFF' : '#FFFFFF',
       0,
       '#000000',
       1,
@@ -375,7 +411,7 @@ export function createUISystem() {
   }
 
   function renderEmptyState() {
-    const { drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    const { drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
     if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
       return;
     }
@@ -383,7 +419,7 @@ export function createUISystem() {
       'No calls in queue. Add content in src/content/calls.js.',
       vec2(mainCanvasSize.x / 2, mainCanvasSize.y / 2),
       Math.round(18 * layout.fontScale),
-      '#FFFFFF',
+      layout.highContrast ? '#FFFFFF' : '#FFFFFF',
       0,
       '#000000',
       1,
@@ -396,7 +432,7 @@ export function createUISystem() {
     if (!achievementsState) {
       return;
     }
-    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
     if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
       return;
     }
@@ -418,13 +454,15 @@ export function createUISystem() {
       ? mainCanvasSize.y - layout.canvasPadding - panelHeight / 2
       : layout.canvasPadding + panelHeight / 2;
     const accent = achievementPulse.getValue();
-    const headerColor = accent > 0 ? '#FFD166' : '#7FDBFF';
+    const headerColor = layout.highContrast
+      ? (accent > 0 ? '#FFFFFF' : '#FFD166')
+      : (accent > 0 ? '#FFD166' : '#7FDBFF');
     const headerAlpha = 0.9 + accent * 0.1;
 
     drawRectScreen(
       vec2(centerX, centerY),
       vec2(panelWidth, panelHeight),
-      '#0D1E30',
+      layout.highContrast ? '#000000' : '#0D1E30',
     );
 
     drawTextScreen(
@@ -446,8 +484,12 @@ export function createUISystem() {
     visible.forEach((entry) => {
       const unlocked = entry.unlocked;
       const fresh = recentSet.has(entry.id);
-      const titleColor = fresh ? '#FFD166' : unlocked ? '#4CE0D2' : '#7A8BA3';
-      const bodyColor = unlocked ? '#D8F3FF' : '#7A8BA3';
+      const titleColor = layout.highContrast
+        ? (fresh ? '#FFFFFF' : unlocked ? '#FFD166' : '#CCCCCC')
+        : (fresh ? '#FFD166' : unlocked ? '#4CE0D2' : '#7A8BA3');
+      const bodyColor = layout.highContrast
+        ? (unlocked ? '#FFFFFF' : '#CCCCCC')
+        : (unlocked ? '#D8F3FF' : '#7A8BA3');
       const alpha = fresh ? 1 : unlocked ? 0.95 : 0.8;
       const bullet = unlocked ? '✓' : '•';
 
@@ -457,7 +499,7 @@ export function createUISystem() {
         Math.round(16 * layout.fontScale),
         titleColor,
         0,
-        '#001F3F',
+        layout.highContrast ? '#000000' : '#001F3F',
         alpha,
         0,
         'left',
@@ -469,7 +511,7 @@ export function createUISystem() {
         Math.max(11, Math.round(12 * layout.fontScale)),
         bodyColor,
         0,
-        '#001F3F',
+        layout.highContrast ? '#000000' : '#001F3F',
         alpha,
         0,
         'left',
@@ -502,7 +544,7 @@ export function createUISystem() {
   }
 
   function getOptionIndexAtPoint(pointer) {
-    const { mainCanvasSize, layout } = getLittleJS();
+    const { mainCanvasSize, layout } = useLittleJS();
     if (!mainCanvasSize || !layout || !pointer) {
       return -1;
     }

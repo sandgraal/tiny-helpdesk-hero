@@ -7,13 +7,22 @@
     <link rel="icon" href="favicon.ico" />
     <!-- TODO: add stylesheet once UI scaffolding exists -->
     <style>
+      :root {
+        --thh-font-family: 'Segoe UI', sans-serif;
+        --thh-font-scale: 1;
+        --thh-bg-color: #071629;
+        --thh-text-color: #ffffff;
+        --thh-panel-bg: rgba(7, 22, 41, 0.85);
+        --thh-panel-border: rgba(255, 255, 255, 0.16);
+      }
+
       html,
       body {
         margin: 0;
         min-height: 100%;
-        background: #071629;
-        color: #ffffff;
-        font-family: 'Segoe UI', sans-serif;
+        background: var(--thh-bg-color);
+        color: var(--thh-text-color);
+        font-family: var(--thh-font-family);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -43,6 +52,51 @@
       #mainCanvas {
         z-index: 1;
       }
+
+      .accessibility-panel {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px 14px;
+        background: var(--thh-panel-bg);
+        border: 1px solid var(--thh-panel-border);
+        border-radius: 8px;
+        backdrop-filter: blur(6px);
+        font-size: calc(0.85rem * var(--thh-font-scale));
+        z-index: 2;
+      }
+
+      .accessibility-panel label {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-weight: 600;
+      }
+
+      .accessibility-panel select,
+      .accessibility-panel input[type='checkbox'] {
+        accent-color: #ffd166;
+      }
+
+      @media (max-width: 600px) {
+        .accessibility-panel {
+          left: 50%;
+          right: auto;
+          transform: translateX(-50%);
+          top: auto;
+          bottom: 16px;
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        .accessibility-panel label {
+          width: 140px;
+        }
+      }
     </style>
     <script src="./vendors/littlejs.min.js" defer></script>
     <script type="module" src="./src/main.js" defer></script>
@@ -52,5 +106,24 @@
     <main aria-live="polite" class="loading-state">Loading Tiny Helpdesk Hero…</main>
     <canvas id="glCanvas" width="1280" height="720"></canvas>
     <canvas id="mainCanvas" width="1280" height="720"></canvas>
+    <section class="accessibility-panel" data-accessibility-panel>
+      <label>
+        Text size
+        <select data-accessibility-font-scale>
+          <option value="0.85">Small</option>
+          <option value="1">Default</option>
+          <option value="1.25">Large</option>
+          <option value="1.5">Extra large</option>
+        </select>
+      </label>
+      <label>
+        Dyslexia-friendly font
+        <input type="checkbox" data-accessibility-dyslexia />
+      </label>
+      <label>
+        High contrast
+        <input type="checkbox" data-accessibility-contrast />
+      </label>
+    </section>
   </body>
 </html>

@@ -8,10 +8,12 @@ import { createAudioSystem } from '../systems/audio.js';
 import { placeholderCalls } from '../content/calls.js';
 import { achievementDefinitions } from '../content/achievements.js';
 import { createAchievementSystem } from '../systems/achievements.js';
+import { createAccessibilitySettings } from '../systems/accessibility.js';
 
 function createGameState() {
   const conversation = createConversationSystem({ calls: placeholderCalls });
-  const ui = createUISystem();
+  const accessibility = createAccessibilitySettings();
+  const ui = createUISystem({ accessibility });
   const audio = createAudioSystem();
   const achievements = createAchievementSystem({ definitions: achievementDefinitions });
 
@@ -20,6 +22,7 @@ function createGameState() {
     ui,
     audio,
     achievements,
+    accessibility,
     lastSelection: null,
   };
 }
@@ -38,6 +41,7 @@ export function createGameLifecycle() {
       call,
       lastSelection: gameState.lastSelection,
       achievements: gameState.achievements.getState(),
+      accessibility: gameState.accessibility.getState(),
     };
   }
 
@@ -128,5 +132,6 @@ export function createGameLifecycle() {
     render,
     renderPost() {},
     updatePost() {},
+    accessibility: gameState.accessibility,
   };
 }

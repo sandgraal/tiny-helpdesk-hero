@@ -63,6 +63,7 @@ The structure above is aspirational until we begin committing implementation wor
 - **Smoke tests:** Build a simple harness in `tests/` that instantiates the conversation engine with sample data (see `tests/smoke.test.mjs` placeholder).
 - **Content validation:** `npm run lint` (or directly `npm run validate:content`) checks personas, problems, twists, and default seeds. Required fields must be non-empty strings, incorrect answer pools need ≥2 entries, IDs must be unique, empathy boosts are trimmed/validated, and seed assignments must reference defined content.
 - **Playtesting cadence:** Schedule empathy-focused playtests every sprint; capture feedback in `docs/playtests/`.
+- **Accessibility controls:** Use the in-game panel (top-right) to adjust text size, enable the dyslexia-friendly font, and toggle high-contrast mode. Verify these settings persist between sessions.
 
 ## Asset & Audio Handling
 - Maintain an `ATTRIBUTION.md` once third-party work is added.
