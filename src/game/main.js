@@ -11,6 +11,7 @@ import { createAchievementSystem } from '../systems/achievements.js';
 import { createAccessibilitySettings } from '../systems/accessibility.js';
 import { createMonitorDisplay } from './monitor-display.js';
 import { createDeskScene } from './scene.js';
+import { createCameraState } from './camera.js';
 
 function triggerHaptic(pattern, warningLabel = 'Haptic trigger failed') {
   const vibrate = globalThis.navigator?.vibrate;
@@ -67,7 +68,8 @@ export function createGameLifecycle() {
     height: globalThis.mainCanvasSize?.y ?? 360,
     devicePixelRatio: globalThis.devicePixelRatio ?? 1,
   });
-  const deskScene = createDeskScene({ monitorDisplay });
+  const cameraState = createCameraState();
+  const deskScene = createDeskScene({ monitorDisplay, camera: cameraState });
 
   function getMainCanvasSize() {
     const size = globalThis.mainCanvasSize;
@@ -174,6 +176,7 @@ export function createGameLifecycle() {
       const currentState = computeRenderState();
       bindKeyboardHandlers(currentState);
       gameState.ui.update(delta, mousePosScreen, currentState.call);
+      cameraState.update({ pointer: mousePosScreen, canvasSize: getMainCanvasSize() });
       return;
     }
 
@@ -181,6 +184,7 @@ export function createGameLifecycle() {
     bindKeyboardHandlers(renderState);
 
     gameState.ui.update(delta, mousePosScreen, renderState.call);
+    cameraState.update({ pointer: mousePosScreen, canvasSize: getMainCanvasSize() });
 
     if (!renderState.hasCalls) {
       return;
