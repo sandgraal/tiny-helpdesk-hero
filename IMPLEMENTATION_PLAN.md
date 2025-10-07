@@ -40,6 +40,18 @@ The project is kicking off with a documentation-first approach. This plan captur
 - [x] Expand call library to minimum viable jam scope (≥ 30 unique combinations) with tone review checklist.
 - [x] Produce first draft of narrative/style guide in `docs/narrative/guide.md` and ensure content adheres.
 
+Milestone 2.5 — Visual Identity & Art Direction
+Target: Translate the art-direction docs into tangible visual upgrades for the jam build.
+- [ ] Review docs/art/ for tone alignment (palette, proportions, motion language).
+- [ ] Replace placeholder sprites/icons with cohesive “tiny-scale” art set following jam theme guidelines.
+- [ ] Introduce parallax or subtle camera drift to imply depth without harming readability.
+- [ ] Establish reusable ui/theme.js palette constants to sync color usage across game, HUD, and menus.
+- [ ] Tune LittleJS render pipeline: verify pixel-snap, scale ratio, and sprite atlas efficiency.
+- [ ] Apply uniform animation timing (e.g., easing curves, hover pulse duration) based on art docs’ motion tables.
+- [ ] Add low-power toggle that disables heavy particle or shader effects for mobile devices.
+- [ ] Run art consistency audit using the docs/art/style-checklist.md before playtest sign-off.
+- [ ] Capture before/after screenshots and embed them in docs/art/iteration-log.md for visual tracking.
+
 ## Milestone 3 — Polish & Submission
 **Target:** Ship-quality jam build with supporting materials.
 
