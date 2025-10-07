@@ -12,6 +12,7 @@ import { createAccessibilitySettings } from '../systems/accessibility.js';
 import { createMonitorDisplay } from './monitor-display.js';
 import { createDeskScene } from './scene.js';
 import { createCameraState } from './camera.js';
+import { subscribe as subscribeSettings, getSettings } from './settings.js';
 
 function triggerHaptic(pattern, warningLabel = 'Haptic trigger failed') {
   const vibrate = globalThis.navigator?.vibrate;
@@ -70,6 +71,9 @@ export function createGameLifecycle() {
   });
   const cameraState = createCameraState();
   const deskScene = createDeskScene({ monitorDisplay, camera: cameraState });
+  subscribeSettings(({ lowPower }) => {
+    cameraState.setLowPower(lowPower);
+  });
 
   function getMainCanvasSize() {
     const size = globalThis.mainCanvasSize;
