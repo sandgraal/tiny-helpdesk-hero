@@ -5,7 +5,6 @@
 
 import { createGameLifecycle } from './game/main.js';
 import { initAccessibilityPanel } from './ui/accessibility-panel.js';
-import { initLowPowerToggle } from './ui/low-power-toggle.js';
 
 function startEngine(lifecycle) {
   const { engineInit } = globalThis;
@@ -25,7 +24,6 @@ function startEngine(lifecycle) {
 function bootstrap() {
   const lifecycle = createGameLifecycle();
   initAccessibilityPanel(lifecycle.accessibility);
-  const disposeLowPowerToggle = initLowPowerToggle();
 
   function attemptStart() {
     if (!startEngine(lifecycle)) {
@@ -34,10 +32,6 @@ function bootstrap() {
   }
 
   attemptStart();
-
-  return () => {
-    disposeLowPowerToggle?.();
-  };
 }
 
 bootstrap();
