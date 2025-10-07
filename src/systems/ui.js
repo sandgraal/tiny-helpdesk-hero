@@ -143,6 +143,11 @@ export function createUISystem({ accessibility } = {}) {
     achievementVisible: true,
     touchInteractionTimer: 0,
   };
+
+  const empathyHintState = {
+    visible: false,
+    cooldown: 0,
+  };
   let accessibilityState = accessibility?.getState?.() ?? {
     fontScale: 1,
     dyslexiaFriendly: false,
@@ -386,6 +391,55 @@ export function createUISystem({ accessibility } = {}) {
     );
   }
 
+  function renderEmpathyHint(state) {
+    const safeCount = Math.max(1, state.callCount ?? 0);
+    const ratio = safeCount > 0 ? state.empathyScore / safeCount : 0;
+    if (state.isComplete || !state.call || safeCount < 2) {
+      empathyHintState.visible = false;
+      return;
+    }
+
+    if (ratio < 0.5 && empathyHintState.cooldown === 0) {
+      empathyHintState.visible = true;
+    } else if (ratio >= 0.5) {
+      empathyHintState.visible = false;
+    }
+
+    if (!empathyHintState.visible) {
+      return;
+    }
+
+    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
+    if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
+      return;
+    }
+
+    const panelWidth = Math.min(mainCanvasSize.x - layout.canvasPadding * 2, 540);
+    const panelHeight = 68;
+    const offsetFromBottom = layout.achievementsPosition === 'bottom' ? 120 : 80;
+    const centerX = mainCanvasSize.x / 2;
+    const centerY = mainCanvasSize.y - layout.canvasPadding - offsetFromBottom;
+    const bgColor = layout.highContrast ? 'rgba(0, 0, 0, 0.92)' : 'rgba(7, 22, 41, 0.88)';
+    const borderColor = layout.highContrast ? 'rgba(255, 255, 255, 0.6)' : 'rgba(255, 255, 255, 0.18)';
+    const textColor = layout.highContrast ? '#FFFFFF' : '#E9F1F7';
+
+    drawRectScreen(vec2(centerX, centerY), vec2(panelWidth, panelHeight), bgColor);
+    drawRectScreen(vec2(centerX, centerY), vec2(panelWidth, panelHeight), borderColor);
+
+    const hintText = 'Tip: Listen for the caller\'s emotion. Empathetic replies lift your score.';
+    drawTextScreen(
+      hintText,
+      vec2(centerX, centerY),
+      Math.max(14, Math.round(16 * layout.fontScale)),
+      textColor,
+      0,
+      null,
+      1,
+      0,
+      'center',
+    );
+  }
+
   function renderCompletion({ empathyScore, callCount }) {
     const { drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
     if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
@@ -551,6 +605,7 @@ export function createUISystem({ accessibility } = {}) {
     renderEmpathyScore(state.empathyScore);
     renderEmpathyMeter(state);
     renderQueueIndicator(state);
+    renderEmpathyHint(state);
     renderAchievements(state.achievements);
   }
 
@@ -636,12 +691,19 @@ export function createUISystem({ accessibility } = {}) {
     } else {
       panelState.achievementVisible = true;
       panelState.achievementTimer = 0;
+      panelState.touchInteractionTimer = 0;
+    }
+
+    if (empathyHintState.cooldown > 0) {
+      empathyHintState.cooldown = Math.max(0, empathyHintState.cooldown - delta);
     }
   }
 
   function notifySelection(result) {
     if (result?.correct) {
       empathyPulse.trigger();
+      empathyHintState.visible = false;
+      empathyHintState.cooldown = 4;
     }
     if (result?.nextCall) {
       callPulse.trigger();
