@@ -33,7 +33,7 @@ Defines the technical approach for Milestone 2.6 goals around the over-the-shoul
 - **Incoming call indicator:** beacon light flare + audio sync.
 
 ## 5. Implementation Tasks
-1. Prototype off-screen UI render + monitor blit (LittleJS `CanvasRenderingContext2D`).
+1. Prototype off-screen UI render + monitor blit (LittleJS `CanvasRenderingContext2D`). *(Scaffolding lives in `src/game/monitor-display.js`; integrate with LittleJS render pipeline next.)*
 2. Integrate new sprite layers for desk, hero, background; hook into existing update/render pipeline.
 3. Wire empathy-driven lighting variables (`renderState.empathyScore`) to shader uniforms / tint functions.
 4. Add configuration flags for low-power mode (disable bloom, limit parallax to 1px).
