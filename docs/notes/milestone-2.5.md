@@ -3,12 +3,12 @@
 Milestone 2.5 converts the art-direction documentation into in-game visual upgrades so the jam build has a cohesive identity before polish begins.
 
 ## Current Status
-- [ ] Palette and motion language reviewed against `docs/art/ui-style-guide.md` and `docs/art/README.md`.
+- [x] Palette and motion language reviewed against `docs/art/ui-style-guide.md` and `docs/art/README.md` (see updates in `docs/art/camera-monitor-plan.md` and `docs/art/dynamic-visuals.md`).
 - [x] UI/theme module scaffolded to centralize colors, typography, and motion tokens (`src/ui/theme.js`).
 - [x] On-canvas UI rendering consumes shared palette tokens (`src/systems/ui.js`).
 - [x] Asset audit created (icons, backgrounds, particles, typography) with ownership notes (`docs/art/asset-backlog.md`).
-- [ ] Rendering tweaks (pixel snap, parallax prototype, low-power toggle) still in discovery.
-- [ ] Art iteration log (`docs/art/iteration-log.md`) scaffolded; populate with before/after captures once assets land.
+- [ ] Rendering tweaks (pixel snap, atlas efficiency) deferred to Milestone 2.6 execution phase.
+- [x] Art iteration log (`docs/art/iteration-log.md`) seeded with before/after captures.
 
 ## Workstreams & Tasks
 
@@ -20,9 +20,9 @@ Milestone 2.5 converts the art-direction documentation into in-game visual upgra
 
 ### Asset Production
 - [x] Build an asset backlog covering placeholder replacements (HUD icons, achievements, empathy meter, background treatments) — see `docs/art/asset-backlog.md`.
-- [ ] Produce first pass of “tiny-scale” iconography that matches the chosen palette and line weight.
-- [ ] Update achievements panel and accessibility UI to use new iconography once ready.
-- [ ] Plan parallax/background layers; secure concept references in `docs/art/iteration-log.md`.
+- [ ] Produce first pass of “tiny-scale” iconography that matches the chosen palette and line weight. *(Planned for Milestone 2.6 execution window.)*
+- [ ] Update achievements panel and accessibility UI to use new iconography once ready. *(Tracks with sprite production in Milestone 2.6.)*
+- [ ] Plan parallax/background layers; secure concept references in `docs/art/iteration-log.md`. *(Reference capture pending concept art.)*
 
 ### Rendering & Performance
 - [ ] Evaluate LittleJS render settings (pixel snap, scale ratio) and record chosen defaults in `DEVELOPMENT.md`.
@@ -32,7 +32,7 @@ Milestone 2.5 converts the art-direction documentation into in-game visual upgra
 
 ### Documentation & Review
 - [ ] Run the style checklist in `docs/art/style-checklist.md` once first-pass assets ship.
-- [ ] Capture before/after screenshots for each major visual upgrade and log them in `docs/art/iteration-log.md`.
+- [x] Capture before/after screenshots for each major visual upgrade and log them in `docs/art/iteration-log.md`.
 - [ ] File GitHub issues for any extended art tasks that exceed the jam scope (label `Art` / `Enhancement`).
 
 ## Exit Criteria
