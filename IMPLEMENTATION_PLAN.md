@@ -51,11 +51,16 @@ The project is kicking off with a documentation-first approach. This plan captur
 - [ ] Add low-power toggle that disables heavy particle or shader effects for mobile devices.
 - [ ] Run art consistency audit using the docs/art/style-checklist.md before playtest sign-off.
 - [ ] Capture before/after screenshots and embed them in docs/art/iteration-log.md for visual tracking.
-- [ ] Shift camera to over-the-shoulder perspective showing hero, desk, and monitor.
-- [ ] Render existing UI layer within monitor surface using off-screen canvas.
-- [ ] Create modular office background assets matching docs/art palette.
-- [ ] Add ambient idle animations (hero, chair, lighting pulse).
-- [ ] Integrate soft focus vignette and color-grading overlay.
+## Milestone 2.6 — Dynamic Visuals & Thematic Cohesion
+**Target:** Bring the Helpdesk Hero’s environment to life through animation, light, and empathy-driven feedback.
+- [ ] Implement over-the-shoulder camera showing hero, desk, and monitor.
+- [ ] Integrate `docs/art/dynamic-visuals.md` guidelines into scene layout and animation system.
+- [ ] Add environmental response to empathy (light warmth, monitor glow, ambient tone).
+- [ ] Create hero idle / reaction animations driven by conversation outcomes.
+- [ ] Add screen-in-screen projection with subtle post-processing effects.
+- [ ] Animate ambient background silhouettes and day-night tinting.
+- [ ] Connect props (mug, notes, LEDs) to empathy state variables.
+- [ ] Document and screenshot all visual motion in `docs/art/iteration-log.md`.
 
 ## Milestone 3 — Polish & Submission
 **Target:** Ship-quality jam build with supporting materials.
