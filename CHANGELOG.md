@@ -8,3 +8,7 @@ All notable changes to this project will be documented in this file.
 - Expanded call content to 30 seeded scenarios and added narrative/UI style guides.
 - Introduced automated contrast check script (`scripts/check-contrast.mjs`) and accessibility verification docs.
 - Documented PT-01 outcomes, scheduled PT-02, and established keyboard navigation plan/backlog.
+- Bundled Atkinson Hyperlegible font locally and migrated UI styles into a dedicated stylesheet for offline accessibility support.
+- Shortened achievements auto-hide delay when navigating with keyboard-only input.
+- Added optional haptic feedback for incorrect selections while respecting reduced-motion preferences.
+- Integrated shared palette/motion tokens into on-canvas LittleJS UI rendering.

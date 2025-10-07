@@ -7,7 +7,7 @@
 
 ## Dyslexia-Friendly Option
 - [x] Toggle to switch primary UI font to an open-source dyslexia-friendly typeface (e.g., OpenDyslexic / Atkinson Hyperlegible).
-- [ ] Confirm fallback font loads locally (no external CDN requirement).
+- [x] Confirm fallback font loads locally (no external CDN requirement).
 - [ ] Validate line spacing adjustments and option button alignment.
 
 ## Manual Pass Checklist
@@ -16,6 +16,7 @@
 - [x] Enable high-contrast mode and confirm panel toggle text remains legible. *(PT-02)*
 - [x] Verify reduced-motion preference disables achievement pulse and hover scaling. *(Desktop manual check)*
 - [x] Validate touch targets ≥ 48px with stylus/finger. *(PT-02 Pixel run)*
+- [ ] Confirm landscape mobile layout avoids browser chrome overlap after reposition patch. *(Pending re-test.)*
 - [ ] High-contrast OS mode (macOS/Windows) with screen magnifier active — ensure text remains readable.
 
 ## Color & Contrast
@@ -32,4 +33,3 @@
 - [ ] Use browser accessibility tools (Lighthouse, axe) to scan canvas overlay text.
 - [ ] Conduct manual pass with screen magnifier and high-contrast OS modes.
 - [ ] Capture findings and action items in playtest notes.
-

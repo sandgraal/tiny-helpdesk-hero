@@ -32,10 +32,10 @@
 - `CONTRIBUTING.md` — contributor expectations, onboarding steps, and collaboration etiquette.
 
 ## Immediate Priorities
-1. Expand call content and begin persona/problem/twist authoring guidelines.
-2. Build accessibility polish (text scaling, reduced motion preferences, hover alternatives).
-3. Layer richer audio motifs and ambient cues with mixing hooks.
-4. Run `npm run test` regularly and introduce validation around conversation data as it grows.
+1. Review `docs/art/` direction and lock the palette/motion language for milestone 2.5.
+2. Catalog placeholder sprites/icons and build the milestone 2.5 asset backlog (HUD, achievements, accessibility).
+3. Outline render pipeline tweaks (pixel snap, parallax, low-power toggle) before implementation.
+4. Plan documentation artifacts for the art pass (iteration log entries, contrast verification screenshots).
 
 ## Running Locally
 1. `npm run serve` (uses `python3 -m http.server 8080`)

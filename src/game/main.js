@@ -10,6 +10,36 @@ import { achievementDefinitions } from '../content/achievements.js';
 import { createAchievementSystem } from '../systems/achievements.js';
 import { createAccessibilitySettings } from '../systems/accessibility.js';
 
+function triggerHaptic(pattern, warningLabel = 'Haptic trigger failed') {
+  const vibrate = globalThis.navigator?.vibrate;
+  if (typeof vibrate !== 'function') {
+    return;
+  }
+
+  let normalizedPattern = pattern;
+  if (typeof normalizedPattern === 'number') {
+    normalizedPattern = [normalizedPattern];
+  }
+  if (!Array.isArray(normalizedPattern) || normalizedPattern.length === 0) {
+    return;
+  }
+
+  try {
+    const motionQuery = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
+    if (motionQuery?.matches) {
+      return;
+    }
+  } catch (error) {
+    console.warn('[GameLifecycle] Haptic media query failed', error);
+  }
+
+  try {
+    vibrate(normalizedPattern);
+  } catch (error) {
+    console.warn(`[GameLifecycle] ${warningLabel}`, error);
+  }
+}
+
 function createGameState() {
   const conversation = createConversationSystem({ calls: placeholderCalls });
   const accessibility = createAccessibilitySettings();
@@ -76,6 +106,9 @@ export function createGameLifecycle() {
     gameState.audio.playClick(pointerPosition);
     gameState.audio.playOutcome(gameState.lastSelection.correct);
     gameState.ui.notifySelection(gameState.lastSelection);
+    if (!gameState.lastSelection.correct) {
+      triggerHaptic([35, 55]);
+    }
 
     const postState = gameState.conversation.getState();
     const nextCall = gameState.conversation.getCurrentCall();
@@ -96,14 +129,7 @@ export function createGameLifecycle() {
       if (Array.isArray(unlocks) && unlocks.length) {
         gameState.ui.notifyAchievements(unlocks);
         gameState.audio.playAchievementChime?.();
-        try {
-          const vibrate = globalThis.navigator?.vibrate;
-          if (typeof vibrate === 'function') {
-            vibrate([20, 30, 20]);
-          }
-        } catch (error) {
-          console.warn('[GameLifecycle] Achievement haptic failed', error);
-        }
+        triggerHaptic([20, 30, 20], 'Achievement haptic failed');
       }
     }
   }

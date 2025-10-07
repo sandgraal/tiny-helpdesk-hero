@@ -15,7 +15,8 @@
 |---------|------|--------------|-------|
 | PT-01   | 2024-04-24 | Returning + New | Achievement feedback, empathy pacing, accessibility panel |
 | PT-02   | 2024-04-28 | New players | Onboarding comprehension, UI clarity, accessibility panel |
-| PT-03   | 2024-05-03 (tentative) | Mixed (touch + keyboard) | Mobile/tablet regression, keyboard nav expectations |
+| PT-03   | 2024-05-03 (completed) | Mixed (touch + keyboard) | Mobile/tablet regression, keyboard nav expectations (landscape retest pending) |
+| PT-03R  | TBD (pre-Polish)       | Pixel 6 + Surface Book    | Landscape accessibility retest, haptic comfort, keyboard restart focus |
 
 ## Success Metrics
 - ≥80% of participants report understanding empathy score purpose.

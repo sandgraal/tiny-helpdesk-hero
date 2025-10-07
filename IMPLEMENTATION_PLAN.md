@@ -40,8 +40,8 @@ The project is kicking off with a documentation-first approach. This plan captur
 - [x] Expand call library to minimum viable jam scope (≥ 30 unique combinations) with tone review checklist.
 - [x] Produce first draft of narrative/style guide in `docs/narrative/guide.md` and ensure content adheres.
 
-Milestone 2.5 — Visual Identity & Art Direction
-Target: Translate the art-direction docs into tangible visual upgrades for the jam build.
+## Milestone 2.5 — Visual Identity & Art Direction
+**Target:** Translate the art-direction docs into tangible visual upgrades for the jam build.
 - [ ] Review docs/art/ for tone alignment (palette, proportions, motion language).
 - [ ] Replace placeholder sprites/icons with cohesive “tiny-scale” art set following jam theme guidelines.
 - [ ] Introduce parallax or subtle camera drift to imply depth without harming readability.
@@ -55,7 +55,7 @@ Target: Translate the art-direction docs into tangible visual upgrades for the j
 ## Milestone 3 — Polish & Submission
 **Target:** Ship-quality jam build with supporting materials.
 
-- [ ] Conduct structured playtests; iterate on pacing, clarity, and humor balance. Capture findings in `docs/playtests/`. *(PT-01 completed 2024-04-24; PT-02 completed 2024-04-28; PT-03 scheduled 2024-05-03.)*
+- [ ] Conduct structured playtests; iterate on pacing, clarity, and humor balance. Capture findings in `docs/playtests/`. *(PT-01 completed 2024-04-24; PT-02 completed 2024-04-28; PT-03 completed 2024-05-03 with landscape retest pending.)*
 - [ ] Optimize for performance and readability on small screens (mobile + desktop) and document device test matrix.
 - [ ] Finalize accessibility pass (text scaling options, dyslexia-friendly font toggle, colorblind-safe palette) with checklist sign-off.
 - [ ] Prepare itch.io submission package and GitHub Pages release (build scripts, release notes, marketing copy).

@@ -1,4 +1,5 @@
 import { createHoverState, createPulseState } from './animation/tween.js';
+import { getPalette, motion } from '../ui/theme.js';
 
 /**
  * UI system for the greybox build.
@@ -123,26 +124,36 @@ function getLittleJS(overrides = {}) {
   layout.fontScale *= overrides.fontScale ?? 1;
   layout.highContrast = Boolean(overrides.highContrast);
 
+  const palette = getPalette(layout.highContrast);
+
   return {
     drawRectScreen,
     drawTextScreen,
     mainCanvasSize,
     vec2,
     layout,
+    palette,
   };
 }
 
 export function createUISystem({ accessibility } = {}) {
   const hoverStates = new Map();
-  const empathyPulse = createPulseState({ duration: 0.6 });
-  const callPulse = createPulseState({ duration: 0.5 });
-  const achievementPulse = createPulseState({ duration: 0.8 });
+  const empathyPulse = createPulseState({ duration: motion.empathyPulse });
+  const callPulse = createPulseState({ duration: motion.callPulse });
+  const achievementPulse = createPulseState({ duration: motion.achievementPulse });
   const panelState = {
     autoHideInitialized: false,
     achievementTimer: 0,
     achievementVisible: true,
     touchInteractionTimer: 0,
     collapseBounds: null,
+  };
+  const achievementTiming = {
+    initial: 5,
+    touchExtend: 4,
+    keyboardMax: 1.5,
+    toggle: 4,
+    unlock: 6,
   };
   let keyboardFocusIndex = -1;
   let keyboardOptionsLength = 0;
@@ -287,11 +298,11 @@ export function createUISystem({ accessibility } = {}) {
   }
 
   function renderBackground() {
-    const { drawRectScreen, vec2, mainCanvasSize, layout } = useLittleJS();
-    if (!drawRectScreen || !vec2 || !mainCanvasSize || !layout) {
+    const { drawRectScreen, vec2, mainCanvasSize, layout, palette } = useLittleJS();
+    if (!drawRectScreen || !vec2 || !mainCanvasSize || !layout || !palette) {
       return;
     }
-    const bgColor = layout.highContrast ? '#000000' : '#0A2239';
+    const bgColor = palette.background;
     drawRectScreen(
       vec2(mainCanvasSize.x / 2, mainCanvasSize.y / 2),
       vec2(mainCanvasSize.x, mainCanvasSize.y),
@@ -300,8 +311,8 @@ export function createUISystem({ accessibility } = {}) {
   }
 
   function renderHeader({ currentIndex, callCount }) {
-    const { drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
-    if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
+    const { drawTextScreen, vec2, mainCanvasSize, layout, palette } = useLittleJS();
+    if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout || !palette) {
       return;
     }
     const pulseOffset = callPulse.getValue() * 6;
@@ -311,9 +322,9 @@ export function createUISystem({ accessibility } = {}) {
       `Call ${safeIndex + 1} of ${safeCount}`,
       vec2(mainCanvasSize.x / 2, layout.headerY - pulseOffset),
       Math.round(26 * layout.fontScale),
-      layout.highContrast ? '#FFD166' : '#7FDBFF',
+      palette.headerAccent,
       1,
-      layout.highContrast ? '#000000' : '#001F3F',
+      palette.headerOutline,
       2,
       0,
       'center',
@@ -321,8 +332,8 @@ export function createUISystem({ accessibility } = {}) {
   }
 
   function renderPrompt(call) {
-    const { drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
-    if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout || !call) {
+    const { drawTextScreen, vec2, mainCanvasSize, layout, palette } = useLittleJS();
+    if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout || !palette || !call) {
       return;
     }
     const pulseOffset = callPulse.getValue() * 12;
@@ -330,9 +341,9 @@ export function createUISystem({ accessibility } = {}) {
       call.prompt,
       vec2(mainCanvasSize.x / 2, layout.promptY - pulseOffset),
       Math.round(20 * layout.fontScale),
-      layout.highContrast ? '#FFFFFF' : '#FFFFFF',
+      palette.textPrimary,
       1,
-      layout.highContrast ? '#000000' : '#000000',
+      palette.promptOutline,
       1,
       0,
       'center',
@@ -340,8 +351,8 @@ export function createUISystem({ accessibility } = {}) {
   }
 
   function renderOptions(call) {
-    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
-    if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout || !call) {
+    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout, palette } = useLittleJS();
+    if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout || !palette || !call) {
       return;
     }
 
@@ -353,13 +364,10 @@ export function createUISystem({ accessibility } = {}) {
       if (keyboardFocusIndex === index) {
         const outlineWidth = optionWidth + 12;
         const outlineHeight = layout.optionHeight + 12;
-        const outlineColor = layout.highContrast ? '#FFD166' : '#FFE45E';
-        drawRectScreen(center, vec2(outlineWidth, outlineHeight), outlineColor);
+        drawRectScreen(center, vec2(outlineWidth, outlineHeight), palette.focusOutline);
       }
       const hoverValue = ensureHoverState(getOptionKey(option, index)).getValue();
-      const bgColor = layout.highContrast
-        ? hoverValue > 0.01 ? '#FFFFFF' : '#CCCCCC'
-        : hoverValue > 0.01 ? '#56CCF2' : '#1B98E0';
+      const bgColor = hoverValue > 0.01 ? palette.optionHover : palette.optionBase;
       const textYOffset = 6 - hoverValue * 4;
 
       drawRectScreen(center, vec2(optionWidth, layout.optionHeight), bgColor);
@@ -367,7 +375,7 @@ export function createUISystem({ accessibility } = {}) {
         option.text,
         vec2(center.x, center.y + textYOffset),
         Math.round(18 * layout.fontScale),
-        layout.highContrast ? '#000000' : '#041C32',
+        palette.optionText,
         0,
         null,
         1,
@@ -378,8 +386,8 @@ export function createUISystem({ accessibility } = {}) {
   }
 
   function renderPersonaDetails(call) {
-    const { drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
-    if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout || !call?.persona) {
+    const { drawTextScreen, vec2, mainCanvasSize, layout, palette } = useLittleJS();
+    if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout || !palette || !call?.persona) {
       return;
     }
 
@@ -388,7 +396,7 @@ export function createUISystem({ accessibility } = {}) {
       personaLine,
       vec2(mainCanvasSize.x / 2, layout.personaY),
       Math.round(18 * layout.fontScale),
-      layout.highContrast ? '#FFD166' : '#FFE45E',
+      palette.personaAccent,
       0,
       null,
       1,
@@ -401,7 +409,7 @@ export function createUISystem({ accessibility } = {}) {
         call.twist.promptModifier,
         vec2(mainCanvasSize.x / 2, layout.personaY + 26 * layout.fontScale),
         Math.round(16 * layout.fontScale),
-        layout.highContrast ? '#FFFFFF' : '#B8E1FF',
+        palette.textMuted,
         0,
         null,
         1,
@@ -412,8 +420,8 @@ export function createUISystem({ accessibility } = {}) {
   }
 
   function renderEmpathyScore(score) {
-    const { drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
-    if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
+    const { drawTextScreen, vec2, mainCanvasSize, layout, palette } = useLittleJS();
+    if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout || !palette) {
       return;
     }
 
@@ -421,7 +429,7 @@ export function createUISystem({ accessibility } = {}) {
       `Empathy: ${score}`,
       vec2(mainCanvasSize.x - layout.canvasPadding, mainCanvasSize.y - layout.canvasPadding - 40 * layout.fontScale),
       Math.round(18 * layout.fontScale),
-      layout.highContrast ? '#FFD166' : '#F5EE9E',
+      palette.personaSupport,
       0,
       null,
       1,
@@ -431,8 +439,8 @@ export function createUISystem({ accessibility } = {}) {
   }
 
   function renderEmpathyMeter({ empathyScore, callCount }) {
-    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
-    if (!drawRectScreen || !vec2 || !mainCanvasSize || !layout) {
+    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout, palette } = useLittleJS();
+    if (!drawRectScreen || !vec2 || !mainCanvasSize || !layout || !palette) {
       return;
     }
 
@@ -444,20 +452,18 @@ export function createUISystem({ accessibility } = {}) {
     const pulse = empathyPulse.getValue();
     const fillWidth = Math.max(4, ratio * baseWidth);
 
-    drawRectScreen(vec2(x, y), vec2(baseWidth, baseHeight), layout.highContrast ? '#FFFFFF' : '#0F4C75');
+    drawRectScreen(vec2(x, y), vec2(baseWidth, baseHeight), palette.backgroundMuted);
     drawRectScreen(
       vec2(x - baseWidth / 2 + fillWidth / 2, y),
       vec2(fillWidth, baseHeight - 4),
-      layout.highContrast
-        ? (pulse > 0.01 ? '#FFD166' : '#F7B801')
-        : (pulse > 0.01 ? '#65FFDA' : '#4CC9F0'),
+      pulse > 0.01 ? palette.achievementFresh : palette.achievementPulse,
     );
 
     drawTextScreen(
       `${Math.round(ratio * 100)}%`,
       vec2(x, y - 20),
       Math.round(16 * layout.fontScale),
-      layout.highContrast ? '#FFFFFF' : '#E9F1F7',
+      palette.textOverlay,
       0,
       null,
       1,
@@ -467,8 +473,8 @@ export function createUISystem({ accessibility } = {}) {
   }
 
   function renderQueueIndicator({ callCount, currentIndex, isComplete }) {
-    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
-    if (!drawRectScreen || !vec2 || !mainCanvasSize || !layout) {
+    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout, palette } = useLittleJS();
+    if (!drawRectScreen || !vec2 || !mainCanvasSize || !layout || !palette) {
       return;
     }
     const safeIndex = Number.isFinite(currentIndex) ? currentIndex : 0;
@@ -479,16 +485,16 @@ export function createUISystem({ accessibility } = {}) {
     const x = mainCanvasSize.x - layout.canvasPadding - width / 2;
     const y = layout.headerY + 16;
     const pulse = callPulse.getValue();
-    const frameColor = layout.highContrast ? '#FFFFFF' : '#1F1F3B';
-    const bg = pulse > 0.01 ? '#FFD166' : '#F7B801';
+    const frameColor = palette.frame;
+    const bg = pulse > 0.01 ? palette.achievementActive : palette.achievementBadgeBg;
 
     drawRectScreen(vec2(x, y), vec2(width, height), frameColor);
-    drawRectScreen(vec2(x, y), vec2(width - 6, height - 6), layout.highContrast ? '#000000' : bg);
+    drawRectScreen(vec2(x, y), vec2(width - 6, height - 6), layout.highContrast ? palette.background : bg);
     drawTextScreen(
       remaining > 0 ? `${remaining} in queue` : isComplete ? 'Queue clear' : 'Last caller',
       vec2(x, y + 4),
       Math.round(16 * layout.fontScale),
-      layout.highContrast ? '#FFFFFF' : '#091540',
+      layout.highContrast ? palette.textPrimary : palette.stubBg,
       0,
       null,
       1,
@@ -515,8 +521,8 @@ export function createUISystem({ accessibility } = {}) {
       return;
     }
 
-    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
-    if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
+    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout, palette } = useLittleJS();
+    if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout || !palette) {
       return;
     }
 
@@ -527,7 +533,7 @@ export function createUISystem({ accessibility } = {}) {
     const centerY = mainCanvasSize.y - layout.canvasPadding - offsetFromBottom;
     const bgColor = layout.highContrast ? 'rgba(0, 0, 0, 0.92)' : 'rgba(7, 22, 41, 0.88)';
     const borderColor = layout.highContrast ? 'rgba(255, 255, 255, 0.6)' : 'rgba(255, 255, 255, 0.18)';
-    const textColor = layout.highContrast ? '#FFFFFF' : '#E9F1F7';
+    const textColor = palette.textOverlay;
 
     drawRectScreen(vec2(centerX, centerY), vec2(panelWidth, panelHeight), bgColor);
     drawRectScreen(vec2(centerX, centerY), vec2(panelWidth, panelHeight), borderColor);
@@ -547,8 +553,8 @@ export function createUISystem({ accessibility } = {}) {
   }
 
   function renderCompletion({ empathyScore, callCount }) {
-    const { drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
-    if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
+    const { drawTextScreen, vec2, mainCanvasSize, layout, palette } = useLittleJS();
+    if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout || !palette) {
       return;
     }
 
@@ -556,9 +562,9 @@ export function createUISystem({ accessibility } = {}) {
       'Shift complete!',
       vec2(mainCanvasSize.x / 2, mainCanvasSize.y / 2 - 24),
       Math.round(32 * layout.fontScale),
-      layout.highContrast ? '#FFFFFF' : '#4CE0D2',
+      palette.scoreboardAccent,
       1,
-      '#001F3F',
+      palette.scoreboardOutline,
       2,
       0,
       'center',
@@ -567,9 +573,9 @@ export function createUISystem({ accessibility } = {}) {
       `Empathy Score: ${empathyScore} / ${callCount}`,
       vec2(mainCanvasSize.x / 2, mainCanvasSize.y / 2 + 16),
       Math.round(22 * layout.fontScale),
-      layout.highContrast ? '#FFFFFF' : '#FFFFFF',
+      palette.scoreboardText,
       0,
-      '#000000',
+      palette.promptOutline,
       1,
       0,
       'center',
@@ -577,17 +583,17 @@ export function createUISystem({ accessibility } = {}) {
   }
 
   function renderEmptyState() {
-    const { drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
-    if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
+    const { drawTextScreen, vec2, mainCanvasSize, layout, palette } = useLittleJS();
+    if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout || !palette) {
       return;
     }
     drawTextScreen(
       'No calls in queue. Add content in src/content/calls.js.',
       vec2(mainCanvasSize.x / 2, mainCanvasSize.y / 2),
       Math.round(18 * layout.fontScale),
-      layout.highContrast ? '#FFFFFF' : '#FFFFFF',
+      palette.textPrimary,
       0,
-      '#000000',
+      palette.promptOutline,
       1,
       0,
       'center',
@@ -595,8 +601,8 @@ export function createUISystem({ accessibility } = {}) {
   }
 
   function renderAchievements(achievementsState) {
-    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
-    if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
+    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout, palette } = useLittleJS();
+    if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout || !palette) {
       return;
     }
 
@@ -635,15 +641,13 @@ export function createUISystem({ accessibility } = {}) {
       ? mainCanvasSize.y - layout.canvasPadding - panelHeight / 2
       : layout.canvasPadding + panelHeight / 2;
     const accent = achievementPulse.getValue();
-    const headerColor = layout.highContrast
-      ? (accent > 0 ? '#FFFFFF' : '#FFD166')
-      : (accent > 0 ? '#FFD166' : '#7FDBFF');
+    const headerColor = accent > 0 ? palette.achievementActive : palette.headerAccent;
     const headerAlpha = 0.9 + accent * 0.1;
 
     drawRectScreen(
       vec2(centerX, centerY),
       vec2(panelWidth, panelHeight),
-      layout.highContrast ? '#000000' : '#0D1E30',
+      palette.stubBg,
     );
 
     drawTextScreen(
@@ -652,7 +656,7 @@ export function createUISystem({ accessibility } = {}) {
       Math.round(18 * layout.fontScale),
       headerColor,
       0,
-      '#001F3F',
+      palette.headerOutline,
       headerAlpha,
       0,
       'center',
@@ -665,12 +669,12 @@ export function createUISystem({ accessibility } = {}) {
     visible.forEach((entry) => {
       const unlocked = entry.unlocked;
       const fresh = recentSet.has(entry.id);
-      const titleColor = layout.highContrast
-        ? (fresh ? '#FFFFFF' : unlocked ? '#FFD166' : '#CCCCCC')
-        : (fresh ? '#FFD166' : unlocked ? '#4CE0D2' : '#7A8BA3');
-      const bodyColor = layout.highContrast
-        ? (unlocked ? '#FFFFFF' : '#CCCCCC')
-        : (unlocked ? '#D8F3FF' : '#7A8BA3');
+      const titleColor = fresh
+        ? palette.achievementActive
+        : unlocked
+          ? palette.scoreboardAccent
+          : palette.stubCollapsedInactive;
+      const bodyColor = unlocked ? palette.stubCollapsedText : palette.stubCollapsedInactive;
       const alpha = fresh ? 1 : unlocked ? 0.95 : 0.8;
       const bullet = unlocked ? '✓' : '•';
 
@@ -680,7 +684,7 @@ export function createUISystem({ accessibility } = {}) {
         Math.round(16 * layout.fontScale),
         titleColor,
         0,
-        layout.highContrast ? '#000000' : '#001F3F',
+        palette.headerOutline,
         alpha,
         0,
         'left',
@@ -692,7 +696,7 @@ export function createUISystem({ accessibility } = {}) {
         Math.max(11, Math.round(12 * layout.fontScale)),
         bodyColor,
         0,
-        layout.highContrast ? '#000000' : '#001F3F',
+        palette.headerOutline,
         alpha,
         0,
         'left',
@@ -705,9 +709,9 @@ export function createUISystem({ accessibility } = {}) {
       const buttonSize = 36;
       const buttonX = centerX + panelWidth / 2 - buttonSize / 2 - 16;
       const buttonY = centerY - panelHeight / 2 + buttonSize / 2 + 16;
-      const buttonColor = layout.highContrast ? '#FFD166' : '#7FDBFF';
+      const buttonColor = palette.headerAccent;
       drawRectScreen(vec2(buttonX, buttonY), vec2(buttonSize, buttonSize), buttonColor);
-      drawTextScreen('×', vec2(buttonX, buttonY), Math.round(22 * layout.fontScale), layout.highContrast ? '#000000' : '#0D1E30', 0, null, 1, 0, 'center');
+      drawTextScreen('×', vec2(buttonX, buttonY), Math.round(22 * layout.fontScale), palette.stubBg, 0, null, 1, 0, 'center');
       panelState.collapseBounds = {
         left: buttonX - buttonSize / 2,
         right: buttonX + buttonSize / 2,
@@ -718,8 +722,8 @@ export function createUISystem({ accessibility } = {}) {
   }
 
   function renderCollapsedAchievementsStub() {
-    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = useLittleJS();
-    if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
+    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout, palette } = useLittleJS();
+    if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout || !palette) {
       return;
     }
     const stubWidth = Math.min(mainCanvasSize.x - layout.canvasPadding * 2, 260);
@@ -727,10 +731,10 @@ export function createUISystem({ accessibility } = {}) {
     const centerX = mainCanvasSize.x / 2;
     const centerY = mainCanvasSize.y - layout.canvasPadding - stubHeight / 2;
     const bgColor = layout.highContrast ? 'rgba(0,0,0,0.9)' : 'rgba(7, 22, 41, 0.8)';
-    const textColor = layout.highContrast ? '#FFFFFF' : '#D8F3FF';
+    const textColor = palette.stubCollapsedText;
 
     if (keyboardStubAvailable && keyboardFocusIndex === keyboardOptionsLength) {
-      drawRectScreen(vec2(centerX, centerY), vec2(stubWidth + 12, stubHeight + 12), layout.highContrast ? '#FFD166' : '#FFE45E');
+      drawRectScreen(vec2(centerX, centerY), vec2(stubWidth + 12, stubHeight + 12), palette.focusOutline);
     }
     drawRectScreen(vec2(centerX, centerY), vec2(stubWidth, stubHeight), bgColor);
     drawTextScreen('Achievements', vec2(centerX, centerY), Math.round(16 * layout.fontScale), textColor, 0, null, 1, 0, 'center');
@@ -852,7 +856,7 @@ export function createUISystem({ accessibility } = {}) {
     if (layout.achievementsPosition === 'bottom') {
       if (!panelState.autoHideInitialized) {
         panelState.achievementVisible = true;
-        panelState.achievementTimer = 5;
+        panelState.achievementTimer = achievementTiming.initial;
         panelState.autoHideInitialized = true;
       } else {
         if (panelState.touchInteractionTimer > 0) {
@@ -861,7 +865,7 @@ export function createUISystem({ accessibility } = {}) {
 
         if (panelState.touchInteractionTimer > 0) {
           panelState.achievementVisible = true;
-          panelState.achievementTimer = 4;
+          panelState.achievementTimer = achievementTiming.touchExtend;
         }
 
         if (panelState.achievementTimer > 0) {
@@ -870,7 +874,10 @@ export function createUISystem({ accessibility } = {}) {
 
         if (keyboardFocusIndex >= 0 && keyboardOptionsLength > 0 && !pointerConsumed) {
           panelState.achievementVisible = true;
-          panelState.achievementTimer = Math.min(panelState.achievementTimer + delta, 3);
+          panelState.achievementTimer = Math.min(
+            panelState.achievementTimer + delta,
+            achievementTiming.keyboardMax,
+          );
         }
 
         if (panelState.achievementTimer === 0 && panelState.touchInteractionTimer === 0) {
@@ -895,7 +902,7 @@ export function createUISystem({ accessibility } = {}) {
     const nextVisible = !panelState.achievementVisible;
     panelState.achievementVisible = nextVisible;
     panelState.touchInteractionTimer = 0;
-    panelState.achievementTimer = nextVisible ? 4 : 0;
+    panelState.achievementTimer = nextVisible ? achievementTiming.toggle : 0;
     panelState.autoHideInitialized = true;
     keyboardStubAvailable = layout.achievementsPosition === 'bottom' && !nextVisible;
     if (nextVisible) {
@@ -923,7 +930,7 @@ export function createUISystem({ accessibility } = {}) {
       const { layout } = useLittleJS();
       if (layout.achievementsPosition === 'bottom') {
         panelState.achievementVisible = true;
-        panelState.achievementTimer = 6;
+        panelState.achievementTimer = achievementTiming.unlock;
       }
     }
   }
