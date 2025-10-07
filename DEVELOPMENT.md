@@ -76,6 +76,7 @@ The structure above is aspirational until we begin committing implementation wor
 - Use `drawRectScreen`/`drawTextScreen` for UI and anchor everything to a virtual layout grid so resizing is trivial.
 - Keep update loops deterministic where possible; in tests, mock time deltas for repeatability.
 - Profile with the built-in LittleJS profiler each milestone to ensure performance headroom.
+- Render the HUD into `src/game/monitor-display.js` before blitting when working on the over-the-shoulder composition; see `src/game/scene.js` for the current desk scene stub.
 
 ## Communication Norms
 - Weekly sync note in the project board summarizing progress and blockers.
