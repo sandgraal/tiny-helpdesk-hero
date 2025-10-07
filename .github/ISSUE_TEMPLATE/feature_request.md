@@ -1,19 +1,20 @@
 ---
 name: Feature request
-title: "[Feature] "
-labels: [Enhancement]
-assignees: []
+about: Suggest an idea for this project
+title: ''
+labels: ''
+assignees: ''
+
 ---
 
-## Summary
-Describe the improvement, including the player impact and empathy goals.
+**Is your feature request related to a problem? Please describe.**
+A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
-## Proposed Solution
-Outline the main changes. Reference relevant modules or docs.
+**Describe the solution you'd like**
+A clear and concise description of what you want to happen.
 
-## Acceptance Criteria
-- [ ] Criterion 1
-- [ ] Criterion 2
+**Describe alternatives you've considered**
+A clear and concise description of any alternative solutions or features you've considered.
 
-## Notes
-Add references, mockups, or related issues.
+**Additional context**
+Add any other context or screenshots about the feature request here.
