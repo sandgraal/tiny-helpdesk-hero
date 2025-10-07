@@ -13,3 +13,4 @@ All notable changes to this project will be documented in this file.
 - Added optional haptic feedback for incorrect selections while respecting reduced-motion preferences.
 - Integrated shared palette/motion tokens into on-canvas LittleJS UI rendering.
 - Scaffolded monitor display helper and routed UI rendering through an off-screen canvas for upcoming over-the-shoulder composition.
+- Added camera parallax, low-power toggle, and empathy-driven ambient lighting scaffolds for the desk scene.

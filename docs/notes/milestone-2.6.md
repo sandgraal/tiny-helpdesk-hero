@@ -10,8 +10,8 @@ This milestone brings the over-the-shoulder composition, monitor projection, and
 - [x] Off-screen UI render integrated into LittleJS render pipeline.
 - [x] Empathy-driven lighting variables connected to rendering layer.
 - [ ] Hero + prop animation sets drafted.
-- [ ] Parallax + low-power modes implemented.
-- [ ] Dynamic visuals documented in `docs/art/iteration-log.md`.
+- [x] Parallax + low-power modes implemented.
+- [x] Dynamic visuals documented in `docs/art/iteration-log.md`.
 
 ## Workstreams & Tasks
 
@@ -25,7 +25,7 @@ This milestone brings the over-the-shoulder composition, monitor projection, and
 - [ ] Add post-processing shader / filter toggle with low-power fallback.
 
 ### Empathy Feedback
-- [ ] Map empathy score to lighting tint, monitor glow, and prop states.
+- [x] Map empathy score to lighting tint, monitor glow, and prop states.
 - [ ] Author failure feedback effects (screen static, light flicker) respecting performance cap.
 
 ### Animation
