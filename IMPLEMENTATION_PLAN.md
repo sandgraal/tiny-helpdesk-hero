@@ -37,7 +37,7 @@ The project is kicking off with a documentation-first approach. This plan captur
 - [x] Add animated UI states (button hover/press, queue pulses, empathy meter) with accessibility-safe motion defaults.
 - [x] Layer adaptive audio cues (persona motifs, empathy filters, office ambience) with mixing controls. *(Hold music loop + empathy volume in place; persona motifs forthcoming.)*
 - [x] Implement achievement/meta-humor tracking and UI presentation layer.
-- [ ] Expand call library to minimum viable jam scope (≥ 30 unique combinations) with tone review checklist.
+- [x] Expand call library to minimum viable jam scope (≥ 30 unique combinations) with tone review checklist.
 - [x] Produce first draft of narrative/style guide in `docs/narrative/guide.md` and ensure content adheres.
 
 ## Milestone 3 — Polish & Submission
