@@ -10,6 +10,7 @@ import { achievementDefinitions } from '../content/achievements.js';
 import { createAchievementSystem } from '../systems/achievements.js';
 import { createAccessibilitySettings } from '../systems/accessibility.js';
 import { createMonitorDisplay } from './monitor-display.js';
+import { createDeskScene } from './scene.js';
 
 function triggerHaptic(pattern, warningLabel = 'Haptic trigger failed') {
   const vibrate = globalThis.navigator?.vibrate;
@@ -66,6 +67,7 @@ export function createGameLifecycle() {
     height: globalThis.mainCanvasSize?.y ?? 360,
     devicePixelRatio: globalThis.devicePixelRatio ?? 1,
   });
+  const deskScene = createDeskScene({ monitorDisplay });
 
   function getMainCanvasSize() {
     const size = globalThis.mainCanvasSize;
@@ -219,11 +221,10 @@ export function createGameLifecycle() {
         ?? globalThis.mainContext
         ?? monitorContext;
 
-      monitorDisplay.drawTo(targetContext, {
-        dx: 0,
-        dy: 0,
-        dWidth: canvasWidth,
-        dHeight: canvasHeight,
+      deskScene.render({
+        context: targetContext,
+        canvasSize: { width: canvasWidth, height: canvasHeight },
+        renderState,
       });
     } else {
       gameState.ui.render(renderState);
