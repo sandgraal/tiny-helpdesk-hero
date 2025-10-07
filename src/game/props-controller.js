@@ -14,6 +14,8 @@ export function createPropsController() {
     lowPower: false,
     failureIntensity: 0,
     lastSelection: null,
+    heroPosture: 0.5,
+    heroCelebration: 0,
   };
 
   function update({ empathyScore = 0, callCount = 0, lowPowerMode = false, lastSelection = null } = {}) {
@@ -29,6 +31,8 @@ export function createPropsController() {
       lowPower: Boolean(lowPowerMode),
       failureIntensity,
       lastSelection: lastSelection ? { correct: Boolean(lastSelection.correct) } : null,
+      heroPosture: lowPowerMode ? 0.4 + ratio * 0.4 : 0.3 + ratio * 0.6,
+      heroCelebration: !lowPowerMode && lastSelection?.correct ? clamp(state.heroCelebration + 0.25, 0, 1) : Math.max(0, state.heroCelebration - 0.12),
     };
   }
 

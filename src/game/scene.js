@@ -54,7 +54,7 @@ export function createDeskScene({ monitorDisplay, camera, lighting, props }) {
     }
 
     const frame = drawMonitorFrame(context, width, height);
-    drawDesk(context, width, height, propsState);
+    const desk = drawDesk(context, width, height, propsState);
 
     context.save?.();
     if (context.translate && (offset.x !== 0 || offset.y !== 0)) {

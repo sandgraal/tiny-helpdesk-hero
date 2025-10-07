@@ -3,6 +3,7 @@
  */
 
 import { drawRoundedRect, drawEllipse, hsl } from './draw-utils.js';
+import { drawHero } from './hero-assets.js';
 
 export function drawDesk(ctx, width, height, propsState) {
   if (!ctx) {
@@ -48,6 +49,12 @@ export function drawDesk(ctx, width, height, propsState) {
   drawRoundedRect(ctx, stripX, stripY, stripWidth, 6, 3);
   ctx.fill();
   ctx.restore();
+
+  drawHero(ctx, deskTopY, width, propsState);
+
+  return {
+    deskTopY,
+  };
 }
 
 export function drawMonitorFrame(ctx, width, height) {
