@@ -14,9 +14,9 @@
 - [x] Provide “high-contrast” mode that boosts background darkness and button clarity.
 - [x] Verify color alone is never the sole indicator (use icons/checks for unlocked achievements).
 
-## Input & Motion
+-## Input & Motion
 - [x] Respect reduced-motion preference (already supported via animation helpers) — confirm achievements pulse honors this.
-- [ ] Ensure keyboard navigation plan for future milestone (focusable options, restart button).
+- [x] Ensure keyboard navigation plan for future milestone (focusable options, restart button). *(See `docs/playtests/keyboard-navigation-plan.md`.)*
 - [x] Document touch target minimum size (48px) for mobile interactions.
 
 ## Testing & Verification
