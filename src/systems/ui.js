@@ -111,14 +111,16 @@ export function createUISystem() {
     );
   }
 
-  function renderHeader({ callIndex, callCount }) {
+  function renderHeader({ currentIndex, callCount }) {
     const { drawTextScreen, vec2, mainCanvasSize } = getLittleJS();
     if (!drawTextScreen || !vec2 || !mainCanvasSize) {
       return;
     }
     const pulseOffset = callPulse.getValue() * 6;
+    const safeIndex = Number.isFinite(currentIndex) ? currentIndex : 0;
+    const safeCount = Number.isFinite(callCount) ? callCount : 0;
     drawTextScreen(
-      `Call ${callIndex + 1} of ${callCount}`,
+      `Call ${safeIndex + 1} of ${safeCount}`,
       vec2(mainCanvasSize.x / 2, layout.headerY - pulseOffset),
       26,
       '#7FDBFF',
@@ -271,8 +273,9 @@ export function createUISystem() {
     if (!drawRectScreen || !vec2 || !mainCanvasSize) {
       return;
     }
-
-    const remaining = isComplete ? 0 : Math.max(callCount - currentIndex - 1, 0);
+    const safeIndex = Number.isFinite(currentIndex) ? currentIndex : 0;
+    const safeCount = Number.isFinite(callCount) ? callCount : 0;
+    const remaining = isComplete ? 0 : Math.max(safeCount - safeIndex - 1, 0);
     const width = 160;
     const height = 28;
     const x = mainCanvasSize.x - layout.canvasPadding - width / 2;
