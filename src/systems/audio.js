@@ -46,6 +46,10 @@ function createHoldMusic() {
   return createSound([1, 0, 220, 0.2, 0.8, 1.2, 0.1, 0.4, 0.05, 0.2, , , , 0.5, , 0.4]);
 }
 
+function createAchievementChime() {
+  return createSound([1.6, 0, 880, 0.01, 0.15, 0.2, 1.6, 0.2, 0.02, 0.3, , , 0.04, , 0.4]);
+}
+
 const personaMotifPresets = {
   'overwhelmed-designer': [1.06, 0.11, 523.25, 0.02, 0.12, 0.18, 0.2, 0.3, , , , , , 0.4, , 0.2],
   'sleep-deprived-gamer': [0.9, 0.05, 329.63, 0.01, 0.2, 0.34, 0.1, 0.4, , , , , , 0.3, , 0.3],
@@ -65,6 +69,7 @@ export function createAudioSystem() {
   let successCue = createSuccessCue();
   let failCue = createFailCue();
   let holdMusic = createHoldMusic();
+  let achievementChime = createAchievementChime();
   let holdSource = null;
   const motifCache = new Map();
 
@@ -80,6 +85,9 @@ export function createAudioSystem() {
     }
     if (!holdMusic) {
       holdMusic = createHoldMusic();
+    }
+    if (!achievementChime) {
+      achievementChime = createAchievementChime();
     }
     if (motifCache.size === 0 && canUseSound()) {
       Object.keys(personaMotifPresets).forEach((id) => {
@@ -140,6 +148,11 @@ export function createAudioSystem() {
     holdSource = null;
   }
 
+  function playAchievementChime() {
+    ensureSounds();
+    playSound(achievementChime, { volume: 0.65, pitch: 1 });
+  }
+
   function updateEmpathyLevel(current, total) {
     if (!holdSource) {
       return;
@@ -167,5 +180,6 @@ export function createAudioSystem() {
     stopHoldLoop,
     updateEmpathyLevel,
     stopAll,
+    playAchievementChime,
   };
 }

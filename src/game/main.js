@@ -109,6 +109,7 @@ export function createGameLifecycle() {
       });
       if (Array.isArray(unlocks) && unlocks.length) {
         gameState.ui.notifyAchievements(unlocks);
+        gameState.audio.playAchievementChime?.();
       }
     }
   }

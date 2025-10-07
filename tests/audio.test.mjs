@@ -103,6 +103,11 @@ test('audio system caches sounds and updates empathy volume', { concurrency: fal
     const motifCount = createdInstances.filter((instance) => Array.isArray(instance.params) && instance.params.length > 0).length;
     assert.ok(motifCount >= 4, 'Persona motif presets seeded.');
 
+    const eventsBeforeChime = playEvents.length;
+    audio.playAchievementChime();
+    const chimeEvents = playEvents.slice(eventsBeforeChime);
+    assert.ok(chimeEvents.length >= 1, 'Achievement chime should trigger playback.');
+
     audio.stopHoldLoop();
     assert.ok(lastLoopHandle.stopped, 'Hold loop stops cleanly.');
     audio.stopAll();
@@ -144,4 +149,3 @@ test('audio system ignores unknown persona motifs gracefully', { concurrency: fa
   }
   assert.ok(warnings.some((message) => message.includes('Missing persona motif preset')));
 });
-
