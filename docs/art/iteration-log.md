@@ -14,7 +14,7 @@ Use this log to capture before/after snapshots and notes for key visual changes 
 
 | Date | Feature / Area | Before | After | Notes |
 |------|----------------|--------|-------|-------|
-| _Pending_ | — | — | — | Begin logging once first art pass lands |
+| 2024-05-12 | Ambient empathy lighting | `reference/before-ambient.png` | `reference/after-ambient.png` | Added warm/cool tint + monitor glow driven by empathy ratio (`src/game/scene.js`). Low-power mode clamps glow. |
 
 ## Screenshot Guidelines
 - Capture at 1280×720 and, when relevant, a secondary mobile resolution (minimum 390×844).

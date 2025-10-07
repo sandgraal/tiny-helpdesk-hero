@@ -21,7 +21,7 @@ This milestone brings the over-the-shoulder composition, monitor projection, and
 
 ### Monitor Projection
 - [x] Scaffold off-screen UI canvas helper (`src/game/monitor-display.js`).
-- [ ] Hook helper into `createGameLifecycle` render step and blit to monitor sprite.
+- [x] Hook helper into `createGameLifecycle` render step and blit to monitor sprite.
 - [ ] Add post-processing shader / filter toggle with low-power fallback.
 
 ### Empathy Feedback
