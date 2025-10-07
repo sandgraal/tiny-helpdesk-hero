@@ -141,6 +141,7 @@ export function createUISystem({ accessibility } = {}) {
     autoHideInitialized: false,
     achievementTimer: 0,
     achievementVisible: true,
+    touchInteractionTimer: 0,
   };
   let accessibilityState = accessibility?.getState?.() ?? {
     fontScale: 1,
@@ -575,7 +576,12 @@ export function createUISystem({ accessibility } = {}) {
     const span = layout.optionHeight + layout.optionGap;
     const index = Math.floor(relativeY / span);
     const withinHeight = relativeY % span <= layout.optionHeight;
-    return withinHeight ? index : -1;
+    if (withinHeight) {
+      panelState.touchInteractionTimer = 3;
+      panelState.achievementVisible = true;
+      return index;
+    }
+    return -1;
   }
 
   function update(delta = 0, pointer, call) {
@@ -609,9 +615,21 @@ export function createUISystem({ accessibility } = {}) {
         panelState.achievementVisible = true;
         panelState.achievementTimer = 5;
         panelState.autoHideInitialized = true;
-      } else if (panelState.achievementTimer > 0) {
-        panelState.achievementTimer = Math.max(0, panelState.achievementTimer - delta);
-        if (panelState.achievementTimer === 0) {
+      } else {
+        if (panelState.touchInteractionTimer > 0) {
+          panelState.touchInteractionTimer = Math.max(0, panelState.touchInteractionTimer - delta);
+        }
+
+        if (panelState.touchInteractionTimer > 0) {
+          panelState.achievementVisible = true;
+          panelState.achievementTimer = 4;
+        }
+
+        if (panelState.achievementTimer > 0) {
+          panelState.achievementTimer = Math.max(0, panelState.achievementTimer - delta);
+        }
+
+        if (panelState.achievementTimer === 0 && panelState.touchInteractionTimer === 0) {
           panelState.achievementVisible = false;
         }
       }
