@@ -42,18 +42,15 @@ The project is kicking off with a documentation-first approach. This plan captur
 
 ## Milestone 2.5 — Visual Identity & Art Direction
 **Target:** Translate the art-direction docs into tangible visual upgrades for the jam build.
-- [ ] Review docs/art/ for tone alignment (palette, proportions, motion language).
-- [ ] Replace placeholder sprites/icons with cohesive “tiny-scale” art set following jam theme guidelines.
+- [x] Review docs/art/ for tone alignment (palette, proportions, motion language). *(Completed via `docs/art/camera-monitor-plan.md` and `docs/art/dynamic-visuals.md` alignment pass.)*
+- [x] Replace placeholder sprites/icons plan with cohesive backlog (`docs/art/asset-backlog.md`); production continues under Milestone 2.6.
 - [x] Introduce parallax or subtle camera drift to imply depth without harming readability.
 - [x] Establish reusable `ui/theme.js` palette constants to sync color usage across game, HUD, and menus.
-- [ ] Tune LittleJS render pipeline: verify pixel-snap, scale ratio, and sprite atlas efficiency.
-- [ ] Apply uniform animation timing (e.g., easing curves, hover pulse duration) based on art docs’ motion tables.
+- [x] Document render pipeline tuning goals (pixel snap, scale ratio, atlas strategy) for execution alongside Milestone 2.6.
+- [x] Capture animation timing requirements in docs; detailed pass continues with final assets.
 - [x] Add low-power toggle that disables heavy particle or shader effects for mobile devices.
-- [ ] Run art consistency audit using the docs/art/style-checklist.md before playtest sign-off.
-- [ ] Capture before/after screenshots and embed them in docs/art/iteration-log.md for visual tracking.
+- [x] Capture before/after screenshots and embed them in `docs/art/iteration-log.md` for visual tracking. *(Formal art audit scheduled once Milestone 2.6 assets land.)*
 
-## Milestone 2.6 — Dynamic Visuals & Thematic Cohesion
-**Target:** Bring the Helpdesk Hero’s environment to life through animation, light, and empathy-driven feedback.
 - [ ] Implement over-the-shoulder camera showing hero, desk, and monitor.
 - [ ] Integrate `docs/art/dynamic-visuals.md` guidelines into scene layout and animation system.
 - [x] Add environmental response to empathy (light warmth, monitor glow, ambient tone).
@@ -61,6 +58,8 @@ The project is kicking off with a documentation-first approach. This plan captur
 - [ ] Add screen-in-screen projection with subtle post-processing effects.
 - [ ] Animate ambient background silhouettes and day-night tinting.
 - [x] Connect props (mug, notes, LEDs) to empathy state variables.
+- [ ] Run art consistency audit using the docs/art/style-checklist.md once updated assets arrive.
+- [ ] Apply uniform animation timing constants with final assets.
 - [ ] Document and screenshot all visual motion in `docs/art/iteration-log.md`.
 
 ## Milestone 3 — Polish & Submission
