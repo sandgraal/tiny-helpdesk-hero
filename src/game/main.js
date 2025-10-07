@@ -85,6 +85,14 @@ export function createGameLifecycle() {
       if (Array.isArray(unlocks) && unlocks.length) {
         gameState.ui.notifyAchievements(unlocks);
         gameState.audio.playAchievementChime?.();
+        try {
+          const vibrate = globalThis.navigator?.vibrate;
+          if (typeof vibrate === 'function') {
+            vibrate([20, 30, 20]);
+          }
+        } catch (error) {
+          console.warn('[GameLifecycle] Achievement haptic failed', error);
+        }
       }
     }
   }
