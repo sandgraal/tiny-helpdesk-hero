@@ -5,15 +5,52 @@ import { createHoverState, createPulseState } from './animation/tween.js';
  * Renders calls, options, and empathy score using LittleJS screen-space helpers.
  */
 
-const layout = {
-  canvasPadding: 40,
-  optionHeight: 60,
-  optionGap: 16,
-  headerY: 48,
-  personaY: 96,
-  promptY: 156,
-  optionStartY: 240,
-};
+function getLayoutForSize(mainCanvasSize) {
+  const width = mainCanvasSize?.x ?? 1280;
+
+  if (width <= 480) {
+    return {
+      canvasPadding: 16,
+      optionHeight: 48,
+      optionGap: 10,
+      headerY: 32,
+      personaY: 58,
+      promptY: 108,
+      optionStartY: 188,
+      fontScale: 0.85,
+      achievementsPosition: 'bottom',
+      achievementsMaxVisible: 2,
+    };
+  }
+
+  if (width <= 900) {
+    return {
+      canvasPadding: 24,
+      optionHeight: 54,
+      optionGap: 12,
+      headerY: 40,
+      personaY: 78,
+      promptY: 140,
+      optionStartY: 216,
+      fontScale: 0.92,
+      achievementsPosition: 'right',
+      achievementsMaxVisible: 3,
+    };
+  }
+
+  return {
+    canvasPadding: 40,
+    optionHeight: 60,
+    optionGap: 16,
+    headerY: 48,
+    personaY: 96,
+    promptY: 156,
+    optionStartY: 240,
+    fontScale: 1,
+    achievementsPosition: 'right',
+    achievementsMaxVisible: 3,
+  };
+}
 
 function getLittleJS() {
   const fallbackVec2 = (x = 0, y = 0) => ({ x, y });
@@ -78,7 +115,15 @@ function getLittleJS() {
     context.restore?.();
   };
 
-  return { drawRectScreen, drawTextScreen, mainCanvasSize, vec2 };
+  const layout = getLayoutForSize(mainCanvasSize);
+
+  return {
+    drawRectScreen,
+    drawTextScreen,
+    mainCanvasSize,
+    vec2,
+    layout,
+  };
 }
 
 export function createUISystem() {
@@ -113,8 +158,8 @@ export function createUISystem() {
   }
 
   function renderHeader({ currentIndex, callCount }) {
-    const { drawTextScreen, vec2, mainCanvasSize } = getLittleJS();
-    if (!drawTextScreen || !vec2 || !mainCanvasSize) {
+    const { drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
       return;
     }
     const pulseOffset = callPulse.getValue() * 6;
@@ -123,7 +168,7 @@ export function createUISystem() {
     drawTextScreen(
       `Call ${safeIndex + 1} of ${safeCount}`,
       vec2(mainCanvasSize.x / 2, layout.headerY - pulseOffset),
-      26,
+      Math.round(26 * layout.fontScale),
       '#7FDBFF',
       1,
       '#001F3F',
@@ -134,15 +179,15 @@ export function createUISystem() {
   }
 
   function renderPrompt(call) {
-    const { drawTextScreen, vec2, mainCanvasSize } = getLittleJS();
-    if (!drawTextScreen || !vec2 || !mainCanvasSize || !call) {
+    const { drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout || !call) {
       return;
     }
     const pulseOffset = callPulse.getValue() * 12;
     drawTextScreen(
       call.prompt,
       vec2(mainCanvasSize.x / 2, layout.promptY - pulseOffset),
-      20,
+      Math.round(20 * layout.fontScale),
       '#FFFFFF',
       1,
       '#000000',
@@ -153,8 +198,8 @@ export function createUISystem() {
   }
 
   function renderOptions(call) {
-    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize } = getLittleJS();
-    if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !call) {
+    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout || !call) {
       return;
     }
 
@@ -171,7 +216,7 @@ export function createUISystem() {
       drawTextScreen(
         option.text,
         vec2(center.x, center.y + textYOffset),
-        18,
+        Math.round(18 * layout.fontScale),
         '#041C32',
         0,
         null,
@@ -183,8 +228,8 @@ export function createUISystem() {
   }
 
   function renderPersonaDetails(call) {
-    const { drawTextScreen, vec2, mainCanvasSize } = getLittleJS();
-    if (!drawTextScreen || !vec2 || !mainCanvasSize || !call?.persona) {
+    const { drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout || !call?.persona) {
       return;
     }
 
@@ -192,7 +237,7 @@ export function createUISystem() {
     drawTextScreen(
       personaLine,
       vec2(mainCanvasSize.x / 2, layout.personaY),
-      18,
+      Math.round(18 * layout.fontScale),
       '#FFE45E',
       0,
       null,
@@ -204,8 +249,8 @@ export function createUISystem() {
     if (call.twist?.promptModifier) {
       drawTextScreen(
         call.twist.promptModifier,
-        vec2(mainCanvasSize.x / 2, layout.personaY + 26),
-        16,
+        vec2(mainCanvasSize.x / 2, layout.personaY + 26 * layout.fontScale),
+        Math.round(16 * layout.fontScale),
         '#B8E1FF',
         0,
         null,
@@ -217,15 +262,15 @@ export function createUISystem() {
   }
 
   function renderEmpathyScore(score) {
-    const { drawTextScreen, vec2, mainCanvasSize } = getLittleJS();
-    if (!drawTextScreen || !vec2 || !mainCanvasSize) {
+    const { drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
       return;
     }
 
     drawTextScreen(
       `Empathy: ${score}`,
-      vec2(mainCanvasSize.x - layout.canvasPadding, mainCanvasSize.y - layout.canvasPadding - 40),
-      18,
+      vec2(mainCanvasSize.x - layout.canvasPadding, mainCanvasSize.y - layout.canvasPadding - 40 * layout.fontScale),
+      Math.round(18 * layout.fontScale),
       '#F5EE9E',
       0,
       null,
@@ -236,13 +281,13 @@ export function createUISystem() {
   }
 
   function renderEmpathyMeter({ empathyScore, callCount }) {
-    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize } = getLittleJS();
-    if (!drawRectScreen || !vec2 || !mainCanvasSize) {
+    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    if (!drawRectScreen || !vec2 || !mainCanvasSize || !layout) {
       return;
     }
 
     const ratio = callCount > 0 ? Math.min(Math.max(empathyScore / callCount, 0), 1) : 0;
-    const baseWidth = 220;
+    const baseWidth = layout.achievementsPosition === 'bottom' ? mainCanvasSize.x - layout.canvasPadding * 2 : 220;
     const baseHeight = 16;
     const x = layout.canvasPadding + baseWidth / 2;
     const y = mainCanvasSize.y - layout.canvasPadding - baseHeight / 2;
@@ -259,7 +304,7 @@ export function createUISystem() {
     drawTextScreen(
       `${Math.round(ratio * 100)}%`,
       vec2(x, y - 20),
-      16,
+      Math.round(16 * layout.fontScale),
       '#E9F1F7',
       0,
       null,
@@ -270,14 +315,14 @@ export function createUISystem() {
   }
 
   function renderQueueIndicator({ callCount, currentIndex, isComplete }) {
-    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize } = getLittleJS();
-    if (!drawRectScreen || !vec2 || !mainCanvasSize) {
+    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    if (!drawRectScreen || !vec2 || !mainCanvasSize || !layout) {
       return;
     }
     const safeIndex = Number.isFinite(currentIndex) ? currentIndex : 0;
     const safeCount = Number.isFinite(callCount) ? callCount : 0;
     const remaining = isComplete ? 0 : Math.max(safeCount - safeIndex - 1, 0);
-    const width = 160;
+    const width = layout.achievementsPosition === 'bottom' ? 180 : 160;
     const height = 28;
     const x = mainCanvasSize.x - layout.canvasPadding - width / 2;
     const y = layout.headerY + 16;
@@ -289,7 +334,7 @@ export function createUISystem() {
     drawTextScreen(
       remaining > 0 ? `${remaining} in queue` : isComplete ? 'Queue clear' : 'Last caller',
       vec2(x, y + 4),
-      16,
+      Math.round(16 * layout.fontScale),
       '#091540',
       0,
       null,
@@ -300,15 +345,15 @@ export function createUISystem() {
   }
 
   function renderCompletion({ empathyScore, callCount }) {
-    const { drawTextScreen, vec2, mainCanvasSize } = getLittleJS();
-    if (!drawTextScreen || !vec2 || !mainCanvasSize) {
+    const { drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
       return;
     }
 
     drawTextScreen(
       'Shift complete!',
       vec2(mainCanvasSize.x / 2, mainCanvasSize.y / 2 - 24),
-      32,
+      Math.round(32 * layout.fontScale),
       '#4CE0D2',
       1,
       '#001F3F',
@@ -319,7 +364,7 @@ export function createUISystem() {
     drawTextScreen(
       `Empathy Score: ${empathyScore} / ${callCount}`,
       vec2(mainCanvasSize.x / 2, mainCanvasSize.y / 2 + 16),
-      22,
+      Math.round(22 * layout.fontScale),
       '#FFFFFF',
       0,
       '#000000',
@@ -330,14 +375,14 @@ export function createUISystem() {
   }
 
   function renderEmptyState() {
-    const { drawTextScreen, vec2, mainCanvasSize } = getLittleJS();
-    if (!drawTextScreen || !vec2 || !mainCanvasSize) {
+    const { drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
       return;
     }
     drawTextScreen(
       'No calls in queue. Add content in src/content/calls.js.',
       vec2(mainCanvasSize.x / 2, mainCanvasSize.y / 2),
-      18,
+      Math.round(18 * layout.fontScale),
       '#FFFFFF',
       0,
       '#000000',
@@ -351,21 +396,27 @@ export function createUISystem() {
     if (!achievementsState) {
       return;
     }
-    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize } = getLittleJS();
-    if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize) {
+    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout } = getLittleJS();
+    if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout) {
       return;
     }
 
-    const panelWidth = Math.min(340, Math.max(260, mainCanvasSize.x * 0.28));
+    const panelWidth = layout.achievementsPosition === 'bottom'
+      ? Math.min(mainCanvasSize.x - layout.canvasPadding * 2, 360)
+      : Math.min(340, Math.max(260, mainCanvasSize.x * 0.28));
     const entries = achievementsState.entries ?? [];
-    const visible = entries.slice(0, 3);
+    const visible = entries.slice(0, layout.achievementsMaxVisible ?? 3);
     if (!visible.length) {
       return;
     }
 
     const panelHeight = 64 + visible.length * 44;
-    const centerX = mainCanvasSize.x - layout.canvasPadding - panelWidth / 2;
-    const centerY = layout.canvasPadding + panelHeight / 2;
+    const centerX = layout.achievementsPosition === 'bottom'
+      ? mainCanvasSize.x / 2
+      : mainCanvasSize.x - layout.canvasPadding - panelWidth / 2;
+    const centerY = layout.achievementsPosition === 'bottom'
+      ? mainCanvasSize.y - layout.canvasPadding - panelHeight / 2
+      : layout.canvasPadding + panelHeight / 2;
     const accent = achievementPulse.getValue();
     const headerColor = accent > 0 ? '#FFD166' : '#7FDBFF';
     const headerAlpha = 0.9 + accent * 0.1;
@@ -379,7 +430,7 @@ export function createUISystem() {
     drawTextScreen(
       `Achievements ${achievementsState.unlockedCount}/${achievementsState.total}`,
       vec2(centerX, centerY - panelHeight / 2 + 26),
-      18,
+      Math.round(18 * layout.fontScale),
       headerColor,
       0,
       '#001F3F',
@@ -403,7 +454,7 @@ export function createUISystem() {
       drawTextScreen(
         `${bullet} ${entry.title}`,
         vec2(contentLeft, rowY),
-        16,
+        Math.round(16 * layout.fontScale),
         titleColor,
         0,
         '#001F3F',
@@ -415,7 +466,7 @@ export function createUISystem() {
       drawTextScreen(
         entry.description,
         vec2(contentLeft + 8, rowY + 18),
-        12,
+        Math.max(11, Math.round(12 * layout.fontScale)),
         bodyColor,
         0,
         '#001F3F',
@@ -451,8 +502,8 @@ export function createUISystem() {
   }
 
   function getOptionIndexAtPoint(pointer) {
-    const { mainCanvasSize } = getLittleJS();
-    if (!mainCanvasSize || !pointer) {
+    const { mainCanvasSize, layout } = getLittleJS();
+    if (!mainCanvasSize || !layout || !pointer) {
       return -1;
     }
 

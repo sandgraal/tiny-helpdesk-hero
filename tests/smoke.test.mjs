@@ -100,9 +100,9 @@ test('UI system maps pointer coordinates to option indices', { concurrency: fals
     },
   }, () => {
     const ui = createUISystem();
-    const pointerFirst = { x: 400, y: 260 };
+    const pointerFirst = { x: 400, y: 250 };
     assert.equal(ui.getOptionIndexAtPoint(pointerFirst), 0, 'Pointer near first option maps to 0.');
-    const pointerSecond = { x: 400, y: 340 };
+    const pointerSecond = { x: 400, y: 305 };
     assert.equal(ui.getOptionIndexAtPoint(pointerSecond), 1, 'Pointer near second option maps to 1.');
     const pointerOutside = { x: 100, y: 100 };
     assert.equal(ui.getOptionIndexAtPoint(pointerOutside), -1, 'Pointer outside returns -1.');
