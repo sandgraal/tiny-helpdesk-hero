@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { createMonitorDisplay } from '../src/game/monitor-display.js';
+import { createMonitorDisplay } from '../src/game/monitor-display.mjs';
 
 function withPatchedGlobals(patches, fn) {
   const sentinel = Symbol('missing');

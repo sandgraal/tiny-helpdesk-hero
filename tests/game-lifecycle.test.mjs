@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { createGameLifecycle } from '../src/game/main.js';
-import { placeholderCalls } from '../src/content/calls.js';
+import { createGameLifecycle } from '../src/game/main.mjs';
+import { placeholderCalls } from '../src/content/calls.mjs';
 
 function withPatchedGlobals(patches, fn) {
   const originals = {};

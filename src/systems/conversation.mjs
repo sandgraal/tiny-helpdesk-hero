@@ -3,7 +3,7 @@
  * Assembles a deck of calls, tracks empathy score, and reports progress.
  */
 
-import { generateCallDeck } from '../content/calls.js';
+import { generateCallDeck } from '../content/calls.mjs';
 
 const defaultRandom = () => Math.random();
 

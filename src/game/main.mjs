@@ -2,19 +2,19 @@
  * Integrates systems into a LittleJS-friendly lifecycle.
  */
 
-import { createConversationSystem } from '../systems/conversation.js';
-import { createUISystem } from '../systems/ui.js';
-import { createAudioSystem } from '../systems/audio.js';
-import { placeholderCalls } from '../content/calls.js';
-import { achievementDefinitions } from '../content/achievements.js';
-import { createAchievementSystem } from '../systems/achievements.js';
-import { createAccessibilitySettings } from '../systems/accessibility.js';
-import { createMonitorDisplay } from './monitor-display.js';
-import { createDeskScene } from './scene.js';
-import { createCameraState } from './camera.js';
-import { createLightingController } from '../systems/lighting/lighting-controller.js';
-import { createPropsController } from './props-controller.js';
-import { subscribe as subscribeSettings, getSettings } from './settings.js';
+import { createConversationSystem } from '../systems/conversation.mjs';
+import { createUISystem } from '../systems/ui.mjs';
+import { createAudioSystem } from '../systems/audio.mjs';
+import { placeholderCalls } from '../content/calls.mjs';
+import { achievementDefinitions } from '../content/achievements.mjs';
+import { createAchievementSystem } from '../systems/achievements.mjs';
+import { createAccessibilitySettings } from '../systems/accessibility.mjs';
+import { createMonitorDisplay } from './monitor-display.mjs';
+import { createDeskScene } from './scene.mjs';
+import { createCameraState } from './camera.mjs';
+import { createLightingController } from '../systems/lighting/lighting-controller.mjs';
+import { createPropsController } from './props-controller.mjs';
+import { subscribe as subscribeSettings, getSettings } from './settings.mjs';
 
 function triggerHaptic(pattern, warningLabel = 'Haptic trigger failed') {
   const vibrate = globalThis.navigator?.vibrate;

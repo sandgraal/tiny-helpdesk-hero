@@ -1,5 +1,5 @@
-import { createHoverState, createPulseState } from './animation/tween.js';
-import { getPalette, motion } from '../ui/theme.js';
+import { createHoverState, createPulseState } from './animation/tween.mjs';
+import { getPalette, motion } from '../ui/theme.mjs';
 
 /**
  * UI system for the greybox build.

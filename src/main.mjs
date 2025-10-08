@@ -3,8 +3,8 @@
  * Boots the LittleJS engine once globals are available.
  */
 
-import { createGameLifecycle } from './game/main.js';
-import { initAccessibilityPanel } from './ui/accessibility-panel.js';
+import { createGameLifecycle } from './game/main.mjs';
+import { initAccessibilityPanel } from './ui/accessibility-panel.mjs';
 
 function startEngine(lifecycle) {
   const { engineInit } = globalThis;

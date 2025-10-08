@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { buildCall, generateCallDeck, placeholderCalls, personas, problems, twists, defaultCallSeeds } from '../src/content/calls.js';
-import { createConversationSystem } from '../src/systems/conversation.js';
-import { createUISystem } from '../src/systems/ui.js';
-import { createHoverState, createPulseState } from '../src/systems/animation/tween.js';
+import { buildCall, generateCallDeck, placeholderCalls, personas, problems, twists, defaultCallSeeds } from '../src/content/calls.mjs';
+import { createConversationSystem } from '../src/systems/conversation.mjs';
+import { createUISystem } from '../src/systems/ui.mjs';
+import { createHoverState, createPulseState } from '../src/systems/animation/tween.mjs';
 
 function withPatchedGlobals(patches, fn) {
   const originals = {};

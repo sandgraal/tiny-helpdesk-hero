@@ -2,9 +2,9 @@
  * Placeholder drawer for desk props; will be replaced by sprite art.
  */
 
-import { drawRoundedRect, drawEllipse, hsl } from './draw-utils.js';
-import { drawHero } from './hero-assets.js';
-import { getImage } from './image-loader.js';
+import { drawRoundedRect, drawEllipse, hsl } from './draw-utils.mjs';
+import { drawHero } from './hero-assets.mjs';
+import { getImage } from './image-loader.mjs';
 
 const deskBackground = getImage('assets/desk-placeholder.svg');
 const monitorFrameImage = getImage('assets/monitor-frame.svg');

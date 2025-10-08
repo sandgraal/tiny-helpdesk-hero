@@ -2,7 +2,7 @@
  * Wires DOM controls to accessibility settings.
  */
 
-import { subscribe as settingsSubscribe, setLowPower, getSettings } from '../game/settings.js';
+import { subscribe as settingsSubscribe, setLowPower, getSettings } from '../game/settings.mjs';
 
 export function initAccessibilityPanel(accessibility) {
   if (!accessibility) {

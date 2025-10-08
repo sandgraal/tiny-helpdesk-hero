@@ -1,5 +1,5 @@
-import { personas, problems, twists, defaultCallSeeds } from '../src/content/calls.js';
-import { assertContentValid, formatContentIssues, ContentValidationError } from '../src/content/validation.js';
+import { personas, problems, twists, defaultCallSeeds } from '../src/content/calls.mjs';
+import { assertContentValid, formatContentIssues, ContentValidationError } from '../src/content/validation.mjs';
 
 try {
   assertContentValid({ personas, problems, twists, seeds: defaultCallSeeds });

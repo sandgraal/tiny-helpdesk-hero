@@ -1,4 +1,4 @@
-import { achievementDefinitions } from '../content/achievements.js';
+import { achievementDefinitions } from '../content/achievements.mjs';
 
 function createShiftStats(callCount = 0) {
   return {

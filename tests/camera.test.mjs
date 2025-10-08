@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { createCameraState } from '../src/game/camera.js';
+import { createCameraState } from '../src/game/camera.mjs';
 
 test('camera offsets respond to pointer position', () => {
   const camera = createCameraState({ parallax: { x: 4, y: 2 } });

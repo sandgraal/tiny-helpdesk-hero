@@ -3,7 +3,7 @@
  * Applies empathy-driven ambient tints and monitor glow before/after blitting the UI texture.
  */
 
-import { drawDesk, drawMonitorFrame } from './desk-assets.js';
+import { drawDesk, drawMonitorFrame } from './desk-assets.mjs';
 
 function toRgba({ r, g, b }, alpha) {
   return `rgba(${r}, ${g}, ${b}, ${alpha.toFixed(3)})`;

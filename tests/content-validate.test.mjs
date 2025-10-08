@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { personas, problems, twists, defaultCallSeeds } from '../src/content/calls.js';
+import { personas, problems, twists, defaultCallSeeds } from '../src/content/calls.mjs';
 import {
   assertContentValid,
   ContentValidationError,
@@ -9,7 +9,7 @@ import {
   validateProblems,
   validateTwists,
   validateSeeds,
-} from '../src/content/validation.js';
+} from '../src/content/validation.mjs';
 
 function createDefaultSeeds() {
   return defaultCallSeeds.map((seed) => ({ ...seed }));

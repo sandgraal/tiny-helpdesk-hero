@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { createAchievementSystem } from '../src/systems/achievements.js';
-import { achievementDefinitions } from '../src/content/achievements.js';
+import { createAchievementSystem } from '../src/systems/achievements.mjs';
+import { achievementDefinitions } from '../src/content/achievements.mjs';
 
 function createSystem() {
   return createAchievementSystem({ definitions: achievementDefinitions });

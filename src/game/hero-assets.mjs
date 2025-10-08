@@ -2,8 +2,8 @@
  * Placeholder hero drawing utilities.
  */
 
-import { drawRoundedRect, drawEllipse, hsl } from './draw-utils.js';
-import { getImage } from './image-loader.js';
+import { drawRoundedRect, drawEllipse, hsl } from './draw-utils.mjs';
+import { getImage } from './image-loader.mjs';
 
 const heroImageResource = getImage('assets/hero-placeholder.svg');
 

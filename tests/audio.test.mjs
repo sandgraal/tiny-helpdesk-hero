@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { createAudioSystem } from '../src/systems/audio.js';
+import { createAudioSystem } from '../src/systems/audio.mjs';
 
 function withPatchedGlobals(patches, fn) {
   const originals = {};

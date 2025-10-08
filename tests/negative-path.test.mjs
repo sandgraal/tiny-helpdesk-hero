@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { buildCall, generateCallDeck, personas, problems } from '../src/content/calls.js';
-import { createConversationSystem } from '../src/systems/conversation.js';
-import { createHoverState, createPulseState } from '../src/systems/animation/tween.js';
+import { buildCall, generateCallDeck, personas, problems } from '../src/content/calls.mjs';
+import { createConversationSystem } from '../src/systems/conversation.mjs';
+import { createHoverState, createPulseState } from '../src/systems/animation/tween.mjs';
 
 function withPatchedGlobals(patches, fn) {
   const originals = {};
