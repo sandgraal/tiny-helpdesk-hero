@@ -2,7 +2,12 @@
  * Wires DOM controls to accessibility settings.
  */
 
-import { subscribe as settingsSubscribe, setLowPower, getSettings } from '../game/settings.mjs';
+import {
+  subscribe as settingsSubscribe,
+  setLowPower,
+  setPostProcessing,
+  getSettings,
+} from '../game/settings.mjs';
 import { imageManifest } from '../game/asset-manifest.mjs';
 
 export function initAccessibilityPanel(accessibility) {
@@ -24,6 +29,7 @@ export function initAccessibilityPanel(accessibility) {
   const dyslexiaCheckbox = panel.querySelector('[data-accessibility-dyslexia]');
   const contrastCheckbox = panel.querySelector('[data-accessibility-contrast]');
   let lowPowerToggle = panel.querySelector('[data-low-power-toggle]');
+  let postProcessingToggle = panel.querySelector('[data-post-processing-toggle]');
 
   if (!lowPowerToggle) {
     lowPowerToggle = doc.createElement('label');
@@ -45,6 +51,28 @@ export function initAccessibilityPanel(accessibility) {
 
   const lowPowerInput = lowPowerToggle.querySelector('[data-low-power-toggle-input]')
     ?? lowPowerToggle.querySelector('input[type="checkbox"]');
+
+  if (!postProcessingToggle) {
+    postProcessingToggle = doc.createElement('label');
+    postProcessingToggle.dataset.postProcessingToggle = 'true';
+    postProcessingToggle.style.display = 'flex';
+    postProcessingToggle.style.flexDirection = 'row';
+    postProcessingToggle.style.alignItems = 'center';
+    postProcessingToggle.style.gap = '6px';
+    postProcessingToggle.style.fontWeight = '600';
+    postProcessingToggle.textContent = 'Monitor filter';
+
+    const toggle = doc.createElement('input');
+    toggle.type = 'checkbox';
+    toggle.dataset.postProcessingToggleInput = 'true';
+    toggle.style.accentColor = '#6EE7FF';
+    toggle.checked = true;
+    postProcessingToggle.appendChild(toggle);
+    panel.appendChild(postProcessingToggle);
+  }
+
+  const postProcessingInput = postProcessingToggle.querySelector('[data-post-processing-toggle-input]')
+    ?? postProcessingToggle.querySelector('input[type="checkbox"]');
 
   function ensureIcon(label, { src, glyph, alt } = {}) {
     if (!label) {
@@ -98,12 +126,16 @@ export function initAccessibilityPanel(accessibility) {
     if (lowPowerInput) {
       lowPowerInput.checked = Boolean(getSettings().lowPower);
     }
+    if (postProcessingInput) {
+      postProcessingInput.checked = Boolean(getSettings().postProcessing);
+    }
   }
 
   ensureIcon(fontScaleSelect?.parentElement, { src: imageManifest.iconTextScale, alt: '' });
   ensureIcon(dyslexiaCheckbox?.parentElement, { glyph: '📘' });
   ensureIcon(contrastCheckbox?.parentElement, { glyph: '🔆' });
   ensureIcon(lowPowerToggle, { glyph: '💡' });
+  ensureIcon(postProcessingToggle, { glyph: '🖥️' });
 
   const initialState = accessibility.getState?.() ?? {};
   applyState(initialState);
@@ -125,6 +157,11 @@ export function initAccessibilityPanel(accessibility) {
   };
   lowPowerInput?.addEventListener('change', handleLowPowerChange);
 
+  const handlePostProcessingChange = (event) => {
+    setPostProcessing(event.target.checked);
+  };
+  postProcessingInput?.addEventListener('change', handlePostProcessingChange);
+
   accessibility.subscribe?.((state) => {
     applyState(state);
   });
@@ -133,10 +170,14 @@ export function initAccessibilityPanel(accessibility) {
     if (lowPowerInput) {
       lowPowerInput.checked = Boolean(state.lowPower);
     }
+    if (postProcessingInput) {
+      postProcessingInput.checked = Boolean(state.postProcessing);
+    }
   });
 
   return () => {
     unsubscribeLowPower();
     lowPowerInput?.removeEventListener('change', handleLowPowerChange);
+    postProcessingInput?.removeEventListener('change', handlePostProcessingChange);
   };
 }

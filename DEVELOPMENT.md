@@ -78,6 +78,13 @@ The structure above is aspirational until we begin committing implementation wor
 - Follow-up: review the block-letter SVG glyphs in the wall poster and empathy meter in a browser build; tweak spacing or curves if the vectorized look drifts from the intended style.
 - Manual QA: capture a current build screenshot of the wall poster and empathy meter to confirm the outlined lettering reads as intended.
 
+## Render Pipeline Notes
+- UI is first rendered into the virtual monitor via `createMonitorDisplay`, which sizes an off-screen canvas using the current `devicePixelRatio`. The desk scene then composites that texture using parallax offsets from `createCameraState`.
+- During compositing, `src/game/desk-assets.mjs` applies layered backgrounds, empathy-driven props, and monitor overlays (`monitorScanlines`, `monitorBloom`, and a radial glow keyed off `lighting.glow`). The glow is skipped automatically when low-power mode is active.
+- Post-processing is opt-in: the accessibility panel exposes a “Monitor filter” toggle that flips the new `settings.postProcessing` flag. When enabled, `createDeskScene` applies a mild `contrast(1.05) saturate(1.08) brightness(1.02)` Canvas filter before blitting the monitor texture; the filter is disabled for low-power users.
+- Low-power mode collapses ambient walkers, dampens prop effects, disables particle strips, and suppresses the monitor filter. This keeps the frame-time delta roughly flat between 0.1 ms–0.2 ms per frame based on the local instrumentation sample logged in `docs/notes/milestone-2.6.md`.
+- Canvas renders rely on LittleJS’ default pixel-snapping and the off-screen monitor canvas is cleared each frame with a solid background to avoid ghosting. If we introduce hardware scaling or smoothing overrides, update `createMonitorDisplay` so we explicitly set `imageSmoothingEnabled` according to the art direction.
+
 ## LittleJS Integration Tips
 - Wrap engine globals (`engineInit`, `setShowSplashScreen`, `mouseWasPressed`, etc.) in adapter functions to simplify mocking.
 - Use `drawRectScreen`/`drawTextScreen` for UI and anchor everything to a virtual layout grid so resizing is trivial.

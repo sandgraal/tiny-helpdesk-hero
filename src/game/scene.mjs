@@ -10,7 +10,7 @@ function toRgba({ r, g, b }, alpha) {
 }
 
 export function createDeskScene({ monitorDisplay, camera, lighting, props }) {
-  function render({ context, canvasSize, renderState }) {
+  function render({ context, canvasSize, renderState, settings }) {
     if (!context || !monitorDisplay) {
       return;
     }
@@ -22,6 +22,7 @@ export function createDeskScene({ monitorDisplay, camera, lighting, props }) {
     const layers = lightingState.layers ?? [];
     const glow = lightingState.glow;
     const lowPower = cameraState.lowPower ?? false;
+    const postProcessingEnabled = !lowPower && (settings?.postProcessing ?? true);
     const lastSelection = propsState.lastSelection ?? null;
     const failureIntensity = propsState.failureIntensity ?? 0;
 
@@ -47,30 +48,36 @@ export function createDeskScene({ monitorDisplay, camera, lighting, props }) {
       renderState,
     });
 
-    context.save?.();
-    if (context.translate && (offset.x !== 0 || offset.y !== 0)) {
-      context.translate(offset.x * 0.4, offset.y * 0.4);
-    }
-    monitorDisplay.drawTo(context, {
-      dx: frame?.x ?? 0,
-      dy: frame?.y ?? 0,
-      dWidth: frame?.width ?? width,
-      dHeight: frame?.height ?? height,
-    });
-    context.restore?.();
-
-    if (!lowPower && glow?.alpha > 0 && context.save) {
+    if (context.save) {
       context.save();
-      context.globalCompositeOperation = 'lighter';
-      const inset = Math.round(Math.min(width, height) * 0.05);
-      context.fillStyle = toRgba(glow.color ?? { r: 255, g: 255, b: 255 }, glow.alpha);
-      context.fillRect(inset, inset, width - inset * 2, height - inset * 2);
+      if (context.translate && (offset.x !== 0 || offset.y !== 0)) {
+        context.translate(offset.x * 0.4, offset.y * 0.4);
+      }
+      if (postProcessingEnabled && typeof context.filter === 'string') {
+        context.filter = 'contrast(1.05) saturate(1.08) brightness(1.02)';
+      }
+      monitorDisplay.drawTo(context, {
+        dx: frame?.x ?? 0,
+        dy: frame?.y ?? 0,
+        dWidth: frame?.width ?? width,
+        dHeight: frame?.height ?? height,
+      });
       context.restore();
+    } else {
+      monitorDisplay.drawTo(context, {
+        dx: frame?.x ?? 0,
+        dy: frame?.y ?? 0,
+        dWidth: frame?.width ?? width,
+        dHeight: frame?.height ?? height,
+      });
     }
+
+    // Bloom overlays now handled inside desk assets during monitor pass.
 
     applyMonitorOverlays(context, frame, propsState, {
       lighting: lightingState,
       renderState,
+      settings,
     });
 
     drawStaticOverlay(context, width, height, failureIntensity);

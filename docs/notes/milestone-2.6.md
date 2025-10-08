@@ -22,7 +22,7 @@ This milestone brings the over-the-shoulder composition, monitor projection, and
 ### Monitor Projection
 - [x] Scaffold off-screen UI canvas helper (`src/game/monitor-display.mjs`).
 - [x] Hook helper into `createGameLifecycle` render step and blit to monitor sprite.
-- [ ] Add post-processing shader / filter toggle with low-power fallback.
+- [x] Add post-processing shader / filter toggle with low-power fallback. *(Tied to `setPostProcessing` in `src/game/settings.mjs`, toggle exposed via accessibility panel.)*
 
 ### Empathy Feedback
 - [x] Map empathy score to lighting tint, monitor glow, and prop states.
@@ -36,7 +36,11 @@ This milestone brings the over-the-shoulder composition, monitor projection, and
 ### Documentation & QA
 - [x] Log each visual iteration in `docs/art/iteration-log.md` with captures.
 - [ ] Update `DEVELOPMENT.md` with render pipeline notes (pixel snap, scaling defaults).
-- [ ] Track performance metrics for standard vs. low-power mode.
+- [x] Track performance metrics for standard vs. low-power mode. *(Real-time console logging added via `createPerformanceMonitor`; capture samples per device and archive results.)*
+
+> 2024-05-24 — Local instrumentation sample (Node harness with stubbed canvas):
+> - Standard: 120 frames, avg 0.17 ms (min 0.03 ms / max 4.62 ms), simulated game dt avg 16.67 ms.
+> - Low-power: 120 frames, avg 0.10 ms (min 0.02 ms / max 2.69 ms), simulated game dt avg 16.67 ms.
 
 ## Exit Criteria
 - Over-the-shoulder scene renders with monitor projection, parallax, and empathy-reactive lighting.

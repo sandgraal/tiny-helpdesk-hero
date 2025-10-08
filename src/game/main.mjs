@@ -15,6 +15,7 @@ import { createCameraState } from './camera.mjs';
 import { createLightingController } from '../systems/lighting/lighting-controller.mjs';
 import { createPropsController } from './props-controller.mjs';
 import { subscribe as subscribeSettings, getSettings } from './settings.mjs';
+import { createPerformanceMonitor } from './performance-monitor.mjs';
 
 function triggerHaptic(pattern, warningLabel = 'Haptic trigger failed') {
   const vibrate = globalThis.navigator?.vibrate;
@@ -66,6 +67,7 @@ function createGameState() {
 export function createGameLifecycle() {
   const gameState = createGameState();
   let lastDelta = 1 / 60;
+  const performanceMonitor = createPerformanceMonitor();
   const monitorDisplay = createMonitorDisplay({
     width: globalThis.mainCanvasSize?.x ?? 640,
     height: globalThis.mainCanvasSize?.y ?? 360,
@@ -74,6 +76,7 @@ export function createGameLifecycle() {
   const cameraState = createCameraState();
   const lightingController = createLightingController();
   const propsController = createPropsController();
+  let lastFrameSettings = getSettings();
   const deskScene = createDeskScene({
     monitorDisplay,
     camera: cameraState,
@@ -189,7 +192,7 @@ export function createGameLifecycle() {
     gameState.lastSelection = null;
   }
 
-  function handleInput(delta) {
+  function handleInput(delta, settings) {
     const { mouseWasPressed, mousePosScreen } = globalThis;
     if (!mouseWasPressed?.(0)) {
       const currentState = computeRenderState();
@@ -199,12 +202,12 @@ export function createGameLifecycle() {
       lightingController.update({
         empathyScore: currentState.empathyScore,
         callCount: currentState.callCount,
-        lowPowerMode: getSettings().lowPower,
+        lowPowerMode: settings.lowPower,
       });
       propsController.update({
         empathyScore: currentState.empathyScore,
         callCount: currentState.callCount,
-        lowPowerMode: getSettings().lowPower,
+        lowPowerMode: settings.lowPower,
         lastSelection: currentState.lastSelection,
       });
       return;
@@ -218,12 +221,12 @@ export function createGameLifecycle() {
     lightingController.update({
       empathyScore: renderState.empathyScore,
       callCount: renderState.callCount,
-      lowPowerMode: getSettings().lowPower,
+      lowPowerMode: settings.lowPower,
     });
     propsController.update({
       empathyScore: renderState.empathyScore,
       callCount: renderState.callCount,
-      lowPowerMode: getSettings().lowPower,
+      lowPowerMode: settings.lowPower,
       lastSelection: renderState.lastSelection,
     });
 
@@ -249,6 +252,8 @@ export function createGameLifecycle() {
       console.log('[TinyHelpdeskHero] render tick', renderState.callCount, renderState.empathyScore);
       renderState.logged = true;
     }
+    const settings = getSettings();
+    lastFrameSettings = settings;
     const originalOverlay = globalThis.overlayContext;
     const monitorContext = monitorDisplay.getContext();
     const monitorCanvas = monitorDisplay.getCanvas();
@@ -274,6 +279,7 @@ export function createGameLifecycle() {
         context: targetContext,
         canvasSize: { width: canvasWidth, height: canvasHeight },
         renderState,
+        settings,
       });
     } else {
       gameState.ui.render(renderState);
@@ -289,12 +295,20 @@ export function createGameLifecycle() {
       bindKeyboardHandlers(computeRenderState());
     },
     update() {
+      performanceMonitor.markFrameStart();
       const delta = globalThis.timeDelta ?? globalThis.frameTime ?? 1 / 60;
       lastDelta = delta;
-      handleInput(delta);
+      const settings = getSettings();
+      lastFrameSettings = settings;
+      handleInput(delta, settings);
     },
     render,
-    renderPost() {},
+    renderPost() {
+      performanceMonitor.markFrameEnd({
+        lowPower: Boolean(lastFrameSettings.lowPower),
+        delta: lastDelta,
+      });
+    },
     updatePost() {},
     accessibility: gameState.accessibility,
   };

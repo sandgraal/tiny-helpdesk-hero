@@ -457,6 +457,7 @@ export function applyMonitorOverlays(ctx, frameRect, propsState = {}, environmen
   const lighting = environment.lighting ?? {};
   const renderState = environment.renderState ?? {};
   const time = nowSeconds();
+  const glow = lighting.glow;
 
   if (!lowPower && isReady(assets.monitorBloom)) {
     ctx.save();
@@ -469,6 +470,23 @@ export function applyMonitorOverlays(ctx, frameRect, propsState = {}, environmen
       frameRect.width,
       frameRect.height,
     );
+    ctx.restore();
+  }
+
+  if (!lowPower && glow?.alpha > 0 && typeof ctx.createRadialGradient === 'function') {
+    const centerX = frameRect.x + frameRect.width / 2;
+    const centerY = frameRect.y + frameRect.height / 2;
+    const innerRadius = Math.max(frameRect.width, frameRect.height) * 0.18;
+    const outerRadius = Math.max(frameRect.width, frameRect.height) * 0.72;
+    const gradient = ctx.createRadialGradient(centerX, centerY, innerRadius, centerX, centerY, outerRadius);
+    gradient.addColorStop(0, colorToRgba(glow.color ?? { r: 255, g: 255, b: 255 }, Math.min(1, glow.alpha * 1.4)));
+    gradient.addColorStop(0.35, colorToRgba(glow.color ?? { r: 255, g: 255, b: 255 }, glow.alpha));
+    gradient.addColorStop(1, colorToRgba(glow.color ?? { r: 255, g: 255, b: 255 }, 0));
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = gradient;
+    ctx.globalAlpha = 1;
+    ctx.fillRect(frameRect.x - outerRadius * 0.1, frameRect.y - outerRadius * 0.1, frameRect.width + outerRadius * 0.2, frameRect.height + outerRadius * 0.2);
     ctx.restore();
   }
 

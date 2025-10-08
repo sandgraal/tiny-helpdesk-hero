@@ -6,6 +6,7 @@ const listeners = new Set();
 
 const state = {
   lowPower: false,
+  postProcessing: true,
 };
 
 function notify() {
@@ -27,6 +28,15 @@ export function setLowPower(enabled) {
   notify();
 }
 
+export function setPostProcessing(enabled) {
+  const flag = Boolean(enabled);
+  if (state.postProcessing === flag) {
+    return;
+  }
+  state.postProcessing = flag;
+  notify();
+}
+
 export function getSettings() {
   return { ...state };
 }
@@ -41,6 +51,7 @@ export function subscribe(listener) {
 
 export default {
   setLowPower,
+  setPostProcessing,
   getSettings,
   subscribe,
 };
