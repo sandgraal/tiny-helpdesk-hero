@@ -245,6 +245,10 @@ export function createGameLifecycle() {
 
   function render() {
     const renderState = computeRenderState();
+    if (!renderState.logged) {
+      console.log('[TinyHelpdeskHero] render tick', renderState.callCount, renderState.empathyScore);
+      renderState.logged = true;
+    }
     const originalOverlay = globalThis.overlayContext;
     const monitorContext = monitorDisplay.getContext();
     const monitorCanvas = monitorDisplay.getCanvas();
