@@ -60,6 +60,12 @@ canvas {
   z-index: 1;
 }
 
+#overlayCanvas {
+  z-index: 2;
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+
 .accessibility-panel {
   position: absolute;
   top: calc(24px + env(safe-area-inset-top, 0px));
@@ -73,7 +79,7 @@ canvas {
   border-radius: 8px;
   backdrop-filter: blur(6px);
   font-size: calc(0.85rem * var(--thh-font-scale));
-  z-index: 2;
+  z-index: 3;
 }
 
 .accessibility-panel label {

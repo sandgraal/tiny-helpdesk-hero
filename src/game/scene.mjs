@@ -40,6 +40,8 @@ export function createDeskScene({ monitorDisplay, camera, lighting, props }) {
     const lastSelection = propsState.lastSelection ?? null;
     const failureIntensity = propsState.failureIntensity ?? 0;
 
+    context.clearRect(0, 0, width, height);
+
     if (context.save) {
       context.save();
       context.globalCompositeOperation = 'source-over';

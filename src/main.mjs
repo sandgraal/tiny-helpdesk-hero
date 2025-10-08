@@ -6,6 +6,30 @@
 import { createGameLifecycle } from './game/main.mjs';
 import { initAccessibilityPanel } from './ui/accessibility-panel.mjs';
 
+function ensureOverlayCanvas() {
+  const doc = globalThis.document;
+  if (!doc) {
+    return;
+  }
+  const mainCanvas = globalThis.mainCanvas ?? doc.getElementById('mainCanvas');
+  const overlayCanvas = doc.getElementById('overlayCanvas');
+  if (!overlayCanvas || !mainCanvas) {
+    return;
+  }
+  const overlayContext = overlayCanvas.getContext('2d');
+  const syncSize = () => {
+    overlayCanvas.width = mainCanvas.width;
+    overlayCanvas.height = mainCanvas.height;
+    overlayCanvas.style.width = mainCanvas.style.width || `${mainCanvas.width}px`;
+    overlayCanvas.style.height = mainCanvas.style.height || `${mainCanvas.height}px`;
+  };
+  syncSize();
+  globalThis.overlayCanvas = overlayCanvas;
+  globalThis.overlayContext = overlayContext;
+  globalThis.addEventListener?.('resize', syncSize);
+  globalThis.addEventListener?.('orientationchange', syncSize);
+}
+
 function startEngine(lifecycle) {
   const { engineInit } = globalThis;
   console.log('[TinyHelpdeskHero] engineInit type:', typeof engineInit);
@@ -25,6 +49,7 @@ function startEngine(lifecycle) {
 function bootstrap() {
   const lifecycle = createGameLifecycle();
   initAccessibilityPanel(lifecycle.accessibility);
+  ensureOverlayCanvas();
 
   function attemptStart() {
     if (!startEngine(lifecycle)) {
