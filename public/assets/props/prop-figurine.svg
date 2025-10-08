@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="200" viewBox="0 0 160 200">
+  <defs>
+    <linearGradient id="figurineBody" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffe27a" />
+      <stop offset="100%" stop-color="#f0b950" />
+    </linearGradient>
+    <linearGradient id="figurineCape" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4ce0d2" />
+      <stop offset="100%" stop-color="#1b98e0" />
+    </linearGradient>
+    <linearGradient id="figurineBase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1f2f52" />
+      <stop offset="100%" stop-color="#111a2d" />
+    </linearGradient>
+  </defs>
+  <ellipse cx="80" cy="180" rx="56" ry="14" fill="rgba(12, 22, 36, 0.35)" />
+  <rect x="36" y="152" width="88" height="18" rx="8" fill="url(#figurineBase)" />
+  <rect x="46" y="72" width="68" height="92" rx="24" fill="url(#figurineBody)" stroke="rgba(31,47,82,0.4)" stroke-width="4" />
+  <circle cx="80" cy="58" r="28" fill="#ffe9c4" />
+  <circle cx="70" cy="56" r="6" fill="#1f3154" />
+  <circle cx="90" cy="56" r="6" fill="#1f3154" />
+  <path d="M68 72 Q80 84 92 72" stroke="#1f3154" stroke-width="6" stroke-linecap="round" fill="none" />
+  <path d="M40 102 Q28 76 48 62 Q70 48 82 70" fill="url(#figurineCape)" opacity="0.85" />
+  <path d="M120 102 Q132 76 112 62 Q90 48 78 70" fill="url(#figurineCape)" opacity="0.85" />
+  <path d="M60 108 Q80 118 100 108" stroke="#1f3154" stroke-width="8" stroke-linecap="round" opacity="0.4" />
+  <rect x="70" y="128" width="20" height="20" rx="6" fill="#1f3154" />
+  <circle cx="80" cy="138" r="6" fill="#ffd166" />
+</svg>

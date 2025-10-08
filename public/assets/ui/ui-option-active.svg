@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="120" viewBox="0 0 360 120">
+  <defs>
+    <linearGradient id="optionActiveSurface" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1b98e0" />
+      <stop offset="100%" stop-color="#0f5fa8" />
+    </linearGradient>
+    <linearGradient id="optionActiveGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffd166" />
+      <stop offset="100%" stop-color="#7cf0d9" />
+    </linearGradient>
+  </defs>
+  <rect x="6" y="10" width="348" height="104" rx="32" fill="rgba(9,18,32,0.85)" />
+  <rect x="24" y="26" width="312" height="76" rx="26" fill="url(#optionActiveSurface)" />
+  <rect x="24" y="26" width="312" height="76" rx="26" fill="url(#optionActiveGlow)" opacity="0.35" />
+  <rect x="34" y="40" width="16" height="56" rx="8" fill="#ffd166" />
+  <path d="M78 82 L118 54 L158 82" stroke="#fff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.35" />
+  <path d="M210 82 L250 54 L290 82" stroke="#fff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.35" />
+  <path d="M120 90 L240 90" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.45" />
+</svg>

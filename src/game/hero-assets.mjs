@@ -1,46 +1,79 @@
 /**
- * Placeholder hero drawing utilities.
+ * Hero drawing utilities backed by milestone 2.6 sprite art.
+ * Falls back to procedural silhouette if assets are still loading.
  */
 
 import { drawRoundedRect, drawEllipse, hsl } from './draw-utils.mjs';
 import { getImage } from './image-loader.mjs';
 
-const heroBaseResource = getImage('assets/hero-base.svg');
-const heroCelebrateResource = getImage('assets/hero-celebrate.svg');
+const heroSprites = {
+  idle: getImage('assets/hero/hero-idle.svg'),
+  typing: getImage('assets/hero/hero-typing.svg'),
+  stretch: getImage('assets/hero/hero-stretch.svg'),
+  lean: getImage('assets/hero/hero-lean.svg'),
+  nod: getImage('assets/hero/hero-nod.svg'),
+  celebrate: getImage('assets/hero/hero-celebrate.svg'),
+};
+
 let loggedFallback = false;
 
-export function drawHero(ctx, deskTopY, width, propsState) {
+function isReady(resource) {
+  return Boolean(resource?.ready && resource.image);
+}
+
+function selectHeroSprite(propsState) {
+  const celebration = propsState?.heroCelebration ?? 0;
+  const posture = propsState?.heroPosture ?? 0.5;
+  const flutter = propsState?.noteFlutter ?? 0;
+  const incorrect = propsState?.lastSelection?.correct === false;
+
+  if (celebration > 0.55 && isReady(heroSprites.celebrate)) {
+    return heroSprites.celebrate;
+  }
+  if (flutter > 0.68 && isReady(heroSprites.typing)) {
+    return heroSprites.typing;
+  }
+  if (posture > 0.78 && isReady(heroSprites.stretch)) {
+    return heroSprites.stretch;
+  }
+  if ((incorrect || posture < 0.42) && isReady(heroSprites.lean)) {
+    return heroSprites.lean;
+  }
+  if (posture > 0.6 && isReady(heroSprites.nod)) {
+    return heroSprites.nod;
+  }
+  if (isReady(heroSprites.idle)) {
+    return heroSprites.idle;
+  }
+  return null;
+}
+
+function drawSprite(ctx, spriteResource, deskTopY, width, propsState) {
+  const sprite = spriteResource?.image;
+  if (!sprite) {
+    return false;
+  }
+  const targetHeight = Math.round((propsState?.lowPower ? 0.9 : 1) * (width * 0.26));
+  const scale = targetHeight / sprite.height;
+  const drawWidth = sprite.width * scale;
+  const drawHeight = sprite.height * scale;
+  const baseX = Math.round(width * 0.46);
+  const posture = propsState?.heroPosture ?? 0.5;
+  const leanOffset = (posture - 0.5) * 18;
+  const celebrationLift = (propsState?.heroCelebration ?? 0) * 18;
+  ctx.save();
+  ctx.translate(baseX + leanOffset, deskTopY - drawHeight + celebrationLift - 12);
+  ctx.drawImage(sprite, -drawWidth / 2, 0, drawWidth, drawHeight);
+  ctx.restore();
+  return true;
+}
+
+export function drawHero(ctx, deskTopY, width, propsState = {}) {
   if (!ctx) {
     return;
   }
-  const posture = propsState?.heroPosture ?? 0.5;
-  const celebration = propsState?.heroCelebration ?? 0;
-  const baseX = Math.round(width * 0.45);
-  const baseY = deskTopY - 6;
-  const torsoHeight = 68;
-  const torsoWidth = 46;
-  const lean = (posture - 0.5) * 12;
-  const raise = celebration * 12;
-
-  ctx.save();
-  ctx.translate(baseX + lean, baseY - torsoHeight - raise);
-
-  const celebrateReady = heroCelebrateResource.ready && heroCelebrateResource.image;
-  const baseReady = heroBaseResource.ready && heroBaseResource.image;
-  const sprite = celebration > 0.3 && celebrateReady
-    ? heroCelebrateResource.image
-    : baseReady
-      ? heroBaseResource.image
-      : null;
-
-  if (sprite) {
-    const spriteWidth = sprite.width;
-    const spriteHeight = sprite.height;
-    const scale = torsoHeight / spriteHeight;
-    const drawWidth = spriteWidth * scale;
-    const drawHeight = spriteHeight * scale;
-    ctx.drawImage(sprite, -drawWidth / 2, -drawHeight + 12, drawWidth, drawHeight);
-    ctx.restore();
+  const spriteResource = selectHeroSprite(propsState);
+  if (spriteResource && drawSprite(ctx, spriteResource, deskTopY, width, propsState)) {
     return;
   }
 
@@ -49,35 +82,40 @@ export function drawHero(ctx, deskTopY, width, propsState) {
     loggedFallback = true;
   }
 
-  // Torso
-  ctx.fillStyle = '#253B6E';
-  drawRoundedRect(ctx, -torsoWidth / 2, 0, torsoWidth, torsoHeight, 14);
+  const posture = propsState?.heroPosture ?? 0.5;
+  const lean = (posture - 0.5) * 12;
+  const raise = (propsState?.heroCelebration ?? 0) * 12;
+  const baseX = Math.round(width * 0.46) + lean;
+  const baseY = deskTopY - 8 - raise;
+  const torsoHeight = 84;
+  const torsoWidth = 52;
+
+  ctx.save();
+  ctx.translate(baseX, baseY - torsoHeight);
+
+  ctx.fillStyle = '#233d6d';
+  drawRoundedRect(ctx, -torsoWidth / 2, 0, torsoWidth, torsoHeight, 18);
   ctx.fill();
 
-  // Arms
-  ctx.fillStyle = '#1E2F57';
-  drawRoundedRect(ctx, -torsoWidth / 2 - 10, 12, 12, torsoHeight - 16, 6);
-  drawRoundedRect(ctx, torsoWidth / 2 - 2, 12 - raise * 0.5, 12, torsoHeight - 16 + raise, 6);
+  ctx.fillStyle = '#1b2f54';
+  drawRoundedRect(ctx, -torsoWidth / 2 - 14, 16, 18, torsoHeight - 20, 8);
+  drawRoundedRect(ctx, torsoWidth / 2 - 4, 16 - raise * 0.4, 18, torsoHeight - 20 + raise, 8);
   ctx.fill();
 
-  // Head
-  ctx.fillStyle = '#F5D6C6';
-  drawEllipse(ctx, 0, -20, 18, 18);
+  ctx.fillStyle = '#f3d4b4';
+  drawEllipse(ctx, 0, -26, 22, 24);
   ctx.fill();
-  ctx.fillStyle = '#2C1F54';
-  drawEllipse(ctx, 0, -20, 18, 18 * 0.6);
-  ctx.fill();
-
-  // Headphones
-  ctx.fillStyle = '#13172B';
-  drawRoundedRect(ctx, -20, -26, 40, 12, 6);
+  ctx.fillStyle = '#2c1f4d';
+  drawEllipse(ctx, 0, -28, 24, 16);
   ctx.fill();
 
-  // Face glow to mirror empathy
-  const hue = 180 + (propsState?.ledHue ?? 0) * 0.2;
-  ctx.fillStyle = hsl(hue % 360, 65, 60);
-  drawEllipse(ctx, -6, -18, 5, 3);
-  drawEllipse(ctx, 6, -18, 5, 3);
+  ctx.fillStyle = '#12192d';
+  drawRoundedRect(ctx, -30, -34, 60, 18, 9);
+  ctx.fill();
+
+  ctx.fillStyle = hsl(((propsState?.ledHue ?? 180) % 360), 70, 60);
+  drawEllipse(ctx, -10, -20, 6, 4);
+  drawEllipse(ctx, 10, -20, 6, 4);
   ctx.fill();
 
   ctx.restore();

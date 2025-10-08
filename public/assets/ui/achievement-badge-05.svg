@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+  <defs>
+    <radialGradient id="badge5Bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#56ccf2" />
+      <stop offset="100%" stop-color="#203a60" />
+    </radialGradient>
+    <linearGradient id="badge5Ring" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffd166" />
+      <stop offset="100%" stop-color="#f29f3d" />
+    </linearGradient>
+    <linearGradient id="badge5Cup" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffd166" />
+      <stop offset="100%" stop-color="#f29f3d" />
+    </linearGradient>
+  </defs>
+  <circle cx="80" cy="80" r="72" fill="url(#badge5Bg)" stroke="url(#badge5Ring)" stroke-width="8" />
+  <path d="M52 52 L108 52 L108 76 Q108 102 80 106 Q52 102 52 76 Z" fill="url(#badge5Cup)" stroke="#ffffff" stroke-width="4" opacity="0.9" />
+  <rect x="72" y="106" width="16" height="22" rx="6" fill="#f29f3d" />
+  <rect x="60" y="126" width="40" height="12" rx="6" fill="#ffd166" opacity="0.9" />
+  <path d="M52 60 Q32 56 28 78 Q24 96 44 106" fill="none" stroke="#ffd166" stroke-width="8" stroke-linecap="round" opacity="0.6" />
+  <path d="M108 60 Q128 56 132 78 Q136 96 116 106" fill="none" stroke="#ffd166" stroke-width="8" stroke-linecap="round" opacity="0.6" />
+  <circle cx="80" cy="78" r="12" fill="#ffffff" opacity="0.9" />
+  <path d="M80 70 L84 82 L76 82 Z" fill="#ffd166" />
+</svg>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="120" viewBox="0 0 360 120">
+  <defs>
+    <linearGradient id="optionDefaultSurface" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1b2f4f" />
+      <stop offset="100%" stop-color="#13223d" />
+    </linearGradient>
+    <linearGradient id="optionDefaultBevel" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.25)" />
+      <stop offset="100%" stop-color="rgba(0,0,0,0.25)" />
+    </linearGradient>
+    <linearGradient id="optionDefaultAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4ce0d2" />
+      <stop offset="100%" stop-color="#56ccf2" />
+    </linearGradient>
+  </defs>
+  <rect x="10" y="16" width="340" height="96" rx="28" fill="rgba(12,22,36,0.85)" />
+  <rect x="28" y="30" width="304" height="68" rx="22" fill="url(#optionDefaultSurface)" stroke="rgba(255,255,255,0.12)" stroke-width="4" />
+  <rect x="28" y="30" width="304" height="68" rx="22" fill="url(#optionDefaultBevel)" opacity="0.35" />
+  <rect x="36" y="40" width="12" height="48" rx="6" fill="url(#optionDefaultAccent)" opacity="0.85" />
+  <path d="M70 78 L112 58 L154 78" stroke="#4ce0d2" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="0.3" />
+  <path d="M196 78 L238 58 L280 78" stroke="#4ce0d2" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="0.3" />
+</svg>

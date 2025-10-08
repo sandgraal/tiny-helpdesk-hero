@@ -45,8 +45,8 @@ export function initAccessibilityPanel(accessibility) {
   const lowPowerInput = lowPowerToggle.querySelector('[data-low-power-toggle-input]')
     ?? lowPowerToggle.querySelector('input[type="checkbox"]');
 
-  function ensureIcon(label, glyph) {
-    if (!label || !glyph) {
+  function ensureIcon(label, { src, glyph, alt } = {}) {
+    if (!label) {
       return;
     }
     let icon = label.querySelector('[data-accessibility-icon]');
@@ -54,13 +54,29 @@ export function initAccessibilityPanel(accessibility) {
       icon = doc.createElement('span');
       icon.dataset.accessibilityIcon = 'true';
       icon.setAttribute('aria-hidden', 'true');
+      icon.style.display = 'inline-flex';
+      icon.style.alignItems = 'center';
+      icon.style.justifyContent = 'center';
       icon.style.marginRight = '6px';
+      icon.style.width = '20px';
+      icon.style.height = '20px';
       label.style.display = 'flex';
       label.style.flexDirection = 'row';
       label.style.alignItems = 'center';
       label.insertBefore(icon, label.firstChild);
     }
-    icon.textContent = glyph;
+    icon.textContent = '';
+    icon.innerHTML = '';
+    if (src) {
+      const image = doc.createElement('img');
+      image.src = src;
+      image.alt = alt ?? '';
+      image.style.width = '20px';
+      image.style.height = '20px';
+      icon.appendChild(image);
+    } else if (glyph) {
+      icon.textContent = glyph;
+    }
   }
 
   function applyState(state) {
@@ -83,10 +99,10 @@ export function initAccessibilityPanel(accessibility) {
     }
   }
 
-  ensureIcon(fontScaleSelect?.parentElement, '🔠');
-  ensureIcon(dyslexiaCheckbox?.parentElement, '📘');
-  ensureIcon(contrastCheckbox?.parentElement, '🔆');
-  ensureIcon(lowPowerToggle, '💡');
+  ensureIcon(fontScaleSelect?.parentElement, { src: 'assets/icons/icon-text-scale.svg', alt: '' });
+  ensureIcon(dyslexiaCheckbox?.parentElement, { glyph: '📘' });
+  ensureIcon(contrastCheckbox?.parentElement, { glyph: '🔆' });
+  ensureIcon(lowPowerToggle, { glyph: '💡' });
 
   const initialState = accessibility.getState?.() ?? {};
   applyState(initialState);

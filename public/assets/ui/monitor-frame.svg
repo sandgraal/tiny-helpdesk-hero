@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="760" viewBox="0 0 1100 760">
+  <defs>
+    <linearGradient id="bezelGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a263d" />
+      <stop offset="100%" stop-color="#070d18" />
+    </linearGradient>
+    <linearGradient id="bezelEdge" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(124, 240, 217, 0.25)" />
+      <stop offset="100%" stop-color="rgba(68, 192, 255, 0.05)" />
+    </linearGradient>
+    <linearGradient id="standGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#121b2e" />
+      <stop offset="100%" stop-color="#223450" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1100" height="760" rx="60" fill="url(#bezelGradient)" />
+  <rect x="36" y="36" width="1028" height="688" rx="44" fill="#05090f" stroke="rgba(255,255,255,0.12)" stroke-width="6" />
+  <rect x="80" y="80" width="940" height="600" rx="34" fill="#020509" />
+  <rect x="64" y="64" width="972" height="632" rx="42" fill="none" stroke="url(#bezelEdge)" stroke-width="8" />
+  <rect x="520" y="708" width="60" height="28" rx="12" fill="#1f375a" />
+  <path d="M492 708 L608 708 L640 748 L460 748 Z" fill="#15243e" opacity="0.9" />
+  <rect x="480" y="720" width="160" height="28" rx="12" fill="url(#standGradient)" />
+  <g opacity="0.18" stroke="#56ccf2" stroke-width="12" stroke-linecap="round">
+    <path d="M120 112 L120 648" />
+    <path d="M980 112 L980 648" />
+  </g>
+  <g opacity="0.12" stroke="#ffd166" stroke-width="12" stroke-linecap="round">
+    <path d="M80 540 L1020 540" />
+  </g>
+  <g opacity="0.08" stroke="#ffffff" stroke-width="6" stroke-linecap="round">
+    <path d="M80 240 L1020 240" />
+  </g>
+</svg>

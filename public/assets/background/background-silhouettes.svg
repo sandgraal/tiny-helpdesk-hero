@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="silhouetteGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(7, 20, 36, 0)" />
+      <stop offset="100%" stop-color="rgba(12, 32, 52, 0.85)" />
+    </linearGradient>
+    <linearGradient id="walker" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#132a46" />
+      <stop offset="100%" stop-color="#09162b" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1920" height="1080" fill="rgba(0,0,0,0)" />
+  <rect x="0" y="620" width="1920" height="460" fill="url(#silhouetteGradient)" />
+  <g transform="translate(280, 720)">
+    <path d="M0 100 C60 20 180 20 240 100" stroke="rgba(92, 130, 180, 0.1)" stroke-width="12" fill="none" stroke-linecap="round" />
+    <g transform="translate(40, -40)">
+      <path d="M48 160 L24 80 Q20 40 52 12 Q74 -10 98 18 Q118 40 104 92 L84 160 Z" fill="url(#walker)" opacity="0.7" />
+      <rect x="72" y="-12" width="20" height="36" rx="8" fill="#0b1a30" opacity="0.4" />
+    </g>
+    <g transform="translate(160, -20) scale(0.9)">
+      <path d="M48 160 L28 86 Q32 40 66 18 Q92 0 118 30 Q138 60 124 100 L104 160 Z" fill="url(#walker)" opacity="0.6" />
+      <rect x="84" y="-6" width="18" height="30" rx="8" fill="#0b1a30" opacity="0.35" />
+    </g>
+  </g>
+  <g transform="translate(980, 720)">
+    <path d="M0 100 C80 40 200 40 280 100" stroke="rgba(124, 240, 217, 0.12)" stroke-width="10" fill="none" stroke-linecap="round" />
+    <g transform="translate(40, -32) scale(0.95)">
+      <path d="M48 160 L24 86 Q30 42 56 18 Q78 -2 106 26 Q126 48 112 94 L94 160 Z" fill="url(#walker)" opacity="0.65" />
+      <rect x="82" y="-10" width="20" height="34" rx="8" fill="#0b1a30" opacity="0.4" />
+    </g>
+    <g transform="translate(168, -24) scale(1.05)">
+      <path d="M44 160 L22 80 Q30 38 60 16 Q84 0 114 28 Q138 50 126 98 L106 160 Z" fill="url(#walker)" opacity="0.75" />
+      <rect x="78" y="-14" width="20" height="34" rx="10" fill="#0b1a30" opacity="0.38" />
+    </g>
+  </g>
+  <g transform="translate(1560, 740) scale(0.8)">
+    <path d="M0 100 C80 30 180 30 260 100" stroke="rgba(68, 192, 255, 0.1)" stroke-width="10" fill="none" stroke-linecap="round" />
+    <g transform="translate(36, -36) scale(0.92)">
+      <path d="M42 160 L18 88 Q24 46 52 24 Q80 6 106 28 Q134 52 122 100 L96 160 Z" fill="url(#walker)" opacity="0.62" />
+      <rect x="78" y="-10" width="18" height="30" rx="8" fill="#0b1a30" opacity="0.32" />
+    </g>
+    <g transform="translate(150, -32) scale(0.98)">
+      <path d="M42 160 L24 88 Q30 46 58 24 Q82 4 108 28 Q130 48 118 96 L94 160 Z" fill="url(#walker)" opacity="0.66" />
+      <rect x="78" y="-6" width="18" height="28" rx="8" fill="#0b1a30" opacity="0.34" />
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,86 @@
+[
+  {
+    "id": "monitor-frame",
+    "path": "public/assets/ui/monitor-frame.svg",
+    "type": "svg",
+    "usage": "Over-the-shoulder monitor bezel",
+    "status": "shipped"
+  },
+  {
+    "id": "monitor-overlays",
+    "path": "public/assets/ui",
+    "type": "svg",
+    "usage": "Scanlines + bloom + call indicator",
+    "status": "shipped"
+  },
+  {
+    "id": "desk-surface",
+    "path": "public/assets/desk-surface.svg",
+    "type": "svg",
+    "usage": "Desk surface + lighting strip",
+    "status": "shipped"
+  },
+  {
+    "id": "background-parallax",
+    "path": "public/assets/background",
+    "type": "svg",
+    "usage": "Wall, window, silhouettes, coworker walk cycles",
+    "status": "shipped"
+  },
+  {
+    "id": "hero-sprite-set",
+    "path": "public/assets/hero",
+    "type": "svg",
+    "usage": "Idle, typing, stretch, lean, nod, celebrate",
+    "status": "shipped"
+  },
+  {
+    "id": "desk-props",
+    "path": "public/assets/props",
+    "type": "svg",
+    "usage": "Mug, sticky notes, figurine, keyboard strip, chair, lamp",
+    "status": "shipped"
+  },
+  {
+    "id": "ui-option-cards",
+    "path": "public/assets/ui/ui-option-*.svg",
+    "type": "svg",
+    "usage": "Conversation response cards (default/hover/active/disabled)",
+    "status": "shipped"
+  },
+  {
+    "id": "empathy-meter",
+    "path": "public/assets/ui/empathy-meter-*.svg",
+    "type": "svg",
+    "usage": "Meter base, fill, glow",
+    "status": "shipped"
+  },
+  {
+    "id": "achievement-badges",
+    "path": "public/assets/ui/achievement-badge-0{1-6}.svg",
+    "type": "svg",
+    "usage": "Achievement icons",
+    "status": "shipped"
+  },
+  {
+    "id": "accessibility-icons",
+    "path": "public/assets/icons",
+    "type": "svg",
+    "usage": "Collapse/expand, restart, text-scale",
+    "status": "shipped"
+  },
+  {
+    "id": "effects",
+    "path": "public/assets/effects",
+    "type": "svg",
+    "usage": "Particles (success/failure) + screen static",
+    "status": "shipped"
+  },
+  {
+    "id": "transitions",
+    "path": "public/assets/transition",
+    "type": "svg",
+    "usage": "Glare + vignette overlays (standard/high-contrast)",
+    "status": "shipped"
+  }
+]

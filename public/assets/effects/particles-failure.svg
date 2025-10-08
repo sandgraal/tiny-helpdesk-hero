@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="64" viewBox="0 0 256 64">
+  <defs>
+    <radialGradient id="failureDrift" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#0f1a2a" />
+      <stop offset="50%" stop-color="#253757" />
+      <stop offset="100%" stop-color="rgba(12,22,36,0)" />
+    </radialGradient>
+    <radialGradient id="failureCore" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7a8ba3" />
+      <stop offset="100%" stop-color="rgba(122,139,163,0)" />
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="256" height="64" fill="rgba(0,0,0,0)" />
+  <g transform="translate(0,0)" opacity="0.6">
+    <ellipse cx="32" cy="38" rx="22" ry="14" fill="url(#failureDrift)" />
+    <circle cx="28" cy="30" r="6" fill="url(#failureCore)" />
+    <circle cx="40" cy="28" r="4" fill="#4b5d7a" opacity="0.5" />
+  </g>
+  <g transform="translate(64,0)" opacity="0.55">
+    <ellipse cx="32" cy="36" rx="20" ry="12" fill="url(#failureDrift)" />
+    <circle cx="24" cy="30" r="6" fill="url(#failureCore)" />
+    <circle cx="38" cy="40" r="5" fill="#4b5d7a" opacity="0.4" />
+  </g>
+  <g transform="translate(128,0)" opacity="0.5">
+    <ellipse cx="32" cy="34" rx="18" ry="10" fill="url(#failureDrift)" />
+    <circle cx="22" cy="32" r="5" fill="url(#failureCore)" />
+    <circle cx="40" cy="30" r="4" fill="#4b5d7a" opacity="0.45" />
+  </g>
+  <g transform="translate(192,0)" opacity="0.45">
+    <ellipse cx="32" cy="32" rx="16" ry="10" fill="url(#failureDrift)" />
+    <circle cx="26" cy="30" r="4" fill="url(#failureCore)" />
+    <circle cx="38" cy="34" r="3" fill="#4b5d7a" opacity="0.45" />
+  </g>
+</svg>

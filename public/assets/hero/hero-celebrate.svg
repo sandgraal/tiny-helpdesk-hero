@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="240" viewBox="0 0 200 240">
+  <defs>
+    <linearGradient id="heroCelebrateTorso" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3472c0" />
+      <stop offset="100%" stop-color="#214b88" />
+    </linearGradient>
+    <linearGradient id="heroCelebrateSleeve" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#285a9a" />
+      <stop offset="100%" stop-color="#183660" />
+    </linearGradient>
+    <radialGradient id="heroCelebrateFace" cx="50%" cy="42%" r="70%">
+      <stop offset="0%" stop-color="#ffe7be" />
+      <stop offset="80%" stop-color="#f9cfa0" />
+      <stop offset="100%" stop-color="#edb07d" />
+    </radialGradient>
+    <linearGradient id="heroCelebrateGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7cf0d9" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#ffd166" stop-opacity="0.35" />
+    </linearGradient>
+  </defs>
+  <rect x="4" y="150" width="60" height="80" rx="22" fill="#10182b" opacity="0.7" />
+  <rect x="136" y="150" width="60" height="80" rx="22" fill="#10182b" opacity="0.7" />
+  <path d="M60 134 Q28 88 44 70 Q60 56 82 90 L96 150" fill="url(#heroCelebrateSleeve)" />
+  <path d="M140 134 Q172 88 156 70 Q140 56 118 90 L104 150" fill="url(#heroCelebrateSleeve)" />
+  <rect x="62" y="94" width="76" height="110" rx="32" fill="url(#heroCelebrateTorso)" />
+  <rect x="80" y="174" width="44" height="56" rx="20" fill="#1f2f56" />
+  <ellipse cx="100" cy="80" rx="34" ry="36" fill="url(#heroCelebrateFace)" />
+  <path d="M70 64 Q100 22 130 64 Q136 90 118 100 Q102 108 82 100 Q68 94 64 82 Z" fill="#2c1f4b" />
+  <rect x="66" y="58" width="68" height="20" rx="10" fill="#0d1424" opacity="0.9" />
+  <circle cx="84" cy="78" r="6" fill="#ff9fa6" opacity="0.9" />
+  <circle cx="116" cy="76" r="6" fill="#ff9fa6" opacity="0.9" />
+  <path d="M78 100 Q100 120 122 100" stroke="#f7d5b8" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.85" />
+  <g stroke="#ffd166" stroke-width="6" stroke-linecap="round" opacity="0.6">
+    <path d="M28 48 L44 70" />
+    <path d="M172 48 L156 70" />
+    <path d="M16 86 L40 98" />
+    <path d="M184 86 L160 98" />
+  </g>
+  <rect x="68" y="184" width="64" height="28" rx="14" fill="url(#heroCelebrateGlow)" />
+  <ellipse cx="100" cy="218" rx="48" ry="20" fill="rgba(120, 210, 255, 0.28)" />
+  <g fill="#ffd166" opacity="0.5">
+    <circle cx="40" cy="46" r="6" />
+    <circle cx="24" cy="92" r="5" />
+    <circle cx="176" cy="46" r="6" />
+    <circle cx="188" cy="98" r="4" />
+  </g>
+</svg>

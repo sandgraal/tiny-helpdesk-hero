@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="220" viewBox="0 0 160 220">
+  <defs>
+    <linearGradient id="coworkerBack" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14253f" />
+      <stop offset="100%" stop-color="#08101c" />
+    </linearGradient>
+  </defs>
+  <rect x="50" y="154" width="60" height="58" rx="24" fill="#091422" opacity="0.6" />
+  <path d="M54 148 Q38 114 52 86 Q70 56 92 64 Q110 74 118 104 Q126 132 112 148 Z" fill="url(#coworkerBack)" />
+  <ellipse cx="82" cy="62" rx="26" ry="32" fill="#0d1a2b" />
+  <path d="M60 70 Q82 40 104 70" stroke="#060c12" stroke-width="12" stroke-linecap="round" />
+  <rect x="70" y="126" width="24" height="40" rx="12" fill="#0a1622" opacity="0.7" />
+</svg>

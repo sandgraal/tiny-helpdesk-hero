@@ -3,29 +3,14 @@
  * Applies empathy-driven ambient tints and monitor glow before/after blitting the UI texture.
  */
 
-import { drawDesk, drawMonitorFrame } from './desk-assets.mjs';
+import { drawDesk, drawMonitorFrame, applyMonitorOverlays, drawStaticOverlay } from './desk-assets.mjs';
 
 function toRgba({ r, g, b }, alpha) {
   return `rgba(${r}, ${g}, ${b}, ${alpha.toFixed(3)})`;
 }
 
-function drawStaticOverlay(context, width, height, intensity) {
-  if (!context?.save || intensity <= 0) {
-    return;
-  }
-  const clamped = Math.min(Math.max(intensity, 0), 0.6);
-  context.save();
-  context.globalAlpha = clamped;
-  for (let y = 0; y < height; y += 4) {
-    const value = Math.floor(160 + Math.random() * 80);
-    context.fillStyle = `rgba(${value}, ${value}, ${value}, 0.35)`;
-    context.fillRect(0, y, width, 2);
-  }
-  context.restore();
-}
-
 export function createDeskScene({ monitorDisplay, camera, lighting, props }) {
-  function render({ context, canvasSize }) {
+  function render({ context, canvasSize, renderState }) {
     if (!context || !monitorDisplay) {
       return;
     }
@@ -56,7 +41,11 @@ export function createDeskScene({ monitorDisplay, camera, lighting, props }) {
     }
 
     const frame = drawMonitorFrame(context, width, height);
-    const desk = drawDesk(context, width, height, propsState);
+    drawDesk(context, width, height, propsState, {
+      cameraOffset: offset,
+      lighting: lightingState,
+      renderState,
+    });
 
     context.save?.();
     if (context.translate && (offset.x !== 0 || offset.y !== 0)) {
@@ -78,6 +67,11 @@ export function createDeskScene({ monitorDisplay, camera, lighting, props }) {
       context.fillRect(inset, inset, width - inset * 2, height - inset * 2);
       context.restore();
     }
+
+    applyMonitorOverlays(context, frame, propsState, {
+      lighting: lightingState,
+      renderState,
+    });
 
     drawStaticOverlay(context, width, height, failureIntensity);
   }

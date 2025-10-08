@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="140" viewBox="0 0 420 140">
+  <defs>
+    <linearGradient id="meterShell" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c1526" />
+      <stop offset="100%" stop-color="#172641" />
+    </linearGradient>
+    <linearGradient id="meterInset" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#111c31" />
+      <stop offset="100%" stop-color="#091020" />
+    </linearGradient>
+  </defs>
+  <rect x="10" y="20" width="400" height="104" rx="32" fill="rgba(12, 22, 36, 0.9)" />
+  <rect x="30" y="38" width="360" height="68" rx="26" fill="url(#meterShell)" stroke="rgba(255,255,255,0.12)" stroke-width="4" />
+  <rect x="40" y="48" width="340" height="48" rx="22" fill="url(#meterInset)" />
+  <circle cx="66" cy="122" r="12" fill="#4ce0d2" opacity="0.6" />
+  <circle cx="354" cy="122" r="12" fill="#ffd166" opacity="0.6" />
+  <text x="50" y="32" font-family="'Segoe UI', sans-serif" font-size="20" fill="#7a8ba3">EMPATHY</text>
+</svg>

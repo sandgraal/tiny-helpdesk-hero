@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="240" viewBox="0 0 200 240">
+  <defs>
+    <linearGradient id="heroNodTorso" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2d4f8d" />
+      <stop offset="100%" stop-color="#1b2d53" />
+    </linearGradient>
+    <linearGradient id="heroNodSleeve" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#203a63" />
+      <stop offset="100%" stop-color="#14243e" />
+    </linearGradient>
+    <radialGradient id="heroNodFace" cx="45%" cy="45%" r="70%">
+      <stop offset="0%" stop-color="#ffe0b2" />
+      <stop offset="100%" stop-color="#e8b287" />
+    </radialGradient>
+    <linearGradient id="heroNodGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4cddff" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#7cf0d9" stop-opacity="0.2" />
+    </linearGradient>
+  </defs>
+  <rect x="8" y="154" width="56" height="78" rx="20" fill="#111a2f" opacity="0.7" />
+  <rect x="136" y="154" width="56" height="78" rx="20" fill="#111a2f" opacity="0.7" />
+  <rect x="58" y="102" width="84" height="110" rx="34" fill="url(#heroNodTorso)" />
+  <path d="M52 160 Q36 118 54 110 Q74 102 86 140 L92 180" fill="url(#heroNodSleeve)" />
+  <path d="M148 160 Q164 118 146 110 Q126 102 114 140 L108 180" fill="url(#heroNodSleeve)" />
+  <rect x="80" y="180" width="48" height="46" rx="18" fill="#1e3056" />
+  <g transform="rotate(-12 104 94)">
+    <ellipse cx="104" cy="86" rx="34" ry="34" fill="url(#heroNodFace)" />
+    <rect x="70" y="64" width="68" height="18" rx="9" fill="#0f1320" opacity="0.9" />
+    <circle cx="88" cy="84" r="6" fill="#ff9fa6" opacity="0.85" />
+    <circle cx="120" cy="82" r="6" fill="#ff9fa6" opacity="0.85" />
+    <path d="M86 102 Q104 116 126 102" stroke="#f7d1ae" stroke-width="6" stroke-linecap="round" opacity="0.8" fill="none" />
+  </g>
+  <path d="M68 144 Q100 134 132 144" stroke="#55e0ff" stroke-width="6" stroke-linecap="round" opacity="0.24" />
+  <rect x="72" y="192" width="60" height="26" rx="12" fill="url(#heroNodGlow)" />
+  <ellipse cx="104" cy="216" rx="44" ry="18" fill="rgba(46, 120, 210, 0.24)" />
+</svg>

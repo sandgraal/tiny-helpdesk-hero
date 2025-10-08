@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="64" viewBox="0 0 256 64">
+  <defs>
+    <radialGradient id="successSpark" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffd166" />
+      <stop offset="50%" stop-color="#ffe9aa" />
+      <stop offset="100%" stop-color="rgba(124,240,217,0)" />
+    </radialGradient>
+    <radialGradient id="successSparkBlue" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7cf0d9" />
+      <stop offset="100%" stop-color="rgba(124,240,217,0)" />
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="256" height="64" fill="rgba(0,0,0,0)" />
+  <g transform="translate(0,0)">
+    <circle cx="32" cy="32" r="24" fill="url(#successSpark)" />
+    <circle cx="32" cy="32" r="12" fill="url(#successSparkBlue)" />
+    <circle cx="16" cy="20" r="6" fill="#ffd166" opacity="0.6" />
+    <circle cx="46" cy="18" r="5" fill="#7cf0d9" opacity="0.6" />
+    <circle cx="18" cy="44" r="4" fill="#ffffff" opacity="0.5" />
+  </g>
+  <g transform="translate(64,0)">
+    <circle cx="32" cy="32" r="22" fill="url(#successSpark)" />
+    <circle cx="16" cy="26" r="7" fill="#ffd166" opacity="0.6" />
+    <circle cx="44" cy="18" r="6" fill="#7cf0d9" opacity="0.6" />
+    <circle cx="32" cy="32" r="10" fill="#ffffff" opacity="0.45" />
+    <circle cx="48" cy="46" r="4" fill="#ffd166" opacity="0.5" />
+  </g>
+  <g transform="translate(128,0)">
+    <circle cx="32" cy="32" r="20" fill="url(#successSpark)" />
+    <circle cx="22" cy="24" r="8" fill="#ffd166" opacity="0.55" />
+    <circle cx="42" cy="28" r="6" fill="#7cf0d9" opacity="0.55" />
+    <circle cx="36" cy="44" r="5" fill="#ffd166" opacity="0.55" />
+    <circle cx="18" cy="48" r="4" fill="#ffffff" opacity="0.45" />
+  </g>
+  <g transform="translate(192,0)">
+    <circle cx="32" cy="32" r="16" fill="url(#successSpark)" />
+    <circle cx="26" cy="24" r="6" fill="#ffd166" opacity="0.5" />
+    <circle cx="38" cy="24" r="5" fill="#7cf0d9" opacity="0.5" />
+    <circle cx="42" cy="40" r="4" fill="#ffd166" opacity="0.45" />
+    <circle cx="20" cy="40" r="3" fill="#ffffff" opacity="0.4" />
+  </g>
+</svg>

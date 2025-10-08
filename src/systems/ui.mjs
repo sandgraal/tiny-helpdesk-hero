@@ -1,5 +1,36 @@
 import { createHoverState, createPulseState } from './animation/tween.mjs';
+import { getImage } from '../game/image-loader.mjs';
 import { getPalette, motion } from '../ui/theme.mjs';
+
+const optionSprites = {
+  base: getImage('assets/ui/ui-option-default.svg'),
+  hover: getImage('assets/ui/ui-option-hover.svg'),
+  active: getImage('assets/ui/ui-option-active.svg'),
+  disabled: getImage('assets/ui/ui-option-disabled.svg'),
+};
+
+const empathyMeterAssets = {
+  base: getImage('assets/ui/empathy-meter-base.svg'),
+  fill: getImage('assets/ui/empathy-meter-fill.svg'),
+  glow: getImage('assets/ui/empathy-meter-glow.svg'),
+};
+
+const achievementBadges = [
+  getImage('assets/ui/achievement-badge-01.svg'),
+  getImage('assets/ui/achievement-badge-02.svg'),
+  getImage('assets/ui/achievement-badge-03.svg'),
+  getImage('assets/ui/achievement-badge-04.svg'),
+  getImage('assets/ui/achievement-badge-05.svg'),
+  getImage('assets/ui/achievement-badge-06.svg'),
+];
+
+const iconCollapse = getImage('assets/icons/icon-collapse.svg');
+const iconExpand = getImage('assets/icons/icon-expand.svg');
+const iconRestart = getImage('assets/icons/icon-restart.svg');
+
+function isReady(resource) {
+  return Boolean(resource?.ready && resource.image);
+}
 
 /**
  * UI system for the greybox build.
@@ -120,6 +151,34 @@ function getLittleJS(overrides = {}) {
     context.restore?.();
   };
 
+  const drawImage = (image, dx, dy, width, height, alpha = 1) => {
+    if (!context || !image || typeof context.drawImage !== 'function') {
+      return;
+    }
+    const drawWidth = Number.isFinite(width) && width > 0 ? width : image.width;
+    const drawHeight = Number.isFinite(height) && height > 0 ? height : image.height;
+    context.save?.();
+    if (alpha !== 1) {
+      context.globalAlpha = alpha;
+    }
+    context.drawImage(image, dx, dy, drawWidth, drawHeight);
+    context.restore?.();
+  };
+
+  const drawImageCentered = (image, center, width, height, alpha = 1) => {
+    if (!center) {
+      return;
+    }
+    const drawWidth = Number.isFinite(width) && width > 0 ? width : image?.width;
+    const drawHeight = Number.isFinite(height) && height > 0 ? height : image?.height;
+    if (!drawWidth || !drawHeight) {
+      return;
+    }
+    const x = (center.x ?? 0) - drawWidth / 2;
+    const y = (center.y ?? 0) - drawHeight / 2;
+    drawImage(image, x, y, drawWidth, drawHeight, alpha);
+  };
+
   const layout = getLayoutForSize(mainCanvasSize);
   layout.fontScale *= overrides.fontScale ?? 1;
   layout.highContrast = Boolean(overrides.highContrast);
@@ -129,10 +188,13 @@ function getLittleJS(overrides = {}) {
   return {
     drawRectScreen,
     drawTextScreen,
+    drawImage,
+    drawImageCentered,
     mainCanvasSize,
     vec2,
     layout,
     palette,
+    context,
   };
 }
 
@@ -350,9 +412,18 @@ export function createUISystem({ accessibility } = {}) {
     );
   }
 
-  function renderOptions(call) {
-    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout, palette } = useLittleJS();
-    if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout || !palette || !call) {
+  function renderOptions(state) {
+    const {
+      drawRectScreen,
+      drawTextScreen,
+      drawImage,
+      vec2,
+      mainCanvasSize,
+      layout,
+      palette,
+    } = useLittleJS();
+    const call = state?.call;
+    if (!drawRectScreen || !drawTextScreen || !drawImage || !vec2 || !mainCanvasSize || !layout || !palette || !call) {
       return;
     }
 
@@ -361,21 +432,49 @@ export function createUISystem({ accessibility } = {}) {
       const x = (mainCanvasSize.x - optionWidth) / 2;
       const y = layout.optionStartY + index * (layout.optionHeight + layout.optionGap);
       const center = vec2(x + optionWidth / 2, y + layout.optionHeight / 2);
-      if (keyboardFocusIndex === index) {
-        const outlineWidth = optionWidth + 12;
-        const outlineHeight = layout.optionHeight + 12;
-        drawRectScreen(center, vec2(outlineWidth, outlineHeight), palette.focusOutline);
-      }
-      const hoverValue = ensureHoverState(getOptionKey(option, index)).getValue();
-      const bgColor = hoverValue > 0.01 ? palette.optionHover : palette.optionBase;
-      const textYOffset = 6 - hoverValue * 4;
+      const hover = ensureHoverState(getOptionKey(option, index)).getValue();
+      const isFocused = keyboardFocusIndex === index;
+      const disabled = Boolean(option?.disabled);
+      const baseSprite = !layout.highContrast
+        ? (isFocused && isReady(optionSprites.active))
+          ? optionSprites.active
+          : (hover > 0.02 && isReady(optionSprites.hover))
+            ? optionSprites.hover
+            : (disabled && isReady(optionSprites.disabled))
+              ? optionSprites.disabled
+              : isReady(optionSprites.base)
+                ? optionSprites.base
+                : null
+        : null;
 
-      drawRectScreen(center, vec2(optionWidth, layout.optionHeight), bgColor);
+      if (isFocused) {
+        drawRectScreen(center, vec2(optionWidth + 18, layout.optionHeight + 18), palette.focusOutline);
+      }
+
+      if (layout.highContrast || !baseSprite) {
+        const baseColor = disabled ? palette.optionDisabled : palette.optionBase;
+        const hoverColor = disabled ? palette.optionDisabled : palette.optionHover;
+        const fillColor = isFocused ? palette.optionActive : hover > 0.01 ? hoverColor : baseColor;
+        drawRectScreen(center, vec2(optionWidth, layout.optionHeight), fillColor);
+      } else {
+        const image = baseSprite.image;
+        const cardTargetWidth = optionWidth + Math.round(layout.canvasPadding * 0.6);
+        const cardTargetHeight = layout.optionHeight + 36;
+        const scale = Math.min(cardTargetWidth / image.width, cardTargetHeight / image.height);
+        const drawWidth = image.width * scale;
+        const drawHeight = image.height * scale;
+        const dx = x + (optionWidth - drawWidth) / 2;
+        const dy = y - (drawHeight - layout.optionHeight) / 2 - hover * 6;
+        drawImage(image, dx, dy, drawWidth, drawHeight, 1);
+      }
+
+      const textColor = disabled ? palette.optionDisabledText : palette.optionText;
+      const textYOffset = -hover * 4;
       drawTextScreen(
         option.text,
         vec2(center.x, center.y + textYOffset),
         Math.round(18 * layout.fontScale),
-        palette.optionText,
+        textColor,
         0,
         null,
         1,
@@ -439,37 +538,113 @@ export function createUISystem({ accessibility } = {}) {
   }
 
   function renderEmpathyMeter({ empathyScore, callCount }) {
-    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout, palette } = useLittleJS();
-    if (!drawRectScreen || !vec2 || !mainCanvasSize || !layout || !palette) {
+    const {
+      drawRectScreen,
+      drawTextScreen,
+      drawImage,
+      vec2,
+      mainCanvasSize,
+      layout,
+      palette,
+      context,
+    } = useLittleJS();
+    if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout || !palette) {
       return;
     }
 
     const ratio = callCount > 0 ? Math.min(Math.max(empathyScore / callCount, 0), 1) : 0;
-    const baseWidth = layout.achievementsPosition === 'bottom' ? mainCanvasSize.x - layout.canvasPadding * 2 : 220;
-    const baseHeight = 16;
-    const x = layout.canvasPadding + baseWidth / 2;
-    const y = mainCanvasSize.y - layout.canvasPadding - baseHeight / 2;
+    const displayPercent = Math.round(ratio * 100);
+    const alignBottom = layout.achievementsPosition === 'bottom';
+    const targetWidth = alignBottom
+      ? Math.min(mainCanvasSize.x - layout.canvasPadding * 2, 520)
+      : Math.min(320, mainCanvasSize.x * 0.32);
+    const useSprite = !layout.highContrast && isReady(empathyMeterAssets.base);
     const pulse = empathyPulse.getValue();
-    const fillWidth = Math.max(4, ratio * baseWidth);
 
-    drawRectScreen(vec2(x, y), vec2(baseWidth, baseHeight), palette.backgroundMuted);
-    drawRectScreen(
-      vec2(x - baseWidth / 2 + fillWidth / 2, y),
-      vec2(fillWidth, baseHeight - 4),
-      pulse > 0.01 ? palette.achievementFresh : palette.achievementPulse,
-    );
+    if (useSprite) {
+      const baseImg = empathyMeterAssets.base.image;
+      const scale = targetWidth / baseImg.width;
+      const baseWidth = baseImg.width * scale;
+      const baseHeight = baseImg.height * scale;
+      const baseX = alignBottom
+        ? Math.round((mainCanvasSize.x - baseWidth) / 2)
+        : Math.round(mainCanvasSize.x - layout.canvasPadding - baseWidth);
+      const baseY = Math.round(mainCanvasSize.y - layout.canvasPadding - baseHeight);
+      drawImage(baseImg, baseX, baseY, baseWidth, baseHeight, 1);
 
-    drawTextScreen(
-      `${Math.round(ratio * 100)}%`,
-      vec2(x, y - 20),
-      Math.round(16 * layout.fontScale),
-      palette.textOverlay,
-      0,
-      null,
-      1,
-      0,
-      'center',
-    );
+      if (context && isReady(empathyMeterAssets.fill)) {
+        const fillImg = empathyMeterAssets.fill.image;
+        const fillX = baseX + Math.round(40 * scale);
+        const fillY = baseY + Math.round(46 * scale);
+        const maxFillWidth = fillImg.width * scale;
+        const currentFillWidth = Math.max(6 * scale, maxFillWidth * ratio);
+        const srcWidth = Math.max(1, fillImg.width * ratio);
+        context.save?.();
+        context.globalAlpha = 0.85;
+        context.drawImage(
+          fillImg,
+          0,
+          0,
+          srcWidth,
+          fillImg.height,
+          fillX,
+          fillY,
+          currentFillWidth,
+          fillImg.height * scale,
+        );
+        context.restore?.();
+      }
+
+      if (isReady(empathyMeterAssets.glow)) {
+        const glowImg = empathyMeterAssets.glow.image;
+        const glowAlpha = Math.min(0.6, 0.35 + pulse * 0.4);
+        drawImage(
+          glowImg,
+          baseX + Math.round((baseWidth - glowImg.width * scale) / 2),
+          baseY + Math.round((baseHeight - glowImg.height * scale) / 2),
+          glowImg.width * scale,
+          glowImg.height * scale,
+          glowAlpha,
+        );
+      }
+
+      drawTextScreen(
+        `${displayPercent}%`,
+        vec2(baseX + baseWidth / 2, baseY + baseHeight * 0.3),
+        Math.round(18 * layout.fontScale),
+        palette.textOverlay,
+        0,
+        null,
+        1,
+        0,
+        'center',
+      );
+    } else {
+      const baseWidth = targetWidth;
+      const baseHeight = Math.max(18, Math.round(16 * layout.fontScale));
+      const x = alignBottom ? layout.canvasPadding + baseWidth / 2 : mainCanvasSize.x - layout.canvasPadding - baseWidth / 2;
+      const y = mainCanvasSize.y - layout.canvasPadding - baseHeight / 2;
+      const fillWidth = Math.max(4, ratio * baseWidth);
+
+      drawRectScreen(vec2(x, y), vec2(baseWidth, baseHeight), palette.backgroundMuted);
+      drawRectScreen(
+        vec2(x - baseWidth / 2 + fillWidth / 2, y),
+        vec2(fillWidth, baseHeight - 4),
+        pulse > 0.01 ? palette.achievementFresh : palette.achievementPulse,
+      );
+
+      drawTextScreen(
+        `${displayPercent}%`,
+        vec2(x, y - baseHeight),
+        Math.round(16 * layout.fontScale),
+        palette.textOverlay,
+        0,
+        null,
+        1,
+        0,
+        'center',
+      );
+    }
   }
 
   function renderQueueIndicator({ callCount, currentIndex, isComplete }) {
@@ -553,8 +728,15 @@ export function createUISystem({ accessibility } = {}) {
   }
 
   function renderCompletion({ empathyScore, callCount }) {
-    const { drawTextScreen, vec2, mainCanvasSize, layout, palette } = useLittleJS();
-    if (!drawTextScreen || !vec2 || !mainCanvasSize || !layout || !palette) {
+    const {
+      drawTextScreen,
+      drawImage,
+      vec2,
+      mainCanvasSize,
+      layout,
+      palette,
+    } = useLittleJS();
+    if (!drawTextScreen || !drawImage || !vec2 || !mainCanvasSize || !layout || !palette) {
       return;
     }
 
@@ -580,6 +762,24 @@ export function createUISystem({ accessibility } = {}) {
       0,
       'center',
     );
+
+    if (!layout.highContrast && isReady(iconRestart)) {
+      const iconSize = Math.round(48 * layout.fontScale);
+      const iconX = mainCanvasSize.x / 2 - iconSize / 2;
+      const iconY = mainCanvasSize.y / 2 + 40;
+      drawImage(iconRestart.image, iconX, iconY, iconSize, iconSize, 0.85);
+      drawTextScreen(
+        'Click to start a new shift',
+        vec2(mainCanvasSize.x / 2, iconY + iconSize + 18),
+        Math.round(14 * layout.fontScale),
+        palette.stubCollapsedText,
+        0,
+        null,
+        1,
+        0,
+        'center',
+      );
+    }
   }
 
   function renderEmptyState() {
@@ -601,8 +801,16 @@ export function createUISystem({ accessibility } = {}) {
   }
 
   function renderAchievements(achievementsState) {
-    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout, palette } = useLittleJS();
-    if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout || !palette) {
+    const {
+      drawRectScreen,
+      drawTextScreen,
+      drawImage,
+      vec2,
+      mainCanvasSize,
+      layout,
+      palette,
+    } = useLittleJS();
+    if (!drawRectScreen || !drawTextScreen || !drawImage || !vec2 || !mainCanvasSize || !layout || !palette) {
       return;
     }
 
@@ -633,7 +841,8 @@ export function createUISystem({ accessibility } = {}) {
     const panelWidth = shouldAutoHide
       ? Math.min(mainCanvasSize.x - layout.canvasPadding * 2, 360)
       : Math.min(360, Math.max(260, mainCanvasSize.x * 0.28));
-    const panelHeight = 64 + visible.length * 44;
+    const badgeRowHeight = Math.max(44, Math.round(40 * layout.fontScale));
+    const panelHeight = 64 + visible.length * badgeRowHeight;
     const centerX = layout.achievementsPosition === 'bottom'
       ? mainCanvasSize.x / 2
       : mainCanvasSize.x - layout.canvasPadding - panelWidth / 2;
@@ -663,11 +872,12 @@ export function createUISystem({ accessibility } = {}) {
     );
 
     const recentSet = new Set(achievementsState.recentUnlocks ?? []);
-    const iconX = centerX - panelWidth / 2 + 28;
-    const contentLeft = iconX + 20;
-    let rowY = centerY - panelHeight / 2 + 58;
+    const badgeSize = Math.round(34 * layout.fontScale);
+    const badgeLeft = centerX - panelWidth / 2 + 24;
+    const contentLeft = badgeLeft + badgeSize + 12;
+    let rowY = centerY - panelHeight / 2 + 60;
 
-    visible.forEach((entry) => {
+    visible.forEach((entry, index) => {
       const unlocked = entry.unlocked;
       const fresh = recentSet.has(entry.id);
       const titleColor = fresh
@@ -677,26 +887,25 @@ export function createUISystem({ accessibility } = {}) {
           : palette.stubCollapsedInactive;
       const bodyColor = unlocked ? palette.stubCollapsedText : palette.stubCollapsedInactive;
       const alpha = fresh ? 1 : unlocked ? 0.95 : 0.8;
-      const bullet = unlocked ? '✓' : '•';
+      const badge = achievementBadges[index % achievementBadges.length];
+      const badgeTop = rowY - badgeSize * 0.8;
+      const badgeAlpha = fresh ? 1 : unlocked ? 0.85 : 0.5;
 
-      const iconColor = fresh
-        ? palette.achievementActive
-        : unlocked
-          ? palette.headerAccent
-          : palette.stubCollapsedInactive;
-      drawRectScreen(
-        vec2(iconX, rowY - 4),
-        vec2(16, 16),
-        iconColor,
-      );
-      drawRectScreen(
-        vec2(iconX, rowY - 4),
-        vec2(10, 10),
-        palette.stubBg ?? '#0D1E30',
-      );
+      if (!layout.highContrast && isReady(badge)) {
+        drawImage(badge.image, badgeLeft, badgeTop, badgeSize, badgeSize, badgeAlpha);
+      } else {
+        const badgeCenter = vec2(badgeLeft + badgeSize / 2, badgeTop + badgeSize / 2);
+        const badgeColor = fresh
+          ? palette.achievementActive
+          : unlocked
+            ? palette.headerAccent
+            : palette.stubCollapsedInactive;
+        drawRectScreen(badgeCenter, vec2(badgeSize * 0.8, badgeSize * 0.8), badgeColor);
+        drawRectScreen(badgeCenter, vec2(badgeSize * 0.45, badgeSize * 0.45), palette.stubBg ?? '#0D1E30');
+      }
 
       drawTextScreen(
-        `${bullet} ${entry.title}`,
+        entry.title,
         vec2(contentLeft, rowY),
         Math.round(16 * layout.fontScale),
         titleColor,
@@ -709,7 +918,7 @@ export function createUISystem({ accessibility } = {}) {
 
       drawTextScreen(
         entry.description,
-        vec2(contentLeft + 8, rowY + 18),
+        vec2(contentLeft, rowY + 18),
         Math.max(11, Math.round(12 * layout.fontScale)),
         bodyColor,
         0,
@@ -719,32 +928,44 @@ export function createUISystem({ accessibility } = {}) {
         'left',
       );
 
-      rowY += 44;
+      rowY += badgeRowHeight;
     });
 
     if (shouldAutoHide) {
-      const buttonSize = 36;
-      const buttonX = centerX + panelWidth / 2 - buttonSize / 2 - 16;
-      const buttonY = centerY - panelHeight / 2 + buttonSize / 2 + 16;
-      const buttonColor = palette.headerAccent;
-      drawRectScreen(vec2(buttonX, buttonY), vec2(buttonSize, buttonSize), buttonColor);
-      drawTextScreen('×', vec2(buttonX, buttonY), Math.round(22 * layout.fontScale), palette.stubBg, 0, null, 1, 0, 'center');
+      const buttonSize = Math.round(36 * layout.fontScale);
+      const buttonLeft = centerX + panelWidth / 2 - buttonSize - 16;
+      const buttonTop = centerY - panelHeight / 2 + 16;
+      if (!layout.highContrast && isReady(iconCollapse)) {
+        drawImage(iconCollapse.image, buttonLeft, buttonTop, buttonSize, buttonSize, 0.9);
+      } else {
+        const buttonCenter = vec2(buttonLeft + buttonSize / 2, buttonTop + buttonSize / 2);
+        drawRectScreen(buttonCenter, vec2(buttonSize, buttonSize), palette.headerAccent);
+        drawTextScreen('×', buttonCenter, Math.round(22 * layout.fontScale), palette.stubBg, 0, null, 1, 0, 'center');
+      }
       panelState.collapseBounds = {
-        left: buttonX - buttonSize / 2,
-        right: buttonX + buttonSize / 2,
-        top: buttonY - buttonSize / 2,
-        bottom: buttonY + buttonSize / 2,
+        left: buttonLeft,
+        right: buttonLeft + buttonSize,
+        top: buttonTop,
+        bottom: buttonTop + buttonSize,
       };
     }
   }
 
   function renderCollapsedAchievementsStub() {
-    const { drawRectScreen, drawTextScreen, vec2, mainCanvasSize, layout, palette } = useLittleJS();
-    if (!drawRectScreen || !drawTextScreen || !vec2 || !mainCanvasSize || !layout || !palette) {
+    const {
+      drawRectScreen,
+      drawTextScreen,
+      drawImage,
+      vec2,
+      mainCanvasSize,
+      layout,
+      palette,
+    } = useLittleJS();
+    if (!drawRectScreen || !drawTextScreen || !drawImage || !vec2 || !mainCanvasSize || !layout || !palette) {
       return;
     }
     const stubWidth = Math.min(mainCanvasSize.x - layout.canvasPadding * 2, 260);
-    const stubHeight = 48;
+    const stubHeight = Math.max(48, Math.round(44 * layout.fontScale));
     const centerX = mainCanvasSize.x / 2;
     const centerY = mainCanvasSize.y - layout.canvasPadding - stubHeight / 2;
     const bgColor = palette.panelOverlay;
@@ -754,7 +975,28 @@ export function createUISystem({ accessibility } = {}) {
       drawRectScreen(vec2(centerX, centerY), vec2(stubWidth + 12, stubHeight + 12), palette.focusOutline);
     }
     drawRectScreen(vec2(centerX, centerY), vec2(stubWidth, stubHeight), bgColor);
-    drawTextScreen('Achievements', vec2(centerX, centerY), Math.round(16 * layout.fontScale), textColor, 0, null, 1, 0, 'center');
+
+    const iconSize = Math.round(28 * layout.fontScale);
+    const iconLeft = centerX - stubWidth / 2 + 16;
+    const iconTop = centerY - iconSize / 2;
+    if (!layout.highContrast && isReady(iconExpand)) {
+      drawImage(iconExpand.image, iconLeft, iconTop, iconSize, iconSize, 0.9);
+    } else {
+      drawRectScreen(vec2(iconLeft + iconSize / 2, centerY), vec2(iconSize, iconSize), palette.headerAccent);
+      drawTextScreen('+', vec2(iconLeft + iconSize / 2, centerY), Math.round(18 * layout.fontScale), palette.stubBg, 0, null, 1, 0, 'center');
+    }
+
+    drawTextScreen(
+      'Achievements',
+      vec2(iconLeft + iconSize + 12, centerY),
+      Math.round(16 * layout.fontScale),
+      textColor,
+      0,
+      null,
+      1,
+      0,
+      'left',
+    );
 
     panelState.collapseBounds = {
       left: centerX - stubWidth / 2,
@@ -779,7 +1021,7 @@ export function createUISystem({ accessibility } = {}) {
     renderHeader(state);
     renderPersonaDetails(state.call);
     renderPrompt(state.call);
-    renderOptions(state.call);
+    renderOptions(state);
     renderEmpathyScore(state.empathyScore);
     renderEmpathyMeter(state);
     renderQueueIndicator(state);

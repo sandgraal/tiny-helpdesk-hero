@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="600" viewBox="0 0 960 600">
+  <defs>
+    <linearGradient id="scanlineTint" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="rgba(86, 204, 242, 0.15)" />
+      <stop offset="100%" stop-color="rgba(76, 224, 210, 0.05)" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="960" height="600" fill="rgba(0,0,0,0.08)" />
+  <g stroke="url(#scanlineTint)" stroke-width="3" opacity="0.4">
+    <path d="M0 20 L960 20" />
+    <path d="M0 44 L960 44" />
+    <path d="M0 68 L960 68" />
+    <path d="M0 92 L960 92" />
+    <path d="M0 116 L960 116" />
+    <path d="M0 140 L960 140" />
+    <path d="M0 164 L960 164" />
+    <path d="M0 188 L960 188" />
+    <path d="M0 212 L960 212" />
+    <path d="M0 236 L960 236" />
+    <path d="M0 260 L960 260" />
+    <path d="M0 284 L960 284" />
+    <path d="M0 308 L960 308" />
+    <path d="M0 332 L960 332" />
+    <path d="M0 356 L960 356" />
+    <path d="M0 380 L960 380" />
+    <path d="M0 404 L960 404" />
+    <path d="M0 428 L960 428" />
+    <path d="M0 452 L960 452" />
+    <path d="M0 476 L960 476" />
+    <path d="M0 500 L960 500" />
+    <path d="M0 524 L960 524" />
+    <path d="M0 548 L960 548" />
+    <path d="M0 572 L960 572" />
+  </g>
+  <rect x="0" y="0" width="960" height="600" fill="url(#scanlineTint)" opacity="0.15" />
+</svg>

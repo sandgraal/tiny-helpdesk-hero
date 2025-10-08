@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="200" viewBox="0 0 160 200">
+  <defs>
+    <linearGradient id="lampArm" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1f2f54" />
+      <stop offset="100%" stop-color="#0f172b" />
+    </linearGradient>
+    <radialGradient id="lampGlow" cx="50%" cy="20%" r="80%">
+      <stop offset="0%" stop-color="rgba(255, 209, 102, 0.9)" />
+      <stop offset="50%" stop-color="rgba(124, 240, 217, 0.6)" />
+      <stop offset="100%" stop-color="rgba(15, 26, 44, 0)" />
+    </radialGradient>
+    <linearGradient id="lampShade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffd166" />
+      <stop offset="100%" stop-color="#f3aa3b" />
+    </linearGradient>
+  </defs>
+  <ellipse cx="80" cy="188" rx="56" ry="12" fill="rgba(9,16,28,0.5)" />
+  <rect x="54" y="164" width="52" height="18" rx="8" fill="#0f182d" opacity="0.85" />
+  <path d="M80 166 L110 86" stroke="url(#lampArm)" stroke-width="10" stroke-linecap="round" />
+  <path d="M80 166 L48 120" stroke="url(#lampArm)" stroke-width="10" stroke-linecap="round" />
+  <g transform="translate(110, 72)">
+    <path d="M-24 0 L0 -20 L24 0 L18 36 L-18 36 Z" fill="url(#lampShade)" stroke="rgba(31,48,84,0.4)" stroke-width="4" />
+    <ellipse cx="0" cy="20" rx="18" ry="6" fill="#fbe4aa" opacity="0.7" />
+  </g>
+  <circle cx="110" cy="72" r="48" fill="url(#lampGlow)" />
+  <circle cx="110" cy="72" r="12" fill="#fff3c4" opacity="0.7" />
+  <path d="M90 64 Q80 48 94 32" stroke="#56ccf2" stroke-width="6" stroke-linecap="round" opacity="0.3" />
+</svg>

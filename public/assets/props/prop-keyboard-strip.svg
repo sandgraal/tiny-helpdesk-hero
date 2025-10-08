@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="80" viewBox="0 0 320 80">
+  <defs>
+    <linearGradient id="keyboardBase" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1b2642" />
+      <stop offset="100%" stop-color="#0f1628" />
+    </linearGradient>
+    <linearGradient id="keyboardGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#56ccf2" />
+      <stop offset="50%" stop-color="#4ce0d2" />
+      <stop offset="100%" stop-color="#ffd166" />
+    </linearGradient>
+    <linearGradient id="keyboardLow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1f3056" />
+      <stop offset="100%" stop-color="#2b4579" />
+    </linearGradient>
+  </defs>
+  <rect x="8" y="32" width="304" height="32" rx="14" fill="url(#keyboardBase)" stroke="rgba(255,255,255,0.1)" stroke-width="4" />
+  <rect x="22" y="40" width="276" height="16" rx="8" fill="url(#keyboardGlow)" />
+  <rect x="22" y="40" width="276" height="16" rx="8" fill="url(#keyboardLow)" opacity="0.25" />
+  <g fill="rgba(255,255,255,0.08)">
+    <rect x="24" y="36" width="4" height="24" rx="2" />
+    <rect x="292" y="36" width="4" height="24" rx="2" />
+  </g>
+  <g opacity="0.4" fill="rgba(124, 240, 217, 0.7)">
+    <circle cx="52" cy="48" r="3" />
+    <circle cx="90" cy="48" r="3" />
+    <circle cx="132" cy="48" r="3" />
+    <circle cx="172" cy="48" r="3" />
+    <circle cx="214" cy="48" r="3" />
+    <circle cx="256" cy="48" r="3" />
+  </g>
+</svg>

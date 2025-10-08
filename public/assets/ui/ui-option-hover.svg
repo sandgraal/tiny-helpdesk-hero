@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="120" viewBox="0 0 360 120">
+  <defs>
+    <linearGradient id="optionHoverSurface" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a4f80" />
+      <stop offset="100%" stop-color="#1a335a" />
+    </linearGradient>
+    <linearGradient id="optionHoverGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#65e2ff" />
+      <stop offset="100%" stop-color="#7cf0d9" />
+    </linearGradient>
+  </defs>
+  <rect x="8" y="12" width="344" height="100" rx="30" fill="rgba(12,24,40,0.9)" />
+  <rect x="26" y="28" width="308" height="72" rx="24" fill="url(#optionHoverSurface)" stroke="#65e2ff" stroke-width="4" />
+  <rect x="26" y="28" width="308" height="72" rx="24" fill="url(#optionHoverGlow)" opacity="0.25" />
+  <rect x="34" y="40" width="14" height="52" rx="7" fill="#ffd166" opacity="0.8" />
+  <path d="M72 80 L116 58 L160 80" stroke="#7cf0d9" stroke-width="12" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="0.35" />
+  <path d="M204 80 L248 58 L292 80" stroke="#ffd166" stroke-width="12" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="0.35" />
+</svg>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="640" viewBox="0 0 1024 640">
+  <defs>
+    <radialGradient id="bloomGradient" cx="50%" cy="50%" r="65%">
+      <stop offset="0%" stop-color="rgba(124, 240, 217, 0.45)" />
+      <stop offset="40%" stop-color="rgba(86, 204, 242, 0.25)" />
+      <stop offset="80%" stop-color="rgba(255, 209, 102, 0.12)" />
+      <stop offset="100%" stop-color="rgba(255, 209, 102, 0)" />
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="1024" height="640" fill="url(#bloomGradient)" />
+  <rect x="0" y="0" width="1024" height="640" fill="rgba(255,255,255,0.05)" />
+</svg>

@@ -3,6 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+- Replaced placeholder art with milestone 2.6 asset suite (HUD cards, empathy meter, hero micro-acting, desk props, monitor overlays, particles).
 - Added in-game accessibility controls (text scaling presets, dyslexia-friendly font toggle, high-contrast mode).
 - Implemented achievements panel auto-hide/toggle on touch layouts, larger touch targets, unlock chime, empathy hint messaging refresh, keyboard navigation, and optional mobile haptic feedback.
 - Expanded call content to 30 seeded scenarios and added narrative/UI style guides.

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+  <defs>
+    <radialGradient id="badge4Bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4ce0d2" />
+      <stop offset="100%" stop-color="#1c7a73" />
+    </radialGradient>
+    <linearGradient id="badge4Ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd166" />
+      <stop offset="100%" stop-color="#ff7b7b" />
+    </linearGradient>
+  </defs>
+  <circle cx="80" cy="80" r="72" fill="url(#badge4Bg)" stroke="url(#badge4Ring)" stroke-width="8" />
+  <g fill="#ffdbe2" stroke="#ff9fa6" stroke-width="6" stroke-linejoin="round">
+    <path d="M80 64 Q70 40 52 46 Q36 52 34 70 Q32 90 52 106 L80 128" />
+    <path d="M80 64 Q90 40 108 46 Q124 52 126 70 Q128 90 108 106 L80 128" />
+  </g>
+  <circle cx="80" cy="46" r="12" fill="#ffd166" opacity="0.8" />
+</svg>

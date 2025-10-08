@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="240" viewBox="0 0 200 240">
+  <defs>
+    <linearGradient id="heroTypingTorso" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2f5193" />
+      <stop offset="100%" stop-color="#1d315e" />
+    </linearGradient>
+    <linearGradient id="heroTypingSleeve" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#244173" />
+      <stop offset="100%" stop-color="#172845" />
+    </linearGradient>
+    <radialGradient id="heroTypingFace" cx="48%" cy="42%" r="72%">
+      <stop offset="0%" stop-color="#ffe2b0" />
+      <stop offset="80%" stop-color="#f7c89a" />
+      <stop offset="100%" stop-color="#eab483" />
+    </radialGradient>
+    <linearGradient id="heroTypingGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7cf0d9" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#44c0ff" stop-opacity="0.35" />
+    </linearGradient>
+  </defs>
+  <rect x="6" y="152" width="56" height="76" rx="20" fill="#12192f" opacity="0.7" />
+  <rect x="138" y="152" width="56" height="76" rx="20" fill="#12192f" opacity="0.7" />
+  <rect x="60" y="98" width="80" height="104" rx="34" fill="url(#heroTypingTorso)" />
+  <path d="M50 158 Q36 120 52 112 Q70 104 82 142 L86 182" fill="url(#heroTypingSleeve)" />
+  <path d="M150 158 Q164 120 148 112 Q130 104 118 142 L114 182" fill="url(#heroTypingSleeve)" />
+  <rect x="82" y="178" width="44" height="48" rx="18" fill="#212f58" />
+  <ellipse cx="100" cy="82" rx="34" ry="36" fill="url(#heroTypingFace)" />
+  <path d="M66 68 Q100 30 134 66 Q138 92 124 100 Q110 110 88 106 Q68 102 64 90 Z" fill="#2d1f52" />
+  <rect x="64" y="62" width="72" height="22" rx="10" fill="#0f1424" opacity="0.88" />
+  <rect x="60" y="76" width="80" height="12" rx="6" fill="#0f1424" opacity="0.55" />
+  <circle cx="82" cy="84" r="6" fill="#ffa6ad" opacity="0.85" />
+  <circle cx="118" cy="84" r="6" fill="#ffa6ad" opacity="0.85" />
+  <path d="M80 104 Q100 112 120 100" stroke="#f4d6c1" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.8" />
+  <path d="M48 168 Q72 152 94 170" stroke="#58e8ff" stroke-width="10" stroke-linecap="round" fill="none" opacity="0.3" />
+  <path d="M152 168 Q128 152 106 170" stroke="#58e8ff" stroke-width="10" stroke-linecap="round" fill="none" opacity="0.3" />
+  <rect x="58" y="188" width="84" height="26" rx="12" fill="url(#heroTypingGlow)" opacity="0.7" />
+  <ellipse cx="100" cy="212" rx="48" ry="18" fill="rgba(60, 136, 220, 0.24)" />
+</svg>

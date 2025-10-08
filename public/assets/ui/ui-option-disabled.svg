@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="120" viewBox="0 0 360 120">
+  <defs>
+    <linearGradient id="optionDisabledSurface" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#24324c" />
+      <stop offset="100%" stop-color="#1a253d" />
+    </linearGradient>
+    <linearGradient id="optionDisabledMask" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.12)" />
+      <stop offset="100%" stop-color="rgba(0,0,0,0.25)" />
+    </linearGradient>
+  </defs>
+  <rect x="8" y="16" width="344" height="96" rx="28" fill="rgba(8,14,24,0.8)" />
+  <rect x="26" y="30" width="308" height="68" rx="22" fill="url(#optionDisabledSurface)" stroke="rgba(255,255,255,0.08)" stroke-width="4" />
+  <rect x="26" y="30" width="308" height="68" rx="22" fill="url(#optionDisabledMask)" opacity="0.4" />
+  <rect x="34" y="42" width="12" height="44" rx="6" fill="#33475b" />
+  <path d="M70 78 L112 58 L154 78" stroke="#33475b" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M196 78 L238 58 L280 78" stroke="#33475b" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

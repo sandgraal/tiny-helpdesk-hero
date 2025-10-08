@@ -4,21 +4,21 @@ Tracks visual and motion assets required to support the over-the-shoulder presen
 
 | Asset / Group | Description | Status | Notes |
 |---------------|-------------|--------|-------|
-| HUD option buttons | Replace flat rectangles with "tiny desk" UI cards (light bevel, subtle shadow). | TODO | Style must read at 1280×720 + mobile scales; respect high-contrast palette. |
-| Empathy meter | Create meter shell + fill sprite pair that matches new palette. | TODO | Separate layers for base, progress, glow pulse. |
-| Achievements badges | Design 6 badge icons + unlock animation spritesheet. | TODO | Reference docs/art/style-checklist.md contrast targets. |
-| Accessibility stub icon set | Collapse/expand chevron, restart glyph, text-scaling indicator. | TODO | Provide 32px + 48px variants. |
-| Monitor overlay | Screen frame, scanline mask, bloom sprite. | TODO | Reuse for screen-in-screen projection. |
-| Desk props | Coffee mug, sticky notes, figurine, keyboard LED strip. | TODO | Color-shift states tied to empathy meter. |
-| Hero micro-acting | Typing loop, stretch, lean, head nod cycles (4–8 frames each). | TODO | Animate at ≤15 fps; ensure readable silhouette. |
-| Chair + lighting loops | Gentle chair sway, desk lamp glow pulse animation. | TODO | Sync lamp intensity with empathy light curve. |
-| Background parallax layers | Office wall, window, moving silhouettes, cable clutter. | TODO | Minimum three depth layers for parallax. |
-| Ambient character passes | Coworker silhouette walk cycles (front/back). | TODO | Lower frame rate to avoid motion blur. |
-| Incoming call indicator | Light beacon sprite + flash frames. | TODO | Pair with audio cue. |
-| Transition overlays | Fade-to-glare gradient, vignette masks (happy/somber). | TODO | Provide both normal and high-contrast variants. |
-| Particle effects | Soft sparkles for successes, muted drift for failures. | TODO | Use additive blend, capped at 12 particles. |
-| Screen static spritesheet | Glitch frames for failure feedback. | TODO | Integrate with monitor projection. |
-| Iteration captures | Before/after screenshot slots for docs/art/iteration-log.md. | TODO | Export once first pass assets land. |
+| HUD option buttons | Replace flat rectangles with "tiny desk" UI cards (light bevel, subtle shadow). | Done | Implemented via `assets/ui/ui-option-*.svg` and wired into `systems/ui.mjs`. |
+| Empathy meter | Create meter shell + fill sprite pair that matches new palette. | Done | `assets/ui/empathy-meter-{base,fill,glow}.svg` with animated fill logic. |
+| Achievements badges | Design 6 badge icons + unlock animation spritesheet. | Done | `assets/ui/achievement-badge-0{1-6}.svg` integrated in achievements panel. |
+| Accessibility stub icon set | Collapse/expand chevron, restart glyph, text-scaling indicator. | Done | `assets/icons/icon-{collapse,expand,restart,text-scale}.svg` used across UI/DOM. |
+| Monitor overlay | Screen frame, scanline mask, bloom sprite. | Done | `assets/ui/monitor-frame.svg`, `monitor-scanlines.svg`, `monitor-bloom.svg` applied during scene render. |
+| Desk props | Coffee mug, sticky notes, figurine, keyboard LED strip. | Done | `assets/props/*.svg` with empathy-driven tints in `desk-assets.mjs`. |
+| Hero micro-acting | Typing loop, stretch, lean, head nod cycles (4–8 frames each). | Done | `assets/hero/hero-*.svg` sprites replace procedural fallback. |
+| Chair + lighting loops | Gentle chair sway, desk lamp glow pulse animation. | Done | `assets/props/prop-chair.svg` + `prop-lamp.svg` tied to lighting states. |
+| Background parallax layers | Office wall, window, moving silhouettes, cable clutter. | Done | `assets/background/background-*.svg` layered with camera parallax. |
+| Ambient character passes | Coworker silhouette walk cycles (front/back). | Done | `assets/background/ambient-coworker-*.svg` animated in desk renderer. |
+| Incoming call indicator | Light beacon sprite + flash frames. | Done | `assets/ui/incoming-call-indicator.svg` pulses with active calls. |
+| Transition overlays | Fade-to-glare gradient, vignette masks (happy/somber). | Done | `assets/transition/transition-*.svg` available for scene FX. |
+| Particle effects | Soft sparkles for successes, muted drift for failures. | Done | `assets/effects/particles-{success,failure}.svg` triggered from props controller. |
+| Screen static spritesheet | Glitch frames for failure feedback. | Done | `assets/effects/screen-static.svg` drives failure overlay. |
+| Iteration captures | Before/after screenshot slots for docs/art/iteration-log.md. | In progress | `docs/art/iteration-log.md` updated with notes; capture pass scheduled post-playtest. |
 
 ## Next Steps
 1. Align palette usage with `docs/art/dynamic-visuals.md` guidance (lighting, monitor effects).

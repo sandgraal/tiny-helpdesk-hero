@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <radialGradient id="glareGradient" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="rgba(255, 255, 255, 0.9)" />
+      <stop offset="50%" stop-color="rgba(255, 209, 102, 0.4)" />
+      <stop offset="100%" stop-color="rgba(12, 22, 36, 0)" />
+    </radialGradient>
+    <linearGradient id="glareSweep" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(124, 240, 217, 0.2)" />
+      <stop offset="100%" stop-color="rgba(43, 69, 120, 0.5)" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1920" height="1080" fill="rgba(7, 15, 24, 0.75)" />
+  <ellipse cx="960" cy="420" rx="820" ry="520" fill="url(#glareGradient)" />
+  <path d="M-200 880 L800 0 L1920 240 L740 1080 Z" fill="url(#glareSweep)" opacity="0.6" />
+  <path d="M200 1080 L920 180 L1720 0 L1340 1080 Z" fill="rgba(255,255,255,0.1)" opacity="0.5" />
+</svg>

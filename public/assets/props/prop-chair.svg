@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="220" viewBox="0 0 200 220">
+  <defs>
+    <linearGradient id="chairBack" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1b2f54" />
+      <stop offset="100%" stop-color="#0e182d" />
+    </linearGradient>
+    <linearGradient id="chairSeat" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#243f6e" />
+      <stop offset="100%" stop-color="#17274a" />
+    </linearGradient>
+    <linearGradient id="chairGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="rgba(124, 240, 217, 0.25)" />
+      <stop offset="100%" stop-color="rgba(68, 192, 255, 0.35)" />
+    </linearGradient>
+  </defs>
+  <ellipse cx="100" cy="204" rx="62" ry="12" fill="rgba(8, 14, 24, 0.45)" />
+  <rect x="52" y="32" width="96" height="120" rx="34" fill="url(#chairBack)" stroke="rgba(124,240,217,0.12)" stroke-width="4" />
+  <rect x="46" y="126" width="108" height="60" rx="30" fill="url(#chairSeat)" />
+  <rect x="70" y="148" width="60" height="40" rx="18" fill="#0f172b" opacity="0.7" />
+  <rect x="54" y="134" width="92" height="12" rx="6" fill="url(#chairGlow)" opacity="0.65" />
+  <g fill="#0e1728">
+    <rect x="62" y="184" width="12" height="28" rx="6" />
+    <rect x="126" y="184" width="12" height="28" rx="6" />
+    <rect x="88" y="184" width="12" height="28" rx="6" />
+  </g>
+  <g opacity="0.35" stroke="#7cf0d9" stroke-width="8" stroke-linecap="round">
+    <path d="M60 44 Q52 28 64 20" />
+    <path d="M140 44 Q148 28 136 20" />
+  </g>
+</svg>

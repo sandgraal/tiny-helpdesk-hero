@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="160" viewBox="0 0 180 160">
+  <defs>
+    <linearGradient id="mugBody" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#223c61" />
+      <stop offset="100%" stop-color="#15223a" />
+    </linearGradient>
+    <linearGradient id="mugSteam" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(124, 240, 217, 0.7)" />
+      <stop offset="100%" stop-color="rgba(70, 170, 255, 0.1)" />
+    </linearGradient>
+    <linearGradient id="mugHighlight" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#40d8ff" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#ffd166" stop-opacity="0.35" />
+    </linearGradient>
+  </defs>
+  <ellipse cx="80" cy="138" rx="58" ry="16" fill="rgba(12, 22, 36, 0.4)" />
+  <rect x="40" y="46" width="80" height="84" rx="24" fill="url(#mugBody)" stroke="rgba(255,255,255,0.12)" stroke-width="4" />
+  <path d="M120 62 Q156 54 148 96 Q140 132 108 120" fill="none" stroke="#172542" stroke-width="18" stroke-linecap="round" />
+  <path d="M118 66 Q152 60 146 94 Q138 124 110 115" fill="none" stroke="#2a4a78" stroke-width="12" stroke-linecap="round" />
+  <rect x="48" y="54" width="64" height="66" rx="20" fill="#1a2f51" opacity="0.6" />
+  <rect x="54" y="60" width="52" height="54" rx="18" fill="url(#mugHighlight)" opacity="0.9" />
+  <ellipse cx="80" cy="46" rx="40" ry="12" fill="#172542" />
+  <ellipse cx="80" cy="46" rx="34" ry="8" fill="#0f192a" />
+  <path d="M68 22 C64 6 84 0 72 -18" fill="none" stroke="url(#mugSteam)" stroke-width="6" stroke-linecap="round" stroke-dasharray="10 12" transform="translate(0 40)" />
+  <path d="M90 16 C94 0 74 -4 86 -20" fill="none" stroke="url(#mugSteam)" stroke-width="6" stroke-linecap="round" stroke-dasharray="11 12" transform="translate(0 40)" />
+</svg>

@@ -17,6 +17,7 @@ Use this log to capture before/after snapshots and notes for key visual changes 
 | 2024-05-12 | Ambient empathy lighting | `reference/before-ambient.png` | `reference/after-ambient.png` | Added warm/cool tint + monitor glow driven by empathy ratio (`src/systems/lighting/lighting-controller.js`, `src/game/scene.js`). Low-power mode clamps glow. |
 | 2024-05-13 | Desk props & failure static | `reference/before-props.png` | `reference/after-props.png` | Placeholder desk/mug/sticky note/LED driven by empathy ratio (`src/game/props-controller.js`, `src/game/desk-assets.js`). Failure events trigger static overlay with low-power fallback. |
 | 2024-05-13 | Hero placeholder sprite | `reference/before-hero.png` | `reference/after-hero.png` | Added temporary hero silhouette (`public/assets/hero-placeholder.svg`) rendered via `src/game/hero-assets.js` with posture/celebration states from props controller. |
+| 2024-05-20 | Milestone 2.6 art pass | `reference/pending-hud-before.png` | `reference/pending-hud-after.png` | New HUD cards, empathy meter, monitor overlays, hero micro-acting sprites, background parallax, and particle effects (`public/assets/**`, `src/game/desk-assets.mjs`, `src/systems/ui.mjs`). Final captures pending QA build. |
 
 ## Screenshot Guidelines
 - Capture at 1280×720 and, when relevant, a secondary mobile resolution (minimum 390×844).

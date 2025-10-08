@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="72" viewBox="0 0 360 72">
+  <defs>
+    <radialGradient id="meterGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(124, 240, 217, 0.7)" />
+      <stop offset="50%" stop-color="rgba(68, 192, 255, 0.45)" />
+      <stop offset="100%" stop-color="rgba(255, 209, 102, 0)" />
+    </radialGradient>
+  </defs>
+  <ellipse cx="180" cy="36" rx="160" ry="28" fill="url(#meterGlow)" />
+  <ellipse cx="180" cy="36" rx="160" ry="28" fill="rgba(68, 192, 255, 0.1)" />
+</svg>

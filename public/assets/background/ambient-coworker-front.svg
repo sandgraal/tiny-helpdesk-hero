@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="220" viewBox="0 0 160 220">
+  <defs>
+    <linearGradient id="coworkerFront" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a2f50" />
+      <stop offset="100%" stop-color="#0c182d" />
+    </linearGradient>
+  </defs>
+  <rect x="48" y="152" width="64" height="60" rx="24" fill="#0b1424" opacity="0.65" />
+  <path d="M52 148 Q32 114 48 84 Q64 56 80 64 Q94 70 108 100 Q120 126 110 148 Z" fill="url(#coworkerFront)" />
+  <ellipse cx="80" cy="62" rx="28" ry="36" fill="#121f34" />
+  <ellipse cx="68" cy="58" rx="6" ry="10" fill="#060b12" />
+  <ellipse cx="92" cy="58" rx="6" ry="10" fill="#060b12" />
+  <circle cx="80" cy="122" r="18" fill="#0c1a2d" opacity="0.6" />
+</svg>

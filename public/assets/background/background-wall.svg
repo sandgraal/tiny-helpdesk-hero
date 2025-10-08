@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="wallGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0a1729" />
+      <stop offset="100%" stop-color="#132440" />
+    </linearGradient>
+    <linearGradient id="posterBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#56ccf2" />
+      <stop offset="100%" stop-color="#1b98e0" />
+    </linearGradient>
+    <linearGradient id="posterGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd166" />
+      <stop offset="100%" stop-color="#f29f3d" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1920" height="1080" fill="url(#wallGradient)" />
+  <g opacity="0.08" stroke="#ffffff" stroke-width="2">
+    <path d="M0 200 L1920 200" />
+    <path d="M0 420 L1920 420" />
+    <path d="M0 640 L1920 640" />
+  </g>
+  <g opacity="0.08" stroke="#ffffff" stroke-width="2">
+    <path d="M240 0 L240 1080" />
+    <path d="M1680 0 L1680 1080" />
+  </g>
+  <g transform="translate(320, 220)">
+    <rect x="0" y="0" width="260" height="360" rx="24" fill="#0d1f36" stroke="rgba(124,240,217,0.25)" stroke-width="8" />
+    <rect x="20" y="20" width="220" height="320" rx="18" fill="url(#posterBlue)" />
+    <text x="60" y="140" font-family="'Segoe UI', sans-serif" font-size="52" font-weight="bold" fill="#ffffff">HELP</text>
+    <text x="60" y="210" font-family="'Segoe UI', sans-serif" font-size="52" font-weight="bold" fill="#ffffff">DESK</text>
+    <text x="60" y="280" font-family="'Segoe UI', sans-serif" font-size="52" font-weight="bold" fill="#ffffff">HERO</text>
+    <circle cx="200" cy="80" r="28" fill="rgba(255,255,255,0.12)" />
+  </g>
+  <g transform="translate(1380, 260) rotate(2)">
+    <rect x="0" y="0" width="220" height="320" rx="20" fill="#0d1f36" stroke="rgba(255,209,102,0.3)" stroke-width="8" />
+    <rect x="18" y="18" width="184" height="284" rx="16" fill="url(#posterGold)" />
+    <text x="40" y="130" font-family="'Segoe UI', sans-serif" font-size="42" font-weight="bold" fill="#09142a">Stay tiny.</text>
+    <text x="40" y="190" font-family="'Segoe UI', sans-serif" font-size="42" font-weight="bold" fill="#09142a">Stay kind.</text>
+    <g fill="rgba(9,20,42,0.4)">
+      <circle cx="140" cy="60" r="20" />
+      <circle cx="70" cy="240" r="14" />
+      <circle cx="150" cy="250" r="10" />
+    </g>
+  </g>
+  <g opacity="0.25" fill="rgba(124, 240, 217, 0.12)">
+    <rect x="620" y="160" width="320" height="40" rx="20" />
+    <rect x="620" y="240" width="280" height="40" rx="20" />
+    <rect x="620" y="320" width="360" height="40" rx="20" />
+  </g>
+</svg>
