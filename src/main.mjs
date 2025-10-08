@@ -8,6 +8,7 @@ import { initAccessibilityPanel } from './ui/accessibility-panel.mjs';
 
 function startEngine(lifecycle) {
   const { engineInit } = globalThis;
+  console.log('[TinyHelpdeskHero] engineInit type:', typeof engineInit);
   if (typeof engineInit !== 'function') {
     return false;
   }
