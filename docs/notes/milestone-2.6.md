@@ -3,24 +3,24 @@
 This milestone brings the over-the-shoulder composition, monitor projection, and empathy-reactive office to life. Builds on Milestone 2.5 visual groundwork.
 
 ## Current Status
-- [ ] Camera/scene layout prototyped (see `docs/art/camera-monitor-plan.md`).
-- [x] Desk scene scaffold added (`src/game/scene.js`).
-- [x] Monitor display scaffold created (`src/game/monitor-display.js`).
-- [x] Camera parallax state scaffolded (`src/game/camera.js`).
+- [x] Camera/scene layout prototyped (see `docs/art/camera-monitor-plan.md`).
+- [x] Desk scene scaffold added (`src/game/scene.mjs`).
+- [x] Monitor display scaffold created (`src/game/monitor-display.mjs`).
+- [x] Camera parallax state scaffolded (`src/game/camera.mjs`).
 - [x] Off-screen UI render integrated into LittleJS render pipeline.
 - [x] Empathy-driven lighting variables connected to rendering layer.
-- [ ] Hero + prop animation sets drafted.
+- [x] Hero + prop animation sets drafted.
 - [x] Parallax + low-power modes implemented.
 - [x] Dynamic visuals documented in `docs/art/iteration-log.md`.
 
 ## Workstreams & Tasks
 
 ### Scene Composition & Camera
-- [ ] Implement camera transform + layer ordering per plan doc.
-- [ ] Capture baseline renders for before/after comparison.
+- [x] Implement camera transform + layer ordering per plan doc.
+- [x] Capture baseline renders for before/after comparison. *(Logged in `docs/art/iteration-log.md` 2024-05-12/20 entries.)*
 
 ### Monitor Projection
-- [x] Scaffold off-screen UI canvas helper (`src/game/monitor-display.js`).
+- [x] Scaffold off-screen UI canvas helper (`src/game/monitor-display.mjs`).
 - [x] Hook helper into `createGameLifecycle` render step and blit to monitor sprite.
 - [ ] Add post-processing shader / filter toggle with low-power fallback.
 
@@ -29,12 +29,12 @@ This milestone brings the over-the-shoulder composition, monitor projection, and
 - [x] Author failure feedback effects (screen static, light flicker) respecting performance cap.
 
 ### Animation
-- [ ] Produce hero micro-acting sprites (typing, head turn, celebration).
-- [ ] Animate desk props (mug, sticky notes, LEDs) and ambient silhouettes.
-- [ ] Wire animation triggers into conversation system events.
+- [x] Produce hero micro-acting sprites (typing, head turn, celebration).
+- [x] Animate desk props (mug, sticky notes, LEDs) and ambient silhouettes. *(Empathy-driven loops wired through `src/game/props-controller.mjs`.)*
+- [x] Wire animation triggers into conversation system events.
 
 ### Documentation & QA
-- [ ] Log each visual iteration in `docs/art/iteration-log.md` with captures.
+- [x] Log each visual iteration in `docs/art/iteration-log.md` with captures.
 - [ ] Update `DEVELOPMENT.md` with render pipeline notes (pixel snap, scaling defaults).
 - [ ] Track performance metrics for standard vs. low-power mode.
 

@@ -10,7 +10,7 @@ Thanks for helping build Tiny Helpdesk Hero! The project now includes baseline s
 ## Local Environment
 - Install Node.js v18+ and use npm (or keep lockfiles consistent if you prefer another manager).
 - Run `npm install` once real dependencies are added (none yet).
-- Use `npm run serve` (currently a TODO placeholder) or `npx http-server -c-1 public` until the dev-server script is finalized.
+- Use `npm run serve` to launch `python3 -m http.server 8080` for the static build (or `npx http-server -c-1 public` if you prefer another tool).
 - Keep the structure described in `DEVELOPMENT.md` (`public/`, `src/`, `assets/`, `tests/`, `docs/…`) when adding files.
 
 ## Contribution Types

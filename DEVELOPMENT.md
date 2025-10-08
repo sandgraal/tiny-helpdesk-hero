@@ -5,7 +5,7 @@ These guidelines define how we will build Tiny Helpdesk Hero from the ground up.
 ## Toolchain Baseline
 - **Node.js:** v18 or newer (see the `engines` field in `package.json`).
 - **Package manager:** npm by default; keep lockfiles consistent if you use an alternative.
-- **Scripts:** `npm run lint` executes the content validator, `npm run validate:content` is callable directly, and the remaining placeholders (`serve`, `format`) will be replaced once tooling is selected.
+- **Scripts:** `npm run lint` executes the content validator, `npm run validate:content` is callable directly, `npm run serve` runs a local `python3 -m http.server 8080`, and `npm run format` remains a placeholder until a formatter is chosen.
 
 ## Phased Development Roadmap
 1. **Bootstrap (Sprint 0)**
@@ -59,7 +59,7 @@ The structure above is aspirational until we begin committing implementation wor
 - If a deploy lands but the site returns a 404, recheck that the Pages source is set to "GitHub Actions" and that the latest workflow run succeeded without errors.
 
 ## Testing & Verification
-- **Local serving:** `npm run serve` currently echoes a TODO. Replace it with a real dev-server command (e.g., `http-server public -c-1`) once tooling is selected; document any prerequisites.
+- **Local serving:** `npm run serve` launches `python3 -m http.server 8080` from the repository root. Document additional dev-server tooling in this section if we adopt something richer.
 - **Smoke tests:** Build a simple harness in `tests/` that instantiates the conversation engine with sample data (see `tests/smoke.test.mjs` placeholder).
 - **Content validation:** `npm run lint` (or directly `npm run validate:content`) checks personas, problems, twists, and default seeds. Required fields must be non-empty strings, incorrect answer pools need ≥2 entries, IDs must be unique, empathy boosts are trimmed/validated, and seed assignments must reference defined content.
 - **Playtesting cadence:** Schedule empathy-focused playtests every sprint; capture feedback in `docs/playtests/`.
@@ -76,11 +76,11 @@ The structure above is aspirational until we begin committing implementation wor
 - Use `drawRectScreen`/`drawTextScreen` for UI and anchor everything to a virtual layout grid so resizing is trivial.
 - Keep update loops deterministic where possible; in tests, mock time deltas for repeatability.
 - Profile with the built-in LittleJS profiler each milestone to ensure performance headroom.
-- Render the HUD into `src/game/monitor-display.js` before blitting when working on the over-the-shoulder composition; see `src/game/scene.js` for the current desk scene stub.
+- Render the HUD into `src/game/monitor-display.mjs` before blitting when working on the over-the-shoulder composition; see `src/game/scene.mjs` for the current desk scene implementation.
 
 ## Communication Norms
 - Weekly sync note in the project board summarizing progress and blockers.
-- Document tone and empathy guardrails in `docs/narrative/guide.md` (to be created).
+- Document tone and empathy guardrails in `docs/narrative/guide.md`.
 - Prefer asynchronous feedback (issues, PR comments); reserve synchronous calls for milestone planning.
 
 The guidelines will evolve as the codebase grows. Propose edits through pull requests whenever workflow or tooling changes are introduced.

@@ -12,5 +12,5 @@
 | Create empathy hint tooltip when score < 50% | Chris | Low | Done | Hint overlay displays when empathy ratio < 0.5; confirmed in PT-02. |
 
 ## Next Steps
-- Assign owners during next planning session.
-- Revisit after PT-02 to reprioritize based on repeated feedback.
+- Assign owners during the next milestone 3 planning session.
+- Revisit after PT-03R regression testing to reprioritize based on new feedback.

@@ -3,7 +3,7 @@
 This checklist ensures all assets, UI components, and motion behaviors align with Tiny Helpdesk Hero’s art direction and jam constraints.
 
 ## 1. Palette & Readability
-- [ ] All UI colors conform to `ui/theme.js` palette constants.  
+- [ ] All UI colors conform to `src/ui/theme.mjs` palette constants.  
 - [ ] Contrast ratio ≥ 4.5:1 for text over backgrounds.  
 - [ ] Backgrounds use muted tones; call-to-action buttons use accent hues.  
 - [ ] No pure white (#FFFFFF) except highlights.  

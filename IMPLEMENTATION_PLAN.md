@@ -5,7 +5,7 @@ The project is kicking off with a documentation-first approach. This plan captur
 ## Status Snapshot
 - [x] Establish documentation baseline (README, DEVELOPMENT, CONTRIBUTING, IMPLEMENTATION_PLAN).
 - [x] Stand up project scaffolding (tooling, directories, LittleJS bootstrap placeholders).
-- [ ] Build systems foundation and deliver the jam-ready playable build.
+- [x] Build systems foundation and deliver the jam-ready playable build.
 
 ## Milestone 0 — Bootstrap Infrastructure
 **Target:** Establish the foundational project structure, tooling, and workflows.
@@ -45,18 +45,18 @@ The project is kicking off with a documentation-first approach. This plan captur
 - [x] Review docs/art/ for tone alignment (palette, proportions, motion language). *(Completed via `docs/art/camera-monitor-plan.md` and `docs/art/dynamic-visuals.md` alignment pass.)*
 - [x] Replace placeholder sprites/icons plan with cohesive backlog (`docs/art/asset-backlog.md`); production continues under Milestone 2.6.
 - [x] Introduce parallax or subtle camera drift to imply depth without harming readability.
-- [x] Establish reusable `ui/theme.js` palette constants to sync color usage across game, HUD, and menus.
+- [x] Establish reusable `src/ui/theme.mjs` palette constants to sync color usage across game, HUD, and menus.
 - [x] Document render pipeline tuning goals (pixel snap, scale ratio, atlas strategy) for execution alongside Milestone 2.6.
 - [x] Capture animation timing requirements in docs; detailed pass continues with final assets.
 - [x] Add low-power toggle that disables heavy particle or shader effects for mobile devices.
 - [x] Capture before/after screenshots and embed them in `docs/art/iteration-log.md` for visual tracking. *(Formal art audit scheduled once Milestone 2.6 assets land.)*
 
-- [ ] Implement over-the-shoulder camera showing hero, desk, and monitor.
-- [ ] Integrate `docs/art/dynamic-visuals.md` guidelines into scene layout and animation system.
+- [x] Implement over-the-shoulder camera showing hero, desk, and monitor.
+- [x] Integrate `docs/art/dynamic-visuals.md` guidelines into scene layout and animation system.
 - [x] Add environmental response to empathy (light warmth, monitor glow, ambient tone).
-- [ ] Create hero idle / reaction animations driven by conversation outcomes.
-- [ ] Add screen-in-screen projection with subtle post-processing effects.
-- [ ] Animate ambient background silhouettes and day-night tinting.
+- [x] Create hero idle / reaction animations driven by conversation outcomes.
+- [x] Add screen-in-screen projection with subtle post-processing effects.
+- [ ] Animate ambient background silhouettes and add day-night tinting. *(Silhouette loops are live; tinting pass pending milestone 2.6 polish.)*
 - [x] Connect props (mug, notes, LEDs) to empathy state variables.
 - [ ] Run art consistency audit using the docs/art/style-checklist.md once updated assets arrive.
 - [ ] Apply uniform animation timing constants with final assets.

@@ -1,5 +1,6 @@
 # Playtest Notes (Work in Progress)
 
 Use this directory to capture empathy-focused playtest plans, findings, and follow-up tasks.
-- TODO: add template for session notes.
-- TODO: log playtest schedule and participants once testing begins.
+- Session template: `session-template.md` (duplicate per run for raw notes).
+- Active schedule & goals: `plan.md` plus PT-01 through PT-03 retros.
+- Accessibility tracking lives in `accessibility-checklist.md` and `accessibility-verification.md`.

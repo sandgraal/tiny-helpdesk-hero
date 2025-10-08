@@ -5,7 +5,7 @@
 ## Current Status
 - ✅ Core documentation and scaffolding in place (public/, src/, tests/, package.json, GitHub hygiene).
 - ✅ Greybox loop implemented with LittleJS lifecycle, procedural conversations, animated UI, and adaptive audio cues.
-- 🚧 Next milestone focuses on richer content authoring, accessibility polish, and meta-humor systems.
+- 🚧 Next milestone focuses on over-the-shoulder scene polish, accessibility verification, and submission prep.
 
 ## Game Vision
 - **Premise:** You are the lone support agent at TinyByte Helpdesk, fielding bite-sized tech catastrophes from larger-than-life callers.
@@ -32,10 +32,10 @@
 - `CONTRIBUTING.md` — contributor expectations, onboarding steps, and collaboration etiquette.
 
 ## Immediate Priorities
-1. Review `docs/art/` direction and lock the palette/motion language for milestone 2.5.
-2. Catalog placeholder sprites/icons and build the milestone 2.5 asset backlog (HUD, achievements, accessibility).
-3. Outline render pipeline tweaks (pixel snap, parallax, low-power toggle) before implementation.
-4. Plan documentation artifacts for the art pass (iteration log entries, contrast verification screenshots).
+1. Finalize camera composition, hero micro-acting, and prop animations for the over-the-shoulder scene.
+2. Close out open accessibility follow-ups (landscape panel layout, high-contrast OS checks, haptic comfort notes).
+3. Capture updated milestone 2.6 screenshots/perf notes in `docs/art/iteration-log.md` and `docs/notes/milestone-2.6.md`.
+4. Outline milestone 3 playtests and release-readiness tasks (build pipeline check, submission packaging).
 
 ## Running Locally
 1. `npm run serve` (uses `python3 -m http.server 8080`)
