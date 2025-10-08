@@ -13,7 +13,7 @@ const assets = {
   walkerFront: getImage('assets/background/ambient-coworker-front.svg'),
   walkerBack: getImage('assets/background/ambient-coworker-back.svg'),
   deskSurface: getImage('assets/desk-surface.svg'),
-  monitorFrame: getImage('assets/monitor-frame.svg'),
+  monitorFrame: getImage('assets/ui/monitor-frame.svg'),
   monitorScanlines: getImage('assets/ui/monitor-scanlines.svg'),
   monitorBloom: getImage('assets/ui/monitor-bloom.svg'),
   callIndicator: getImage('assets/ui/incoming-call-indicator.svg'),
