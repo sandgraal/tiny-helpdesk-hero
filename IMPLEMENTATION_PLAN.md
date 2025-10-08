@@ -56,10 +56,10 @@ The project is kicking off with a documentation-first approach. This plan captur
 - [x] Add environmental response to empathy (light warmth, monitor glow, ambient tone).
 - [x] Create hero idle / reaction animations driven by conversation outcomes.
 - [x] Add screen-in-screen projection with subtle post-processing effects.
-- [ ] Animate ambient background silhouettes and add day-night tinting. *(Silhouette loops are live; tinting pass pending milestone 2.6 polish.)*
+- [x] Animate ambient background silhouettes and add day-night tinting.
 - [x] Connect props (mug, notes, LEDs) to empathy state variables.
 - [ ] Run art consistency audit using the docs/art/style-checklist.md once updated assets arrive.
-- [ ] Apply uniform animation timing constants with final assets.
+- [x] Apply uniform animation timing constants with final assets.
 - [ ] Document and screenshot all visual motion in `docs/art/iteration-log.md`.
 
 ## Milestone 3 — Polish & Submission
@@ -76,7 +76,7 @@ The project is kicking off with a documentation-first approach. This plan captur
 - [x] Automate content validation in local/CI workflows (`npm run lint` / `validate:content`, including seed cross-checks).
 - [ ] Keep documentation in sync after each milestone (README + DEVELOPMENT updates).
 - [x] Track narrative tone and empathy guidelines in a dedicated `docs/narrative/guide.md` file.
-- [ ] Configure continuous integration once scripts exist (lint/test on pull requests, optional deploy checks).
+- [x] Configure continuous integration once scripts exist (lint/test on pull requests, optional deploy checks).
 - [ ] Hold milestone retrospectives and record action items in `docs/retros/`.
 
 Progress through these milestones sequentially; unblockers can flow to later milestones once the bootstrap work completes. Update the checklist as sections are finished or descoped.

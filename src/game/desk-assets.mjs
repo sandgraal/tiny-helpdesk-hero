@@ -5,31 +5,40 @@
 import { drawRoundedRect, drawEllipse, hsl } from './draw-utils.mjs';
 import { drawHero } from './hero-assets.mjs';
 import { getImage } from './image-loader.mjs';
+import { imageManifest } from './asset-manifest.mjs';
 
 const assets = {
-  wall: getImage('assets/background/background-wall.svg'),
-  window: getImage('assets/background/background-window.svg'),
-  silhouettes: getImage('assets/background/background-silhouettes.svg'),
-  walkerFront: getImage('assets/background/ambient-coworker-front.svg'),
-  walkerBack: getImage('assets/background/ambient-coworker-back.svg'),
-  deskSurface: getImage('assets/desk-surface.svg'),
-  monitorFrame: getImage('assets/ui/monitor-frame.svg'),
-  monitorScanlines: getImage('assets/ui/monitor-scanlines.svg'),
-  monitorBloom: getImage('assets/ui/monitor-bloom.svg'),
-  callIndicator: getImage('assets/ui/incoming-call-indicator.svg'),
-  propMug: getImage('assets/props/prop-mug.svg'),
-  propNotes: getImage('assets/props/prop-sticky-notes.svg'),
-  propFigurine: getImage('assets/props/prop-figurine.svg'),
-  propKeyboard: getImage('assets/props/prop-keyboard-strip.svg'),
-  propChair: getImage('assets/props/prop-chair.svg'),
-  propLamp: getImage('assets/props/prop-lamp.svg'),
-  particlesSuccess: getImage('assets/effects/particles-success.svg'),
-  particlesFailure: getImage('assets/effects/particles-failure.svg'),
-  screenStatic: getImage('assets/effects/screen-static.svg'),
+  wall: getImage(imageManifest.backgroundWall),
+  window: getImage(imageManifest.backgroundWindow),
+  silhouettes: getImage(imageManifest.backgroundSilhouettes),
+  walkerFront: getImage(imageManifest.ambientCoworkerFront),
+  walkerBack: getImage(imageManifest.ambientCoworkerBack),
+  deskSurface: getImage(imageManifest.deskSurface),
+  monitorFrame: getImage(imageManifest.monitorFrame),
+  monitorScanlines: getImage(imageManifest.monitorScanlines),
+  monitorBloom: getImage(imageManifest.monitorBloom),
+  callIndicator: getImage(imageManifest.callIndicator),
+  propMug: getImage(imageManifest.propMug),
+  propNotes: getImage(imageManifest.propStickyNotes),
+  propFigurine: getImage(imageManifest.propFigurine),
+  propKeyboard: getImage(imageManifest.propKeyboardStrip),
+  propChair: getImage(imageManifest.propChair),
+  propLamp: getImage(imageManifest.propLamp),
+  particlesSuccess: getImage(imageManifest.particlesSuccess),
+  particlesFailure: getImage(imageManifest.particlesFailure),
+  screenStatic: getImage(imageManifest.screenStatic),
 };
 
 const MONITOR_TOTAL = { width: 1100, height: 760 };
 const MONITOR_INNER = { x: 80, y: 80, width: 940, height: 600 };
+
+function colorToRgba(color, alpha = 1) {
+  if (!color) {
+    return null;
+  }
+  const { r = 0, g = 0, b = 0 } = color;
+  return `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${alpha})`;
+}
 
 function isReady(resource) {
   return Boolean(resource?.ready && resource.image);
@@ -129,13 +138,22 @@ function drawProp(ctx, resource, centerX, baselineY, targetWidth, {
   };
 }
 
-function drawAmbientWalkers(ctx, width, deskTopY, { lowPower }) {
+function drawAmbientWalkers(ctx, width, deskTopY, { lowPower, dayProgress = 0.5 }) {
   if (!ctx?.save || lowPower) {
     return;
   }
   const time = nowSeconds();
   const drift = Math.sin(time * 0.6) * 18;
   const bob = Math.sin(time * 0.8) * 6;
+
+  const duskBoost = Math.max(0, (dayProgress - 0.6) / 0.4);
+  const middayEase = 1 - Math.min(1, Math.abs(dayProgress - 0.5) * 2);
+  const backAlpha = 0.22 + duskBoost * 0.18;
+  const frontAlpha = 0.2 + duskBoost * 0.24;
+  const middayDimming = middayEase * 0.12;
+
+  const backOpacity = Math.max(0.12, backAlpha - middayDimming * 0.5);
+  const frontOpacity = Math.max(0.1, frontAlpha - middayDimming);
 
   const backTargetWidth = width * 0.18;
   drawProp(
@@ -144,7 +162,7 @@ function drawAmbientWalkers(ctx, width, deskTopY, { lowPower }) {
     width * 0.2 + drift * 0.3,
     deskTopY - 60 + bob * 0.5,
     backTargetWidth,
-    { alpha: 0.35 },
+    { alpha: backOpacity },
   );
   drawProp(
     ctx,
@@ -152,7 +170,7 @@ function drawAmbientWalkers(ctx, width, deskTopY, { lowPower }) {
     width * 0.78 - drift * 0.2,
     deskTopY - 48 - bob * 0.3,
     backTargetWidth * 0.8,
-    { alpha: 0.28 },
+    { alpha: backOpacity * 0.8 },
   );
 
   const frontTargetWidth = width * 0.16;
@@ -162,7 +180,7 @@ function drawAmbientWalkers(ctx, width, deskTopY, { lowPower }) {
     width * 0.32 + drift,
     deskTopY - 24 + bob,
     frontTargetWidth,
-    { alpha: 0.32 },
+    { alpha: frontOpacity },
   );
   drawProp(
     ctx,
@@ -170,8 +188,51 @@ function drawAmbientWalkers(ctx, width, deskTopY, { lowPower }) {
     width * 0.68 - drift * 0.6,
     deskTopY - 12 - bob,
     frontTargetWidth * 0.9,
-    { alpha: 0.28 },
+    { alpha: frontOpacity * 0.85 },
   );
+}
+
+function applyDayTint(ctx, width, height, dayState = {}) {
+  if (!ctx?.save) {
+    return;
+  }
+
+  const { sky, window: windowTint, haze } = dayState;
+
+  if (sky?.color && sky.alpha > 0) {
+    const fill = colorToRgba(sky.color, 1);
+    if (fill) {
+      ctx.save();
+      ctx.globalAlpha = sky.alpha;
+      ctx.fillStyle = fill;
+      ctx.fillRect(0, 0, width, height);
+      ctx.restore();
+    }
+  }
+
+  if (haze?.color && haze.alpha > 0) {
+    ctx.save();
+    const gradient = ctx.createLinearGradient(0, height * 0.12, 0, height * 0.6);
+    gradient.addColorStop(0, colorToRgba(haze.color, 0));
+    gradient.addColorStop(1, colorToRgba(haze.color, 1));
+    ctx.globalAlpha = haze.alpha;
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, height * 0.08, width, height * 0.6);
+    ctx.restore();
+  }
+
+  if (windowTint?.color && windowTint.alpha > 0) {
+    const fill = colorToRgba(windowTint.color, 1);
+    if (fill) {
+      ctx.save();
+      ctx.globalAlpha = windowTint.alpha;
+      ctx.globalCompositeOperation = 'lighter';
+      const windowHeight = height * 0.5;
+      ctx.fillStyle = fill;
+      ctx.fillRect(0, height * 0.05, width, windowHeight);
+      ctx.restore();
+    }
+  }
 }
 
 function drawDeskSurface(ctx, width, height) {
@@ -246,13 +307,33 @@ export function drawDesk(ctx, width, height, propsState = {}, environment = {}) 
   const lighting = environment.lighting ?? {};
   const renderState = environment.renderState ?? {};
   const time = nowSeconds();
+  const dayState = lighting.day ?? {};
+  const dayProgress = dayState.progress ?? 0;
+  const middayBoost = 1 - Math.min(1, Math.abs(dayProgress - 0.5) * 2);
+
+  const windowAlphaBase = lighting.lowPower ? 0.35 : 0.55;
+  const windowAlpha = windowAlphaBase + middayBoost * (lighting.lowPower ? 0.04 : 0.12);
+  const silhouetteBase = lighting.lowPower ? 0.25 : 0.48;
+  const eveningOffset = Math.max(0, dayProgress - 0.6) / 0.4;
+  const silhouetteAlpha = Math.max(0.12, silhouetteBase - middayBoost * 0.18 + eveningOffset * 0.2);
 
   drawFullscreen(ctx, assets.wall, width, height, { offsetX: cameraOffset.x * -0.3, offsetY: cameraOffset.y * -0.2 });
-  drawFullscreen(ctx, assets.window, width, height * 0.8, { offsetX: cameraOffset.x * -0.5, offsetY: cameraOffset.y * -0.4, scaleMultiplier: 1.02, alpha: lighting.lowPower ? 0.4 : 0.65 });
-  drawFullscreen(ctx, assets.silhouettes, width, height, { offsetX: cameraOffset.x * -0.6, offsetY: cameraOffset.y * -0.5, alpha: lighting.lowPower ? 0.32 : 0.5 });
+  drawFullscreen(ctx, assets.window, width, height * 0.8, {
+    offsetX: cameraOffset.x * -0.5,
+    offsetY: cameraOffset.y * -0.4,
+    scaleMultiplier: 1.02,
+    alpha: windowAlpha,
+  });
+  drawFullscreen(ctx, assets.silhouettes, width, height, {
+    offsetX: cameraOffset.x * -0.6,
+    offsetY: cameraOffset.y * -0.5,
+    alpha: silhouetteAlpha,
+  });
+
+  applyDayTint(ctx, width, height, dayState);
 
   const deskTopY = drawDeskSurface(ctx, width, height);
-  drawAmbientWalkers(ctx, width, deskTopY, { lowPower: propsState.lowPower });
+  drawAmbientWalkers(ctx, width, deskTopY, { lowPower: propsState.lowPower, dayProgress });
 
   const heroBaseline = deskTopY + 6;
   const heroCenterX = width * 0.46 + cameraOffset.x * 0.08;
@@ -439,12 +520,9 @@ export function drawStaticOverlay(ctx, width, height, intensity) {
   }
 
   ctx.save();
-  ctx.globalAlpha = alpha * 0.6;
-  for (let y = 0; y < height; y += 4) {
-    const value = Math.floor(160 + Math.random() * 80);
-    ctx.fillStyle = `rgba(${value}, ${value}, ${value}, 0.4)`;
-    ctx.fillRect(0, y, width, 2);
-  }
+  ctx.globalAlpha = Math.min(0.45, alpha * 0.7);
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+  ctx.fillRect(0, 0, width, height);
   ctx.restore();
 }
 

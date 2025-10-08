@@ -3,6 +3,7 @@
  */
 
 import { subscribe as settingsSubscribe, setLowPower, getSettings } from '../game/settings.mjs';
+import { imageManifest } from '../game/asset-manifest.mjs';
 
 export function initAccessibilityPanel(accessibility) {
   if (!accessibility) {
@@ -99,7 +100,7 @@ export function initAccessibilityPanel(accessibility) {
     }
   }
 
-  ensureIcon(fontScaleSelect?.parentElement, { src: 'assets/icons/icon-text-scale.svg', alt: '' });
+  ensureIcon(fontScaleSelect?.parentElement, { src: imageManifest.iconTextScale, alt: '' });
   ensureIcon(dyslexiaCheckbox?.parentElement, { glyph: '📘' });
   ensureIcon(contrastCheckbox?.parentElement, { glyph: '🔆' });
   ensureIcon(lowPowerToggle, { glyph: '💡' });

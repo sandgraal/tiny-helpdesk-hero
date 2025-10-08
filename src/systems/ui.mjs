@@ -1,32 +1,33 @@
 import { createHoverState, createPulseState } from './animation/tween.mjs';
 import { getImage } from '../game/image-loader.mjs';
+import { imageManifest } from '../game/asset-manifest.mjs';
 import { getPalette, motion } from '../ui/theme.mjs';
 
 const optionSprites = {
-  base: getImage('assets/ui/ui-option-default.svg'),
-  hover: getImage('assets/ui/ui-option-hover.svg'),
-  active: getImage('assets/ui/ui-option-active.svg'),
-  disabled: getImage('assets/ui/ui-option-disabled.svg'),
+  base: getImage(imageManifest.uiOptionDefault),
+  hover: getImage(imageManifest.uiOptionHover),
+  active: getImage(imageManifest.uiOptionActive),
+  disabled: getImage(imageManifest.uiOptionDisabled),
 };
 
 const empathyMeterAssets = {
-  base: getImage('assets/ui/empathy-meter-base.svg'),
-  fill: getImage('assets/ui/empathy-meter-fill.svg'),
-  glow: getImage('assets/ui/empathy-meter-glow.svg'),
+  base: getImage(imageManifest.empathyMeterBase),
+  fill: getImage(imageManifest.empathyMeterFill),
+  glow: getImage(imageManifest.empathyMeterGlow),
 };
 
 const achievementBadges = [
-  getImage('assets/ui/achievement-badge-01.svg'),
-  getImage('assets/ui/achievement-badge-02.svg'),
-  getImage('assets/ui/achievement-badge-03.svg'),
-  getImage('assets/ui/achievement-badge-04.svg'),
-  getImage('assets/ui/achievement-badge-05.svg'),
-  getImage('assets/ui/achievement-badge-06.svg'),
+  getImage(imageManifest.achievementBadge01),
+  getImage(imageManifest.achievementBadge02),
+  getImage(imageManifest.achievementBadge03),
+  getImage(imageManifest.achievementBadge04),
+  getImage(imageManifest.achievementBadge05),
+  getImage(imageManifest.achievementBadge06),
 ];
 
-const iconCollapse = getImage('assets/icons/icon-collapse.svg');
-const iconExpand = getImage('assets/icons/icon-expand.svg');
-const iconRestart = getImage('assets/icons/icon-restart.svg');
+const iconCollapse = getImage(imageManifest.iconCollapse);
+const iconExpand = getImage(imageManifest.iconExpand);
+const iconRestart = getImage(imageManifest.iconRestart);
 
 function isReady(resource) {
   return Boolean(resource?.ready && resource.image);
@@ -353,7 +354,7 @@ export function createUISystem({ accessibility } = {}) {
   function ensureHoverState(optionKey) {
     let state = hoverStates.get(optionKey);
     if (!state) {
-      state = createHoverState({ duration: 0.18 });
+      state = createHoverState({ duration: motion.hover });
       hoverStates.set(optionKey, state);
     }
     return state;

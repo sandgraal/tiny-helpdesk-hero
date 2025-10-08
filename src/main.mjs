@@ -5,6 +5,8 @@
 
 import { createGameLifecycle } from './game/main.mjs';
 import { initAccessibilityPanel } from './ui/accessibility-panel.mjs';
+import { imageSources } from './game/asset-manifest.mjs';
+import { syncWithTextureInfos } from './game/image-loader.mjs';
 
 function ensureOverlayCanvas() {
   const doc = globalThis.document;
@@ -36,13 +38,25 @@ function startEngine(lifecycle) {
   if (typeof engineInit !== 'function') {
     return false;
   }
-  engineInit(
+  const initResult = engineInit(
     lifecycle.init,
     lifecycle.update,
     lifecycle.updatePost,
     lifecycle.render,
     lifecycle.renderPost,
+    imageSources,
   );
+  if (initResult?.finally) {
+    initResult.finally(() => {
+      syncWithTextureInfos();
+    });
+  } else if (initResult?.then) {
+    initResult.then(() => {
+      syncWithTextureInfos();
+    });
+  } else {
+    syncWithTextureInfos();
+  }
   return true;
 }
 

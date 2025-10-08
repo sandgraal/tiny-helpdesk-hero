@@ -5,6 +5,7 @@ import { buildCall, generateCallDeck, placeholderCalls, personas, problems, twis
 import { createConversationSystem } from '../src/systems/conversation.mjs';
 import { createUISystem } from '../src/systems/ui.mjs';
 import { createHoverState, createPulseState } from '../src/systems/animation/tween.mjs';
+import { motion } from '../src/ui/theme.mjs';
 
 function withPatchedGlobals(patches, fn) {
   const originals = {};
@@ -148,4 +149,18 @@ test('animation helpers respect reduced motion preferences', { concurrency: fals
     pulse.update(0.1);
     assert.equal(pulse.getValue(), 0, 'Pulse stays inactive when motion reduced.');
   });
+});
+
+test('hover animation defaults to theme motion timing', () => {
+  const hover = createHoverState();
+  hover.setActive(true);
+  hover.update(motion.hover / 2);
+  assert.ok(hover.getValue() < 1, 'Halfway through duration should not complete easing.');
+  hover.update(motion.hover / 2);
+  assert.equal(hover.getValue(), 1, 'Completing the hover duration reaches full intensity.');
+  hover.setActive(false);
+  hover.update(motion.hover / 2);
+  assert.ok(hover.getValue() > 0, 'Half decay retains some intensity.');
+  hover.update(motion.hover);
+  assert.equal(hover.getValue(), 0, 'Decay past duration clears hover effect.');
 });

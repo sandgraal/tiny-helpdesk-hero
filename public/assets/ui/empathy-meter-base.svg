@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="420" height="140" viewBox="0 0 420 140">
+  <!-- allow-text: empathy label uses embedded Atkinson Hyperlegible font -->
   <defs>
     <linearGradient id="meterShell" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#0c1526" />

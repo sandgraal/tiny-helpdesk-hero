@@ -5,14 +5,15 @@
 
 import { drawRoundedRect, drawEllipse, hsl } from './draw-utils.mjs';
 import { getImage } from './image-loader.mjs';
+import { imageManifest } from './asset-manifest.mjs';
 
 const heroSprites = {
-  idle: getImage('assets/hero/hero-idle.svg'),
-  typing: getImage('assets/hero/hero-typing.svg'),
-  stretch: getImage('assets/hero/hero-stretch.svg'),
-  lean: getImage('assets/hero/hero-lean.svg'),
-  nod: getImage('assets/hero/hero-nod.svg'),
-  celebrate: getImage('assets/hero/hero-celebrate.svg'),
+  idle: getImage(imageManifest.heroIdle),
+  typing: getImage(imageManifest.heroTyping),
+  stretch: getImage(imageManifest.heroStretch),
+  lean: getImage(imageManifest.heroLean),
+  nod: getImage(imageManifest.heroNod),
+  celebrate: getImage(imageManifest.heroCelebrate),
 };
 
 let loggedFallback = false;

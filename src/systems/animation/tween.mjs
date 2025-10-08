@@ -2,6 +2,11 @@
  * Simple easing utilities for UI transitions that respect reduced-motion preferences.
  */
 
+import { motion } from '../../ui/theme.mjs';
+
+const DEFAULT_HOVER_DURATION = motion?.hover ?? 0.2;
+const DEFAULT_PULSE_DURATION = motion?.callPulse ?? 0.4;
+
 function shouldReduceMotion() {
   const { matchMedia } = globalThis;
   return Boolean(matchMedia?.('(prefers-reduced-motion: reduce)').matches);
@@ -12,7 +17,7 @@ export function easeOutCubic(t) {
   return 1 - Math.pow(1 - clamped, 3);
 }
 
-export function createHoverState({ duration = 0.2 } = {}) {
+export function createHoverState({ duration = DEFAULT_HOVER_DURATION } = {}) {
   let elapsed = 0;
   let active = false;
 
@@ -43,7 +48,7 @@ export function createHoverState({ duration = 0.2 } = {}) {
   };
 }
 
-export function createPulseState({ duration = 0.4 } = {}) {
+export function createPulseState({ duration = DEFAULT_PULSE_DURATION } = {}) {
   let remaining = 0;
 
   function trigger() {
