@@ -21,9 +21,9 @@ export function drawDesk(ctx, width, height, propsState) {
   if (deskBackground.ready && deskBackground.image) {
     ctx.drawImage(deskBackground.image, 0, deskTopY - Math.round(deskBackground.image.height * 0.5), width, Math.round(deskBackground.image.height * 0.5 + deskHeight));
   } else {
-    ctx.fillStyle = '#1F1F3B';
+    ctx.fillStyle = '#243354';
     ctx.fillRect(0, deskTopY, width, deskHeight);
-    ctx.fillStyle = '#152238';
+    ctx.fillStyle = '#30416a';
     ctx.fillRect(0, deskTopY - 6, width, 6);
   }
 
@@ -51,8 +51,8 @@ export function drawDesk(ctx, width, height, propsState) {
   const stripX = Math.round(width * 0.2);
   const stripY = deskTopY - 8;
   const gradient = ctx.createLinearGradient(stripX, stripY, stripX + stripWidth, stripY);
-  gradient.addColorStop(0, hsl(glowHue - 20, 70, 55));
-  gradient.addColorStop(1, hsl(glowHue + 20, 70, 55));
+  gradient.addColorStop(0, hsl(glowHue - 40, 80, 60));
+  gradient.addColorStop(1, hsl(glowHue + 20, 80, 65));
   ctx.fillStyle = gradient;
   drawRoundedRect(ctx, stripX, stripY, stripWidth, 6, 3);
   ctx.fill();

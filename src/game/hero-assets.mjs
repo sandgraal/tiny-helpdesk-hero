@@ -6,6 +6,7 @@ import { drawRoundedRect, drawEllipse, hsl } from './draw-utils.mjs';
 import { getImage } from './image-loader.mjs';
 
 const heroImageResource = getImage('assets/hero-placeholder.svg');
+let loggedFallback = false;
 
 export function drawHero(ctx, deskTopY, width, propsState) {
   if (!ctx) {
@@ -32,6 +33,11 @@ export function drawHero(ctx, deskTopY, width, propsState) {
     ctx.drawImage(heroImageResource.image, -drawWidth / 2, -drawHeight + 12, drawWidth, drawHeight);
     ctx.restore();
     return;
+  }
+
+  if (!loggedFallback) {
+    console.info('[TinyHelpdeskHero] rendering fallback hero silhouette');
+    loggedFallback = true;
   }
 
   // Torso
