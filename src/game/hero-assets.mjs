@@ -5,7 +5,8 @@
 import { drawRoundedRect, drawEllipse, hsl } from './draw-utils.mjs';
 import { getImage } from './image-loader.mjs';
 
-const heroImageResource = getImage('assets/hero-placeholder.svg');
+const heroBaseResource = getImage('assets/hero-base.svg');
+const heroCelebrateResource = getImage('assets/hero-celebrate.svg');
 let loggedFallback = false;
 
 export function drawHero(ctx, deskTopY, width, propsState) {
@@ -24,13 +25,21 @@ export function drawHero(ctx, deskTopY, width, propsState) {
   ctx.save();
   ctx.translate(baseX + lean, baseY - torsoHeight - raise);
 
-  if (heroImageResource.ready && heroImageResource.image) {
-    const spriteWidth = heroImageResource.image.width;
-    const spriteHeight = heroImageResource.image.height;
+  const celebrateReady = heroCelebrateResource.ready && heroCelebrateResource.image;
+  const baseReady = heroBaseResource.ready && heroBaseResource.image;
+  const sprite = celebration > 0.3 && celebrateReady
+    ? heroCelebrateResource.image
+    : baseReady
+      ? heroBaseResource.image
+      : null;
+
+  if (sprite) {
+    const spriteWidth = sprite.width;
+    const spriteHeight = sprite.height;
     const scale = torsoHeight / spriteHeight;
     const drawWidth = spriteWidth * scale;
     const drawHeight = spriteHeight * scale;
-    ctx.drawImage(heroImageResource.image, -drawWidth / 2, -drawHeight + 12, drawWidth, drawHeight);
+    ctx.drawImage(sprite, -drawWidth / 2, -drawHeight + 12, drawWidth, drawHeight);
     ctx.restore();
     return;
   }

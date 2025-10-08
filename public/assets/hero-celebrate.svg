@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="200" viewBox="0 0 160 200">
+  <defs>
+    <linearGradient id="celebrateTorso" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2e5f9c" />
+      <stop offset="100%" stop-color="#21406d" />
+    </linearGradient>
+    <linearGradient id="celebratePants" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4a8fe0" />
+      <stop offset="100%" stop-color="#3267a8" />
+    </linearGradient>
+  </defs>
+  <rect x="18" y="132" width="44" height="60" rx="16" fill="#11192b" />
+  <rect x="98" y="132" width="44" height="60" rx="16" fill="#11192b" />
+  <rect x="42" y="70" width="76" height="96" rx="30" fill="url(#celebrateTorso)" />
+  <path d="M24 116 Q18 84 34 78 Q46 74 56 102 L56 150" fill="#1a2744" />
+  <path d="M136 118 Q140 86 124 78 Q114 74 106 98 L104 150" fill="#1a2744" />
+  <rect x="56" y="152" width="48" height="40" rx="14" fill="url(#celebratePants)" />
+  <ellipse cx="82" cy="58" rx="30" ry="28" fill="#f4d6c1" />
+  <path d="M52 46 Q82 18 112 46 Q118 70 104 78 Q94 82 70 80 Q52 78 48 66 Z" fill="#2b1f54" />
+  <rect x="50" y="42" width="64" height="18" rx="9" fill="#12192d" opacity="0.9" />
+  <ellipse cx="68" cy="62" rx="6" ry="4" fill="#ff9fa6" opacity="0.88" />
+  <ellipse cx="94" cy="60" rx="6" ry="4" fill="#ff9fa6" opacity="0.88" />
+  <path d="M30 66 L22 42 L34 38 L46 62" fill="#1a2744" />
+  <path d="M134 64 L142 40 L130 36 L120 60" fill="#1a2744" />
+  <circle cx="60" cy="104" r="9" fill="#ffe27a" opacity="0.6" />
+  <circle cx="102" cy="104" r="9" fill="#ffe27a" opacity="0.6" />
+</svg>

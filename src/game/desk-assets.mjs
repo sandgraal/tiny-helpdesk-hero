@@ -6,7 +6,7 @@ import { drawRoundedRect, drawEllipse, hsl } from './draw-utils.mjs';
 import { drawHero } from './hero-assets.mjs';
 import { getImage } from './image-loader.mjs';
 
-const deskBackground = getImage('assets/desk-placeholder.svg');
+const deskBackground = getImage('assets/desk-surface.svg');
 const monitorFrameImage = getImage('assets/monitor-frame.svg');
 
 export function drawDesk(ctx, width, height, propsState) {
@@ -14,7 +14,7 @@ export function drawDesk(ctx, width, height, propsState) {
     return;
   }
 
-  const deskHeight = Math.round(height * 0.28);
+  const deskHeight = Math.round(height * 0.32);
   const deskTopY = height - deskHeight;
 
   ctx.save();

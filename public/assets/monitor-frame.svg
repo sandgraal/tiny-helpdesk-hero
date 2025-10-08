@@ -1,5 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="520" height="360" viewBox="0 0 520 360">
-  <rect x="0" y="0" width="520" height="360" rx="28" fill="#0b1220" />
-  <rect x="12" y="12" width="496" height="336" rx="20" fill="#141c33" stroke="rgba(255,255,255,0.18)" stroke-width="4" />
-  <rect x="36" y="36" width="448" height="288" rx="16" fill="#02050a" />
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="620" viewBox="0 0 900 620">
+  <defs>
+    <linearGradient id="monitorBezel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#243448" />
+      <stop offset="100%" stop-color="#0a111e" />
+    </linearGradient>
+    <linearGradient id="monitorInner" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#111929" />
+      <stop offset="100%" stop-color="#182740" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="900" height="620" rx="40" fill="url(#monitorBezel)" />
+  <rect x="36" y="36" width="828" height="548" rx="28" fill="url(#monitorInner)" stroke="rgba(255,255,255,0.18)" stroke-width="6" />
+  <rect x="70" y="70" width="760" height="484" rx="24" fill="#02070f" />
+  <rect x="420" y="560" width="60" height="24" rx="10" fill="#31425d" />
 </svg>

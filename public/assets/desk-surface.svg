@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="460" viewBox="0 0 1280 460">
+  <defs>
+    <linearGradient id="deskSurface" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#203452" />
+      <stop offset="100%" stop-color="#0d1526" />
+    </linearGradient>
+    <linearGradient id="deskLip" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3a5a94" />
+      <stop offset="100%" stop-color="#253b64" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="260" width="1280" height="200" fill="url(#deskSurface)" />
+  <rect x="0" y="236" width="1280" height="24" fill="url(#deskLip)" />
+  <rect x="120" y="220" width="260" height="34" rx="14" fill="#1b2841" opacity="0.6" />
+  <rect x="900" y="220" width="260" height="34" rx="14" fill="#1b2841" opacity="0.6" />
+  <ellipse cx="400" cy="280" rx="80" ry="24" fill="#22324f" opacity="0.8" />
+  <ellipse cx="880" cy="280" rx="80" ry="24" fill="#22324f" opacity="0.8" />
+</svg>
