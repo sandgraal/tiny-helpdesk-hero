@@ -12,6 +12,7 @@ This milestone brings the over-the-shoulder composition, monitor projection, and
 - [x] Hero + prop animation sets drafted.
 - [x] Parallax + low-power modes implemented.
 - [x] Dynamic visuals documented in `docs/art/iteration-log.md`.
+- [x] Concept art approved and blockout checklist drafted (`docs/art/concept-approval-2024-06-01.md`).
 
 ## Workstreams & Tasks
 
@@ -39,6 +40,7 @@ This milestone brings the over-the-shoulder composition, monitor projection, and
 - [x] Track performance metrics for standard vs. low-power mode. *(Real-time console logging added via `createPerformanceMonitor`; capture samples per device and archive results.)*
 - [x] Automate palette contrast + colorblind regression checks (`tests/ui-accessibility.test.mjs`).
 - [x] Add accessibility panel safe-area watcher + manual haptics toggle; document follow-up PT-03R verification.
+- [ ] Deliver blockout captures + QA review deck per concept approval follow-ups.
 
 > 2024-05-24 — Local instrumentation sample (Node harness with stubbed canvas):
 > - Standard: 120 frames, avg 0.17 ms (min 0.03 ms / max 4.62 ms), simulated game dt avg 16.67 ms.
