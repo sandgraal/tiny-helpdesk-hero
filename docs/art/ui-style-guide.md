@@ -14,8 +14,9 @@ This guide translates the visual direction into concrete specifications for impl
 | `ui-bg` | `#071629` | Main background / canvas clear |
 | `ui-panel` | `rgba(7, 22, 41, 0.85)` | Panel backgrounds (achievements, modals) |
 | `ui-border` | `rgba(255, 255, 255, 0.16)` | Panel borders |
-| `ui-primary` | `#56CCF2` | Primary buttons / hover states |
-| `ui-primary-active` | `#1B98E0` | Button pressed state |
+| `ui-primary` | `#0D6AA4` | Primary buttons |
+| `ui-primary-hover` | `#117ABD` | Hover state |
+| `ui-primary-active` | `#0A4E7A` | Button pressed state |
 | `ui-accent` | `#FFD166` | Highlights (achievements header, alerts) |
 | `ui-success` | `#4CE0D2` | Empathy success messaging |
 | `ui-text` | `#FFFFFF` | Body text |
@@ -37,7 +38,7 @@ This guide translates the visual direction into concrete specifications for impl
 - **Padding:** 16px vertical, 20px horizontal
 - **States:**
   - Default: `ui-primary` background, `ui-text` text
-  - Hover: lighten to `#65E2FF`
+  - Hover: shift to `ui-primary-hover`
   - Active: `ui-primary-active`
   - Disabled: `#33475B`, text `rgba(255, 255, 255, 0.5)`
 - **Touch targets:** minimum 48×48px on mobile.
@@ -70,4 +71,3 @@ This guide translates the visual direction into concrete specifications for impl
 - [ ] Background textures (subtle noise, grunge overlays)
 - [ ] Icon set (empathy, achievements, audio)
 - [ ] High-contrast palette swatches
-

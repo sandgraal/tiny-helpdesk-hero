@@ -58,9 +58,9 @@ The project is kicking off with a documentation-first approach. This plan captur
 - [x] Add screen-in-screen projection with subtle post-processing effects.
 - [x] Animate ambient background silhouettes and add day-night tinting.
 - [x] Connect props (mug, notes, LEDs) to empathy state variables.
-- [ ] Run art consistency audit using the docs/art/style-checklist.md once updated assets arrive.
+- [x] Run art consistency audit using the docs/art/style-checklist.md once updated assets arrive.
 - [x] Apply uniform animation timing constants with final assets.
-- [ ] Document and screenshot all visual motion in `docs/art/iteration-log.md`.
+- [x] Document and screenshot all visual motion in `docs/art/iteration-log.md`.
 
 ## Milestone 3 — Polish & Submission
 **Target:** Ship-quality jam build with supporting materials.

@@ -21,6 +21,8 @@
   --thh-text-color: #ffffff;
   --thh-panel-bg: rgba(7, 22, 41, 0.85);
   --thh-panel-border: rgba(255, 255, 255, 0.16);
+  --thh-viewport-offset-top: 0px;
+  --thh-viewport-offset-bottom: 0px;
 }
 
 html,
@@ -68,7 +70,7 @@ canvas {
 
 .accessibility-panel {
   position: absolute;
-  top: calc(24px + env(safe-area-inset-top, 0px));
+  top: calc(24px + env(safe-area-inset-top, 0px) + var(--thh-viewport-offset-top, 0px));
   right: calc(24px + env(safe-area-inset-right, 0px));
   display: flex;
   flex-direction: column;
@@ -94,13 +96,30 @@ canvas {
   accent-color: #ffd166;
 }
 
+.accessibility-panel__action {
+  margin-top: 4px;
+  align-self: flex-start;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--thh-panel-border);
+  background: transparent;
+  color: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.accessibility-panel__action:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 @media (max-width: 600px) {
   .accessibility-panel {
     left: 50%;
     right: auto;
     transform: translateX(-50%);
     top: auto;
-    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px) + var(--thh-viewport-offset-bottom, 0px));
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
@@ -110,11 +129,16 @@ canvas {
   .accessibility-panel label {
     width: 140px;
   }
+
+  .accessibility-panel__action {
+    width: 100%;
+    text-align: center;
+  }
 }
 
 @media (max-width: 900px) and (orientation: landscape) {
   .accessibility-panel {
-    top: calc(16px + env(safe-area-inset-top, 0px) + 40px);
+    top: calc(16px + env(safe-area-inset-top, 0px) + var(--thh-viewport-offset-top, 0px) + 40px);
     bottom: auto;
     right: calc(24px + env(safe-area-inset-right, 0px));
     left: auto;
@@ -126,7 +150,7 @@ canvas {
 @media (max-height: 480px) and (orientation: landscape) {
   .accessibility-panel {
     top: auto;
-    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px) + var(--thh-viewport-offset-bottom, 0px));
     left: 50%;
     right: auto;
     transform: translateX(-50%);

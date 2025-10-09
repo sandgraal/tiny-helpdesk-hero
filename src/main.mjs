@@ -7,6 +7,7 @@ import { createGameLifecycle } from './game/main.mjs';
 import { initAccessibilityPanel } from './ui/accessibility-panel.mjs';
 import { imageSources } from './game/asset-manifest.mjs';
 import { syncWithTextureInfos } from './game/image-loader.mjs';
+import { initSafeAreaWatcher } from './ui/safe-area.mjs';
 
 function ensureOverlayCanvas() {
   const doc = globalThis.document;
@@ -63,6 +64,7 @@ function startEngine(lifecycle) {
 function bootstrap() {
   const lifecycle = createGameLifecycle();
   initAccessibilityPanel(lifecycle.accessibility);
+  initSafeAreaWatcher();
   ensureOverlayCanvas();
 
   function attemptStart() {

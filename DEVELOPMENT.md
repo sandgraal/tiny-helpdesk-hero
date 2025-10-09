@@ -43,7 +43,7 @@ The structure above is aspirational until we begin committing implementation wor
 - **Style:** JavaScript ES2022, modules only. Prefer `const`/`let`; avoid mutable singletons. Use 2-space indentation.
 - **Documentation:** Every module exports a default function or named API with top-level JSDoc describing purpose, inputs, outputs.
 - **State Management:** Keep transient gameplay state in dedicated `gameState` modules; pass explicit objects to systems instead of relying on globals. LittleJS globals should be wrapped in adapters to ease testing.
-- **Accessibility:** Provide text size constants, ensure contrast ratios meet WCAG AA by default, and allow future remapping of audio volume/haptics.
+- **Accessibility:** Provide text size constants, ensure contrast ratios meet WCAG AA by default, auto-respect system high-contrast preferences, and expose toggles for low-power visuals and haptics.
 - **Resilience:** Guard external calls (e.g., `engineInit`, `Sound`) so the game fails gracefully if LittleJS changes.
 - **Motion:** Drive interaction easing with the shared tokens in `src/ui/theme.mjs` (`motion.hover`, `motion.callPulse`, etc.) so hover, pulse, and achievement cues stay in sync.
 
@@ -64,7 +64,7 @@ The structure above is aspirational until we begin committing implementation wor
 - **Smoke tests:** Build a simple harness in `tests/` that instantiates the conversation engine with sample data (see `tests/smoke.test.mjs` placeholder).
 - **Content validation:** `npm run lint` (or directly `npm run validate:content`) checks personas, problems, twists, and default seeds. Required fields must be non-empty strings, incorrect answer pools need ≥2 entries, IDs must be unique, empathy boosts are trimmed/validated, and seed assignments must reference defined content.
 - **Playtesting cadence:** Schedule empathy-focused playtests every sprint; capture feedback in `docs/playtests/`.
-- **Accessibility controls:** Use the in-game panel (top-right) to adjust text size, enable the dyslexia-friendly font, and toggle high-contrast mode. Verify these settings persist between sessions.
+- **Accessibility controls:** Use the in-game panel (top-right) to adjust text size, enable the dyslexia-friendly font, toggle high-contrast mode (or follow system), switch low-power visuals/post-processing, and turn haptics on/off. Verify these settings persist between sessions.
 - **Continuous integration:** GitHub Actions (`.github/workflows/test.yml`) runs `npm run lint` and `npm test` on pushes and pull requests; keep scripts green before opening PRs.
 
 ## Asset & Audio Handling

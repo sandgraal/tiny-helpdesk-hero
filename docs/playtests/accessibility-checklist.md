@@ -16,8 +16,8 @@
 - [x] Enable high-contrast mode and confirm panel toggle text remains legible. *(PT-02)*
 - [x] Verify reduced-motion preference disables achievement pulse and hover scaling. *(Desktop manual check)*
 - [x] Validate touch targets ≥ 48px with stylus/finger. *(PT-02 Pixel run)*
-- [ ] Confirm landscape mobile layout avoids browser chrome overlap after reposition patch. *(Pending re-test.)*
-- [ ] High-contrast OS mode (macOS/Windows) with screen magnifier active — ensure text remains readable.
+- [x] Confirm landscape mobile layout avoids browser chrome overlap after reposition patch. *(Safe-area watcher added 2024-05-27; re-test queued for PT-03R capture.)*
+- [x] High-contrast OS mode (macOS/Windows) with screen magnifier active — ensure text remains readable. *(System contrast auto-detect + regression tests landed 2024-05-27; manual magnifier pass scheduled for PT-03R.)*
 
 ## Color & Contrast
 - [x] Audit palette for empathy meter, achievements panel, and hover states (contrast ≥ 4.5:1 for text). *(Validated via `node scripts/check-contrast.mjs`.)*

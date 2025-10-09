@@ -28,8 +28,10 @@ function contrast(hexA, hexB) {
 
 const combinations = [
   { name: 'Default panel', fg: '#E9F1F7', bg: '#0D1E30', min: 4.5 },
-  { name: 'Primary option', fg: '#041C32', bg: '#56CCF2', min: 4.5 },
-  { name: 'Option hover high-contrast', fg: '#000000', bg: '#FFFFFF', min: 7 },
+  { name: 'Primary option', fg: '#FFFFFF', bg: '#0D6AA4', min: 4.5 },
+  { name: 'Option hover', fg: '#FFFFFF', bg: '#117ABD', min: 4.5 },
+  { name: 'Option active', fg: '#FFFFFF', bg: '#0A4E7A', min: 4.5 },
+  { name: 'Option high-contrast hover', fg: '#000000', bg: '#FFFFFF', min: 7 },
   { name: 'Achievements header', fg: '#FFD166', bg: '#0D1E30', min: 3 },
   { name: 'High contrast text', fg: '#FFFFFF', bg: '#000000', min: 7 },
   { name: 'Queue indicator', fg: '#091540', bg: '#FFD166', min: 4.5 },
@@ -46,4 +48,3 @@ results.forEach(({ name, ratio, passes, min }) => {
 
 const failing = results.filter((item) => !item.passes);
 assert.equal(failing.length, 0, `Contrast failures: ${failing.map((f) => f.name).join(', ')}`);
-

@@ -35,8 +35,10 @@ This milestone brings the over-the-shoulder composition, monitor projection, and
 
 ### Documentation & QA
 - [x] Log each visual iteration in `docs/art/iteration-log.md` with captures.
-- [ ] Update `DEVELOPMENT.md` with render pipeline notes (pixel snap, scaling defaults).
+- [x] Update `DEVELOPMENT.md` with render pipeline notes (pixel snap, scaling defaults).
 - [x] Track performance metrics for standard vs. low-power mode. *(Real-time console logging added via `createPerformanceMonitor`; capture samples per device and archive results.)*
+- [x] Automate palette contrast + colorblind regression checks (`tests/ui-accessibility.test.mjs`).
+- [x] Add accessibility panel safe-area watcher + manual haptics toggle; document follow-up PT-03R verification.
 
 > 2024-05-24 — Local instrumentation sample (Node harness with stubbed canvas):
 > - Standard: 120 frames, avg 0.17 ms (min 0.03 ms / max 4.62 ms), simulated game dt avg 16.67 ms.

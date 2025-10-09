@@ -17,7 +17,17 @@ import { createPropsController } from './props-controller.mjs';
 import { subscribe as subscribeSettings, getSettings } from './settings.mjs';
 import { createPerformanceMonitor } from './performance-monitor.mjs';
 
-function triggerHaptic(pattern, warningLabel = 'Haptic trigger failed') {
+function triggerHaptic(pattern, warningLabel = 'Haptic trigger failed', { isAllowed } = {}) {
+  if (typeof isAllowed === 'function') {
+    try {
+      if (!isAllowed()) {
+        return;
+      }
+    } catch (error) {
+      console.warn('[GameLifecycle] Haptic allow check failed', error);
+      return;
+    }
+  }
   const vibrate = globalThis.navigator?.vibrate;
   if (typeof vibrate !== 'function') {
     return;
@@ -146,7 +156,9 @@ export function createGameLifecycle() {
     gameState.audio.playOutcome(gameState.lastSelection.correct);
     gameState.ui.notifySelection(gameState.lastSelection);
     if (!gameState.lastSelection.correct) {
-      triggerHaptic([35, 55]);
+      triggerHaptic([35, 55], 'Selection haptic failed', {
+        isAllowed: () => gameState.accessibility.isHapticsEnabled?.() !== false,
+      });
     }
 
     const postState = gameState.conversation.getState();
@@ -174,7 +186,9 @@ export function createGameLifecycle() {
       if (Array.isArray(unlocks) && unlocks.length) {
         gameState.ui.notifyAchievements(unlocks);
         gameState.audio.playAchievementChime?.();
-        triggerHaptic([20, 30, 20], 'Achievement haptic failed');
+        triggerHaptic([20, 30, 20], 'Achievement haptic failed', {
+          isAllowed: () => gameState.accessibility.isHapticsEnabled?.() !== false,
+        });
       }
     }
   }

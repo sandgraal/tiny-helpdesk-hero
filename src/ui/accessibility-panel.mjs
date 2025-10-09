@@ -30,6 +30,8 @@ export function initAccessibilityPanel(accessibility) {
   const contrastCheckbox = panel.querySelector('[data-accessibility-contrast]');
   let lowPowerToggle = panel.querySelector('[data-low-power-toggle]');
   let postProcessingToggle = panel.querySelector('[data-post-processing-toggle]');
+  let hapticsToggle = panel.querySelector('[data-haptics-toggle]');
+  let contrastSystemButton = panel.querySelector('[data-contrast-follow]');
 
   if (!lowPowerToggle) {
     lowPowerToggle = doc.createElement('label');
@@ -74,6 +76,37 @@ export function initAccessibilityPanel(accessibility) {
   const postProcessingInput = postProcessingToggle.querySelector('[data-post-processing-toggle-input]')
     ?? postProcessingToggle.querySelector('input[type="checkbox"]');
 
+  if (!hapticsToggle) {
+    hapticsToggle = doc.createElement('label');
+    hapticsToggle.dataset.hapticsToggle = 'true';
+    hapticsToggle.style.display = 'flex';
+    hapticsToggle.style.flexDirection = 'row';
+    hapticsToggle.style.alignItems = 'center';
+    hapticsToggle.style.gap = '6px';
+    hapticsToggle.style.fontWeight = '600';
+    hapticsToggle.textContent = 'Haptics';
+
+    const toggle = doc.createElement('input');
+    toggle.type = 'checkbox';
+    toggle.dataset.hapticsToggleInput = 'true';
+    toggle.style.accentColor = '#FF9F1C';
+    toggle.checked = true;
+    hapticsToggle.appendChild(toggle);
+    panel.appendChild(hapticsToggle);
+  }
+
+  const hapticsInput = hapticsToggle.querySelector('[data-haptics-toggle-input]')
+    ?? hapticsToggle.querySelector('input[type="checkbox"]');
+
+  if (!contrastSystemButton) {
+    contrastSystemButton = doc.createElement('button');
+    contrastSystemButton.type = 'button';
+    contrastSystemButton.dataset.contrastFollow = 'true';
+    contrastSystemButton.textContent = 'Use system contrast';
+    contrastSystemButton.className = 'accessibility-panel__action';
+    panel.appendChild(contrastSystemButton);
+  }
+
   function ensureIcon(label, { src, glyph, alt } = {}) {
     if (!label) {
       return;
@@ -109,6 +142,7 @@ export function initAccessibilityPanel(accessibility) {
   }
 
   function applyState(state) {
+    const settingsState = typeof getSettings === 'function' ? getSettings() : {};
     if (fontScaleSelect) {
       const scaleOption = Array.from(fontScaleSelect.options).find(
         (option) => Number(option.value) === Number(state.fontScale),
@@ -122,12 +156,25 @@ export function initAccessibilityPanel(accessibility) {
     }
     if (contrastCheckbox) {
       contrastCheckbox.checked = Boolean(state.highContrast);
+      contrastCheckbox.title = state.followSystemContrast
+        ? 'Following system contrast preference'
+        : 'Manual contrast override';
     }
     if (lowPowerInput) {
-      lowPowerInput.checked = Boolean(getSettings().lowPower);
+      lowPowerInput.checked = Boolean(settingsState?.lowPower);
     }
     if (postProcessingInput) {
-      postProcessingInput.checked = Boolean(getSettings().postProcessing);
+      postProcessingInput.checked = Boolean(settingsState?.postProcessing);
+    }
+    if (hapticsInput) {
+      hapticsInput.checked = state.hapticsEnabled !== false;
+    }
+    if (contrastSystemButton) {
+      const following = Boolean(state.followSystemContrast);
+      contrastSystemButton.disabled = following;
+      contrastSystemButton.title = following
+        ? 'Following system contrast preference'
+        : 'Return to system contrast';
     }
   }
 
@@ -136,6 +183,7 @@ export function initAccessibilityPanel(accessibility) {
   ensureIcon(contrastCheckbox?.parentElement, { glyph: '🔆' });
   ensureIcon(lowPowerToggle, { glyph: '💡' });
   ensureIcon(postProcessingToggle, { glyph: '🖥️' });
+  ensureIcon(hapticsToggle, { glyph: '📳' });
 
   const initialState = accessibility.getState?.() ?? {};
   applyState(initialState);
@@ -152,6 +200,17 @@ export function initAccessibilityPanel(accessibility) {
     accessibility.setHighContrast?.(event.target.checked);
   });
 
+  const handleHapticsChange = (event) => {
+    accessibility.setHapticsEnabled?.(event.target.checked);
+  };
+  hapticsInput?.addEventListener('change', handleHapticsChange);
+
+  const handleContrastSystemClick = (event) => {
+    event.preventDefault();
+    accessibility.resetHighContrastToSystem?.();
+  };
+  contrastSystemButton?.addEventListener('click', handleContrastSystemClick);
+
   const handleLowPowerChange = (event) => {
     setLowPower(event.target.checked);
   };
@@ -162,9 +221,9 @@ export function initAccessibilityPanel(accessibility) {
   };
   postProcessingInput?.addEventListener('change', handlePostProcessingChange);
 
-  accessibility.subscribe?.((state) => {
+  const unsubscribeAccessibility = accessibility.subscribe?.((state) => {
     applyState(state);
-  });
+  }) ?? (() => {});
 
   const unsubscribeLowPower = settingsSubscribe((state) => {
     if (lowPowerInput) {
@@ -177,7 +236,10 @@ export function initAccessibilityPanel(accessibility) {
 
   return () => {
     unsubscribeLowPower();
+    unsubscribeAccessibility();
     lowPowerInput?.removeEventListener('change', handleLowPowerChange);
     postProcessingInput?.removeEventListener('change', handlePostProcessingChange);
+    hapticsInput?.removeEventListener('change', handleHapticsChange);
+    contrastSystemButton?.removeEventListener('click', handleContrastSystemClick);
   };
 }
