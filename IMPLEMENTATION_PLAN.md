@@ -65,7 +65,7 @@ The project is kicking off with a documentation-first approach. This plan captur
 ## Milestone 2.6 — 3D Hero Desk Realization
 **Target:** Execute the 3D transition for the hero, desk, and office vignette as defined in `docs/art/3d-transition-plan.md`.
 
-- [ ] Approve concept sketches for hero, desk layout, and wall dressing; sync decal palette with `docs/art/asset-backlog.md`.
+- [x] Approve concept sketches for hero, desk layout, and wall dressing; sync decal palette with `docs/art/asset-backlog.md`. *(See `docs/art/concept-approval-2024-06-01.md` for notes and follow-ups.)*
 - [ ] Complete 3D blockout matching in-engine camera specs and validate monitor readability in greybox renders.
 - [ ] Deliver high-poly sculpts + modular wall decor sets; capture review notes in `docs/art/iteration-log.md`.
 - [ ] Retopologize, unwrap UVs, and generate shared trim sheets for stickers, cables, and metal edges.

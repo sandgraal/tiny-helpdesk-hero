@@ -32,7 +32,7 @@
 - `CONTRIBUTING.md` — contributor expectations, onboarding steps, and collaboration etiquette.
 
 ## Immediate Priorities
-1. Finalize camera composition, hero micro-acting, and prop animations for the over-the-shoulder scene.
+1. Execute Milestone 2.6 blockout week: build hero/desk/wall greybox, capture QA walkthrough, and log progress in `docs/art/concept-approval-2024-06-01.md`.
 2. Re-test the accessibility panel updates (safe-area watcher, system high-contrast auto-detect, haptics toggle) and capture PT-03R notes.
 3. Capture updated milestone 2.6 screenshots/perf notes in `docs/art/iteration-log.md` and `docs/notes/milestone-2.6.md`.
 4. Outline milestone 3 playtests and release-readiness tasks (build pipeline check, submission packaging).
