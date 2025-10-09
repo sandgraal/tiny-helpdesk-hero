@@ -11,28 +11,30 @@
   </head>
   <body>
     <noscript>This experience requires JavaScript to run.</noscript>
-    <main aria-live="polite" class="loading-state">Loading Tiny Helpdesk Hero…</main>
-    <canvas id="glCanvas" width="1280" height="720"></canvas>
-    <canvas id="mainCanvas" width="1280" height="720"></canvas>
-    <canvas id="overlayCanvas" width="1280" height="720"></canvas>
-    <section class="accessibility-panel" data-accessibility-panel>
-      <label>
-        Text size
-        <select data-accessibility-font-scale>
-          <option value="0.85">Small</option>
-          <option value="1">Default</option>
-          <option value="1.25">Large</option>
-          <option value="1.5">Extra large</option>
-        </select>
-      </label>
-      <label>
-        Dyslexia-friendly font
-        <input type="checkbox" data-accessibility-dyslexia />
-      </label>
-      <label>
-        High contrast
-        <input type="checkbox" data-accessibility-contrast />
-      </label>
-    </section>
+    <div class="canvas-stack" data-canvas-stack>
+      <main aria-live="polite" class="loading-state">Loading Tiny Helpdesk Hero…</main>
+      <canvas id="glCanvas" width="1280" height="720"></canvas>
+      <canvas id="mainCanvas" width="1280" height="720"></canvas>
+      <canvas id="overlayCanvas" width="1280" height="720"></canvas>
+      <section class="accessibility-panel" data-accessibility-panel>
+        <label>
+          Text size
+          <select data-accessibility-font-scale>
+            <option value="0.85">Small</option>
+            <option value="1">Default</option>
+            <option value="1.25">Large</option>
+            <option value="1.5">Extra large</option>
+          </select>
+        </label>
+        <label>
+          Dyslexia-friendly font
+          <input type="checkbox" data-accessibility-dyslexia />
+        </label>
+        <label>
+          High contrast
+          <input type="checkbox" data-accessibility-contrast />
+        </label>
+      </section>
+    </div>
   </body>
 </html>
