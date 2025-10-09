@@ -62,6 +62,19 @@ The project is kicking off with a documentation-first approach. This plan captur
 - [x] Apply uniform animation timing constants with final assets.
 - [x] Document and screenshot all visual motion in `docs/art/iteration-log.md`.
 
+## Milestone 2.6 — 3D Hero Desk Realization
+**Target:** Execute the 3D transition for the hero, desk, and office vignette as defined in `docs/art/3d-transition-plan.md`.
+
+- [ ] Approve concept sketches for hero, desk layout, and wall dressing; sync decal palette with `docs/art/asset-backlog.md`.
+- [ ] Complete 3D blockout matching in-engine camera specs and validate monitor readability in greybox renders.
+- [ ] Deliver high-poly sculpts + modular wall decor sets; capture review notes in `docs/art/iteration-log.md`.
+- [ ] Retopologize, unwrap UVs, and generate shared trim sheets for stickers, cables, and metal edges.
+- [ ] Author PBR textures/materials (hero, desk, walls, props) and wire emissive masks for monitor + LED strips.
+- [ ] Rig hero with FK/IK arms, facial blendshapes, and prop animation pivots aligned to `docs/art/dynamic-visuals.md` micro-acting beats.
+- [ ] Assemble lighting/lookdev presets (warm desk lamp + cool monitor) with empathy-driven parameters documented in `docs/art/dynamic-visuals.md`.
+- [ ] Export GLTF/GLB packages, integrate into LittleJS/WebGL pipeline, and verify parallax + monitor projection flows with `src/game/scene.mjs`.
+- [ ] Log draw-call/texture memory metrics and performance notes per build in `docs/art/iteration-log.md`.
+
 ## Milestone 3 — Polish & Submission
 **Target:** Ship-quality jam build with supporting materials.
 
