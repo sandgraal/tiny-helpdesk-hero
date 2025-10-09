@@ -86,10 +86,12 @@ The structure above is aspirational until we begin committing implementation wor
 - Canvas renders rely on LittleJS’ default pixel-snapping and the off-screen monitor canvas is cleared each frame with a solid background to avoid ghosting. If we introduce hardware scaling or smoothing overrides, update `createMonitorDisplay` so we explicitly set `imageSmoothingEnabled` according to the art direction.
 
 ## LittleJS Integration Tips
-- Wrap engine globals (`engineInit`, `setShowSplashScreen`, `mouseWasPressed`, etc.) in adapter functions to simplify mocking.
-- Use `drawRectScreen`/`drawTextScreen` for UI and anchor everything to a virtual layout grid so resizing is trivial.
-- Keep update loops deterministic where possible; in tests, mock time deltas for repeatability.
-- Profile with the built-in LittleJS profiler each milestone to ensure performance headroom.
+- Wrap engine globals (`engineInit`, `setShowSplashScreen`, `mouseWasPressed`, etc.) in adapter functions to simplify mocking and future API swaps.
+- When we register new callbacks, mirror the canonical signature from the [LittleJS reference sheet](https://github.com/KilledByAPixel/LittleJS/blob/main/reference.md): `engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, imageSources = [], rootElement = document.body)`.
+- Prefer LittleJS utility classes (`Vector2`, `Color`, `Timer`, `RandomGenerator`) for math helpers; expose them through our adapters so gameplay code can be unit-tested without depending on the global namespace.
+- Drive HUD rendering with the screen-space helpers (`drawRectScreen`, `drawTextScreen`); use `canvasPixelated`, `tilesPixelated`, and related toggles for consistent texture sampling when we initialize the engine.
+- Keep update loops deterministic where possible; in tests, mock time deltas for repeatability and rely on `Timer` instances from LittleJS where appropriate.
+- Profile with the built-in LittleJS profiler each milestone to ensure performance headroom, and consult the cheat sheet when enabling optional systems (particle designer, sound effect designer) so we stay aligned with engine defaults.
 - Render the HUD into `src/game/monitor-display.mjs` before blitting when working on the over-the-shoulder composition; see `src/game/scene.mjs` for the current desk scene implementation.
 - Feed `createLightingController().update` both empathy and call progress so the day-night tint stays in sync with shift advancement.
 
@@ -99,57 +101,12 @@ The structure above is aspirational until we begin committing implementation wor
 - Prefer asynchronous feedback (issues, PR comments); reserve synchronous calls for milestone planning.
 
 The guidelines will evolve as the codebase grows. Propose edits through pull requests whenever workflow or tooling changes are introduced.
-# Best Practices for LittleJS Development
 
-## 1. Optimizing Game Loops
-- **Use requestAnimationFrame**: This method allows the browser to optimize rendering and improve performance. Always use `requestAnimationFrame` for smoother animations.
-
-  ```javascript
-  function gameLoop() {
-      // Game logic and rendering
-      requestAnimationFrame(gameLoop);
-  }
-  requestAnimationFrame(gameLoop);
-  ```
-
-## 2. Rendering Techniques
-- **Batch Rendering**: Minimize the number of draw calls by batching similar objects together. This can significantly improve rendering performance.
-
-  ```javascript
-  function batchRender(objects) {
-      // Group and render objects
-  }
-  ```
-
-## 3. Physics Management
-- **Use Simple Physics for Lightweight Games**: Implement simple collision detection and response to keep the physics manageable. Avoid complex calculations unless absolutely necessary.
-
-  ```javascript
-  function detectCollision(obj1, obj2) {
-      return obj1.x < obj2.x + obj2.width &&
-             obj1.x + obj1.width > obj2.x &&
-             obj1.y < obj2.y + obj2.height &&
-             obj1.y + obj1.height > obj2.y;
-  }
-  ```
-
-## 4. Modularization Strategies
-- **Separate Concerns**: Organize your code into modules for better maintainability. Each module should handle a specific aspect of the game (e.g., input handling, rendering, game state).
-
-  ```javascript
-  // Input module
-  const Input = {
-      // Input handling logic
-  };
-  ```
-
-## 5. Integration Tips
-- **Keep It Simple**: Avoid over-engineering. Start with a minimal setup and expand as needed. Use existing libraries and frameworks where possible to save time.
-
-  ```javascript
-  // Quick integration example
-  import { GameEngine } from 'littlejs';
-  const engine = new GameEngine();
-  ```
-
-Remember, the key to successful game development with LittleJS is to keep your code clean, efficient, and well-organized. Happy coding!
+## LittleJS Quick Reference Alignment
+- **Engine bootstrapping:** Keep our adapter surface identical to the cheat sheet call `engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, imageSources = [], rootElement = document.body)`. If we add helper wrappers, ensure we re-export the raw signature for power users.
+- **Display defaults:** Initialize the global toggles documented in the reference (`canvasPixelated`, `tilesPixelated`, `showSplashScreen`, `glEnable`, `canvasMaxSize`, `canvasFixedSize`, `canvasClearColor`, `fontDefault`) through a centralized configuration file so UI and rendering teams can review overrides in one place before shipping.
+- **Profiler & diagnostics:** Mirror the cheat sheet guidance by exposing a dev-only toggle that runs `setShowSplashScreen(false)` and opens the built-in profiler. Document the flow in `docs/playtests/` after each milestone so performance regressions stay visible.
+- **Utility exports:** Re-export the canonical math helpers (`vec2`, `rgb`, `hsl`, `randVec2`, `lerp`, `Timer`, `RandomGenerator`) from our adapter module. Unit tests can then rely on the same API surface described in the cheat sheet without reaching into LittleJS globals.
+- **Input consistency:** When binding controls, prefer the reference functions (`keyWasPressed`, `mouseWasPressed`, `gamepadWasPressed`) and route them through our input façade. This keeps our event vocabulary synchronized with upstream docs and simplifies mocking in tests.
+- **Audio layering:** Follow the audio section’s recommendation by wrapping `Sound`, `SoundWave`, and `SoundInstance` in a thin service that supports volume scaling (`soundVolume`), fades (`SoundInstance.stop(fadeTime)`), and speech synthesis (`speak`, `speakStop`). Track engine defaults alongside our content mixing notes in `docs/audio/`.
+- **Tile and object systems:** Align new level tooling with the tile layer API (`TileLayer.drawTile`, `TileLayerData`) and object settings (`objectDefaultMass`, `gravity`). Document any deviations in module-level READMEs so the implementation stays in lockstep with the cheat sheet expectations.
