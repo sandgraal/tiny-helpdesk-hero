@@ -79,4 +79,11 @@ The project is kicking off with a documentation-first approach. This plan captur
 - [x] Configure continuous integration once scripts exist (lint/test on pull requests, optional deploy checks).
 - [ ] Hold milestone retrospectives and record action items in `docs/retros/`.
 
+### LittleJS Coding Best Practices Alignment
+- [ ] Formalize the core game loop around `engineInit` and the `EngineObject` base class so updates, physics, and rendering all flow through LittleJS's object-oriented lifecycle.
+- [ ] Standardize math, color, timing, and randomness helpers by adopting LittleJS utilities (`Vector2`, `Color`, `Timer`, `RandomGenerator`) instead of bespoke helpers.
+- [ ] Centralize audio work through LittleJS `Sound`/`SoundInstance` wrappers to benefit from built-in sample caching and consistent mixing.
+- [ ] Structure scene composition and collision by layering LittleJS tile layers (render + collision) rather than ad hoc canvas draws.
+- [ ] Wire LittleJS's debug overlay and time-scaling toggles into dev builds for instrumentation, QA, and balancing.
+
 Progress through these milestones sequentially; unblockers can flow to later milestones once the bootstrap work completes. Update the checklist as sections are finished or descoped.
