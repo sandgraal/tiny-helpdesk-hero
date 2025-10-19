@@ -20,3 +20,4 @@ All notable changes to this project will be documented in this file.
 - Extracted monitor pointer mapper, added regression coverage, and published readability breakpoint report (`docs/art/monitor-readability-report.md`, `scripts/report-monitor-readability.mjs`).
 - Added PT-03R accessibility regression notes (`docs/playtests/PT-03R.md`) and automated safe-area watcher coverage (`tests/safe-area.test.mjs`).
 - Added in-game toast announcements for system-driven contrast changes and documented the PT-03R follow-up closure.
+- Introduced monitor safe-area debug overlay with keyboard/query toggles and regression coverage (`src/game/monitor-debug-overlay.mjs`, `tests/monitor-debug-overlay.test.mjs`).

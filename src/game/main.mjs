@@ -18,6 +18,7 @@ import { subscribe as subscribeSettings, getSettings } from './settings.mjs';
 import { createPerformanceMonitor } from './performance-monitor.mjs';
 import { monitorFrameSpec, fitMonitorFrameToCanvas, evaluateMonitorReadability } from './blockout-metrics.mjs';
 import { mapScreenPointToMonitor } from './monitor-coordinates.mjs';
+import { drawMonitorDebugOverlay } from './monitor-debug-overlay.mjs';
 
 function triggerHaptic(pattern, warningLabel = 'Haptic trigger failed', { isAllowed } = {}) {
   if (typeof isAllowed === 'function') {
@@ -101,6 +102,7 @@ export function createGameLifecycle(options = {}) {
     monitorDesignSize.height,
   );
   let lastReadability = null;
+  let lastPointerInfo = { screen: null, monitor: null };
   const deskScene = createDeskScene({
     monitorDisplay,
     camera: cameraState,
@@ -246,6 +248,7 @@ export function createGameLifecycle(options = {}) {
     lastMonitorLayout = fitMonitorFrameToCanvas(canvasSize.width, canvasSize.height);
     const pointerScreen = mousePosScreen ?? null;
     const pointerMonitor = mapScreenPointToMonitor(pointerScreen, lastMonitorLayout);
+    lastPointerInfo = { screen: pointerScreen, monitor: pointerMonitor };
 
     if (!mouseWasPressed?.(0)) {
       const currentState = computeRenderState();
@@ -302,6 +305,7 @@ export function createGameLifecycle(options = {}) {
       gameState.ui.getOptionIndexAtPoint(pointerMonitor)
     ));
     const pointerInfo = { screen: pointerScreen, monitor: pointerMonitor };
+    lastPointerInfo = pointerInfo;
     applySelection(renderState, optionIndex, pointerInfo, delta);
   }
 
@@ -363,6 +367,16 @@ export function createGameLifecycle(options = {}) {
         settings,
         monitorLayout,
       });
+
+      if (settings.monitorDebugOverlay) {
+        const debugContext = targetContext;
+        drawMonitorDebugOverlay(debugContext, {
+          layout: monitorLayout,
+          readability,
+          pointer: lastPointerInfo.monitor,
+          designSafeArea: monitorDesignSize,
+        });
+      }
     } else {
       withMonitorCanvasSize(() => {
         gameState.ui.render(renderState);

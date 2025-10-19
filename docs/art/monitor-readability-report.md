@@ -12,3 +12,5 @@ Generated via `scripts/report-monitor-readability.mjs` to capture how the desk m
 | 854×480 | 427×273 | 0.455 | ⚠️ | width < min, height < min, <1 px/ui (0.45) |
 
 The readability warnings align with the existing console instrumentation in `src/game/main.mjs`. Breakpoints at or above 1920×1080 meet the ≥1 px/UI target from the blockout review, while 1280×720 remains serviceable albeit below native density. Values below 960×540 fall outside the documented minimums and trigger the `[TinyHelpdeskHero][Monitor]` warnings.
+
+For day-to-day checks in engine, toggle the monitor debug overlay (F9 / Shift+Alt+M) to visualize the safe-area bounds, grid, pointer projection, and readability summary directly on the desk scene. The overlay can also be forced via `?monitorDebugOverlay=1` for screenshot sessions.

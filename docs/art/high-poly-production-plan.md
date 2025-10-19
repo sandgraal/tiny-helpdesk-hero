@@ -35,8 +35,9 @@ The greybox blockout is locked. This plan outlines how we translate the approved
 1. Export GLB packages with the LittleJS-forward axis (`+X` right, `+Y` up, `+Z` forward). Include separate animations for hero idle, type, glance, celebration, fail slump.
 2. Update `src/game/hero-assets.mjs` and `src/game/props-controller.mjs` with new sprite/GLTF hooks. Map animation events to existing empathy cues.
 3. Use `fitMonitorFrameToCanvas` during integration tests to confirm the rendered safe area matches the sculpted bezel.
-4. Capture before/after renders and performance logs. The `createPerformanceMonitor` output should stay within ±10% of the blockout baseline.
-5. Record notes and captures in `docs/art/iteration-log.md` under a new **2024-06 High-Poly** section.
+4. Toggle the in-game monitor debug overlay (F9 / Shift+Alt+M or `?monitorDebugOverlay=1`) to visually inspect safe-area guides against imported meshes.
+5. Capture before/after renders and performance logs. The `createPerformanceMonitor` output should stay within ±10% of the blockout baseline.
+6. Record notes and captures in `docs/art/iteration-log.md` under a new **2024-06 High-Poly** section.
 
 ## QA & Validation
 - Run `npm test` after asset swaps to ensure monitor readability checks (`tests/blockout-metrics.test.mjs`) still pass.

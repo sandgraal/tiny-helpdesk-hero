@@ -102,6 +102,7 @@ Add `assets/3d/` once the hero desk pipeline kicks off; store Blender/Maya scene
 - Low-power mode collapses ambient walkers, dampens prop effects, disables particle strips, and suppresses the monitor filter. This keeps the frame-time delta roughly flat between 0.1 ms–0.2 ms per frame based on the local instrumentation sample logged in `docs/notes/milestone-2.6.md`.
 - Canvas renders rely on LittleJS’ default pixel-snapping and the off-screen monitor canvas is cleared each frame with a solid background to avoid ghosting. If we introduce hardware scaling or smoothing overrides, update `createMonitorDisplay` so we explicitly set `imageSmoothingEnabled` according to the art direction.
 - Monitor readability is logged through `[TinyHelpdeskHero][Monitor]` whenever the scaled safe area dips below thresholds; review console output when testing new layouts. Pointer projection now flows through `src/game/monitor-coordinates.mjs`, and the `scripts/report-monitor-readability.mjs` helper prints the breakpoint table stored in `docs/art/monitor-readability-report.md`.
+- Toggle the on-canvas monitor debug overlay with <kbd>F9</kbd> or <kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>M</kbd>; the state persists in `localStorage` and can be forced via `?monitorDebugOverlay=1` in the URL. The overlay highlights frame vs. safe-area bounds, grid guides, pointer projection, and readability metrics.
 
 ## LittleJS Integration Tips
 - Wrap engine globals (`engineInit`, `setShowSplashScreen`, `mouseWasPressed`, etc.) in adapter functions to simplify mocking and future API swaps.
