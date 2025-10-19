@@ -17,3 +17,4 @@ All notable changes to this project will be documented in this file.
 - Added camera parallax, low-power toggle, and empathy-driven ambient lighting scaffolds for the desk scene.
 - Stubbed desk props (mug, notes, LED strip) with empathy-driven states and added failure static overlay as visual feedback.
 - Introduced hero placeholder sprite assets to support the over-the-shoulder composition.
+- Extracted monitor pointer mapper, added regression coverage, and published readability breakpoint report (`docs/art/monitor-readability-report.md`, `scripts/report-monitor-readability.mjs`).
