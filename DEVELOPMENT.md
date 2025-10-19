@@ -5,7 +5,7 @@ These guidelines define how we will build Tiny Helpdesk Hero from the ground up.
 ## Toolchain Baseline
 - **Node.js:** v18 or newer (see the `engines` field in `package.json`).
 - **Package manager:** npm by default; keep lockfiles consistent if you use an alternative.
-- **Scripts:** `npm run lint` executes the content validator, `npm run validate:content` is callable directly, `npm run serve` runs a local `python3 -m http.server 8080`, and `npm run format` remains a placeholder until a formatter is chosen.
+- **Scripts:** `npm run lint` executes the content validator, `npm run validate:content` is callable directly, `npm run serve` runs a local `python3 -m http.server 8080`, `npm run analyze:gltf` evaluates exported GLB bounds against the blockout envelope (with optional `--markdown`/`--json` output, multi-file batching, and instanced vertex/triangle totals), and `npm run format` remains a placeholder until a formatter is chosen.
 
 ## Phased Development Roadmap
 1. **Bootstrap (Sprint 0)**
@@ -79,6 +79,8 @@ Add `assets/3d/` once the hero desk pipeline kicks off; store Blender/Maya scene
 - **Content validation:** `npm run lint` (or directly `npm run validate:content`) checks personas, problems, twists, and default seeds. Required fields must be non-empty strings, incorrect answer pools need ≥2 entries, IDs must be unique, empathy boosts are trimmed/validated, and seed assignments must reference defined content.
 - **Playtesting cadence:** Schedule empathy-focused playtests every sprint; capture feedback in `docs/playtests/`.
 - **Accessibility controls:** Use the in-game panel (top-right) to adjust text size, enable the dyslexia-friendly font, toggle high-contrast mode (or follow system), switch low-power visuals/post-processing, and turn haptics on/off. Verify these settings persist between sessions.
+- Safe-area offsets for the accessibility drawer are regression-tested via `tests/safe-area.test.mjs`; re-run after changing viewport math or panel layout.
+- **High-poly verification:** Run `npm run analyze:gltf -- ./assets/3d/exports/<file>.glb[@scene] --markdown --output docs/art/exports/<file>.md` during hero desk integration to confirm mesh bounds track the blockout metrics, inspect instanced vertex/triangle totals against budgets, and capture embeddable logs before committing new renders.
 - **Continuous integration:** GitHub Actions (`.github/workflows/test.yml`) runs `npm run lint` and `npm test` on pushes and pull requests; keep scripts green before opening PRs.
 
 ## Asset & Audio Handling
@@ -95,11 +97,13 @@ Add `assets/3d/` once the hero desk pipeline kicks off; store Blender/Maya scene
 - Coordinate with engineering on shader budgets and fallback materials for WebGL2; log draw-call counts and texture memory footprints per build in `docs/art/iteration-log.md` during integration.
 
 ## Render Pipeline Notes
-- UI is first rendered into the virtual monitor via `createMonitorDisplay`, which sizes an off-screen canvas using the current `devicePixelRatio`. The desk scene then composites that texture using parallax offsets from `createCameraState`.
+- UI is first rendered into the virtual monitor via `createMonitorDisplay`, which keeps the off-screen canvas at the safe-area design size (940×600 from `monitorFrameSpec.safeArea`) while applying the current `devicePixelRatio`. `createGameLifecycle` maps LittleJS pointer coordinates into that design space with `fitMonitorFrameToCanvas` before forwarding them to the UI system. The desk scene then composites the texture using parallax offsets from `createCameraState`.
 - During compositing, `src/game/desk-assets.mjs` applies layered backgrounds, empathy-driven props, and monitor overlays (`monitorScanlines`, `monitorBloom`, and a radial glow keyed off `lighting.glow`). The glow is skipped automatically when low-power mode is active.
 - Post-processing is opt-in: the accessibility panel exposes a “Monitor filter” toggle that flips the new `settings.postProcessing` flag. When enabled, `createDeskScene` applies a mild `contrast(1.05) saturate(1.08) brightness(1.02)` Canvas filter before blitting the monitor texture; the filter is disabled for low-power users.
 - Low-power mode collapses ambient walkers, dampens prop effects, disables particle strips, and suppresses the monitor filter. This keeps the frame-time delta roughly flat between 0.1 ms–0.2 ms per frame based on the local instrumentation sample logged in `docs/notes/milestone-2.6.md`.
 - Canvas renders rely on LittleJS’ default pixel-snapping and the off-screen monitor canvas is cleared each frame with a solid background to avoid ghosting. If we introduce hardware scaling or smoothing overrides, update `createMonitorDisplay` so we explicitly set `imageSmoothingEnabled` according to the art direction.
+- Monitor readability is logged through `[TinyHelpdeskHero][Monitor]` whenever the scaled safe area dips below thresholds; review console output when testing new layouts. Pointer projection now flows through `src/game/monitor-coordinates.mjs`, and the `scripts/report-monitor-readability.mjs` helper prints the breakpoint table stored in `docs/art/monitor-readability-report.md`.
+- Toggle the on-canvas monitor debug overlay with <kbd>F9</kbd> or <kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>M</kbd>; the state persists in `localStorage` and can be forced via `?monitorDebugOverlay=1` in the URL. The overlay highlights frame vs. safe-area bounds, grid guides, pointer projection, and readability metrics.
 
 ## LittleJS Integration Tips
 - Wrap engine globals (`engineInit`, `setShowSplashScreen`, `mouseWasPressed`, etc.) in adapter functions to simplify mocking and future API swaps.
