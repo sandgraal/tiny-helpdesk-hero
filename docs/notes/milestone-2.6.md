@@ -13,6 +13,7 @@ This milestone brings the over-the-shoulder composition, monitor projection, and
 - [x] Parallax + low-power modes implemented.
 - [x] Dynamic visuals documented in `docs/art/iteration-log.md`.
 - [x] Concept art approved and blockout checklist drafted (`docs/art/concept-approval-2024-06-01.md`).
+- [x] High-poly production plan published (`docs/art/high-poly-production-plan.md`).
 
 ## Workstreams & Tasks
 
@@ -38,9 +39,10 @@ This milestone brings the over-the-shoulder composition, monitor projection, and
 - [x] Log each visual iteration in `docs/art/iteration-log.md` with captures.
 - [x] Update `DEVELOPMENT.md` with render pipeline notes (pixel snap, scaling defaults).
 - [x] Track performance metrics for standard vs. low-power mode. *(Real-time console logging added via `createPerformanceMonitor`; capture samples per device and archive results.)*
+- [x] Document monitor readability thresholds for common breakpoints (`docs/art/monitor-readability-report.md`) and link logs to `[TinyHelpdeskHero][Monitor]` console alerts.
 - [x] Automate palette contrast + colorblind regression checks (`tests/ui-accessibility.test.mjs`).
-- [x] Add accessibility panel safe-area watcher + manual haptics toggle; document follow-up PT-03R verification.
-- [ ] Deliver blockout captures + QA review deck per concept approval follow-ups.
+- [x] Add accessibility panel safe-area watcher + manual haptics toggle; document follow-up PT-03R verification. *(See `docs/playtests/PT-03R.md` and regression tests in `tests/safe-area.test.mjs`.)*
+- [x] Deliver blockout captures + QA review deck per concept approval follow-ups. *(See `docs/art/blockout-review-2024-06-08.md`.)*
 
 > 2024-05-24 — Local instrumentation sample (Node harness with stubbed canvas):
 > - Standard: 120 frames, avg 0.17 ms (min 0.03 ms / max 4.62 ms), simulated game dt avg 16.67 ms.

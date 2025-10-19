@@ -162,6 +162,40 @@ test('manual contrast override and reset to system preference', (t) => {
   assert.equal(state.highContrast, true, 'system updates apply after reset');
 });
 
+test('notifies when system contrast toggles while following system', (t) => {
+  const previousDocument = globalThis.document;
+  const previousMatchMedia = globalThis.matchMedia;
+  const storage = createStorageStub();
+  const doc = createDocumentStub();
+  globalThis.document = doc;
+  const matchMediaStub = installMatchMedia({ '(forced-colors: active)': true });
+  globalThis.matchMedia = matchMediaStub;
+
+  const events = [];
+
+  let settings;
+  t.after(() => {
+    settings?.dispose?.();
+    globalThis.document = previousDocument;
+    globalThis.matchMedia = previousMatchMedia;
+  });
+
+  settings = createAccessibilitySettings({
+    storage,
+    onSystemContrastApplied: (event) => {
+      events.push(event);
+    },
+  });
+
+  matchMediaStub.set('(forced-colors: active)', false);
+
+  assert.equal(events.length, 1);
+  assert.equal(events[0].highContrast, false);
+  assert.equal(events[0].previousHighContrast, true);
+  assert.equal(events[0].followSystemContrast, true);
+  assert.equal(events[0].systemHighContrast, false);
+});
+
 test('haptics preference persists', (t) => {
   const previousDocument = globalThis.document;
   const storage = createStorageStub();

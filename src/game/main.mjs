@@ -16,6 +16,8 @@ import { createLightingController } from '../systems/lighting/lighting-controlle
 import { createPropsController } from './props-controller.mjs';
 import { subscribe as subscribeSettings, getSettings } from './settings.mjs';
 import { createPerformanceMonitor } from './performance-monitor.mjs';
+import { monitorFrameSpec, fitMonitorFrameToCanvas, evaluateMonitorReadability } from './blockout-metrics.mjs';
+import { mapScreenPointToMonitor } from './monitor-coordinates.mjs';
 
 function triggerHaptic(pattern, warningLabel = 'Haptic trigger failed', { isAllowed } = {}) {
   if (typeof isAllowed === 'function') {
@@ -57,9 +59,12 @@ function triggerHaptic(pattern, warningLabel = 'Haptic trigger failed', { isAllo
   }
 }
 
-function createGameState() {
+function createGameState(options = {}) {
   const conversation = createConversationSystem({ calls: placeholderCalls });
-  const accessibility = createAccessibilitySettings();
+  const accessibility = createAccessibilitySettings({
+    storage: options.accessibilityStorage,
+    onSystemContrastApplied: options.onSystemContrastApplied,
+  });
   const ui = createUISystem({ accessibility });
   const audio = createAudioSystem();
   const achievements = createAchievementSystem({ definitions: achievementDefinitions });
@@ -74,19 +79,28 @@ function createGameState() {
   };
 }
 
-export function createGameLifecycle() {
-  const gameState = createGameState();
+export function createGameLifecycle(options = {}) {
+  const gameState = createGameState(options);
   let lastDelta = 1 / 60;
   const performanceMonitor = createPerformanceMonitor();
+  const monitorDesignSize = {
+    width: monitorFrameSpec.safeArea.width,
+    height: monitorFrameSpec.safeArea.height,
+  };
   const monitorDisplay = createMonitorDisplay({
-    width: globalThis.mainCanvasSize?.x ?? 640,
-    height: globalThis.mainCanvasSize?.y ?? 360,
+    width: monitorDesignSize.width,
+    height: monitorDesignSize.height,
     devicePixelRatio: globalThis.devicePixelRatio ?? 1,
   });
   const cameraState = createCameraState();
   const lightingController = createLightingController();
   const propsController = createPropsController();
   let lastFrameSettings = getSettings();
+  let lastMonitorLayout = fitMonitorFrameToCanvas(
+    monitorDesignSize.width,
+    monitorDesignSize.height,
+  );
+  let lastReadability = null;
   const deskScene = createDeskScene({
     monitorDisplay,
     camera: cameraState,
@@ -96,6 +110,24 @@ export function createGameLifecycle() {
   subscribeSettings(({ lowPower }) => {
     cameraState.setLowPower(lowPower);
   });
+
+  function withMonitorCanvasSize(callback) {
+    const hadSize = Object.prototype.hasOwnProperty.call(globalThis, 'mainCanvasSize');
+    const previousSize = hadSize ? globalThis.mainCanvasSize : null;
+    globalThis.mainCanvasSize = {
+      x: monitorDesignSize.width,
+      y: monitorDesignSize.height,
+    };
+    try {
+      return callback();
+    } finally {
+      if (hadSize) {
+        globalThis.mainCanvasSize = previousSize;
+      } else {
+        delete globalThis.mainCanvasSize;
+      }
+    }
+  }
 
   function getMainCanvasSize() {
     const size = globalThis.mainCanvasSize;
@@ -141,7 +173,7 @@ export function createGameLifecycle() {
     };
   }
 
-  function applySelection(renderState, optionIndex, pointerPosition, delta) {
+  function applySelection(renderState, optionIndex, pointerInfo, delta) {
     if (!renderState.hasCalls || renderState.isComplete) {
       return;
     }
@@ -152,7 +184,7 @@ export function createGameLifecycle() {
 
     gameState.lastSelection = gameState.conversation.chooseOption(optionIndex);
     gameState.achievements.recordSelection(gameState.lastSelection);
-    gameState.audio.playClick(pointerPosition);
+    gameState.audio.playClick(pointerInfo?.screen ?? null);
     gameState.audio.playOutcome(gameState.lastSelection.correct);
     gameState.ui.notifySelection(gameState.lastSelection);
     if (!gameState.lastSelection.correct) {
@@ -174,7 +206,9 @@ export function createGameLifecycle() {
       gameState.audio.playPersonaMotif(nextCall.persona.id);
     }
 
-    gameState.ui.update(delta, pointerPosition ?? null, nextCall);
+    withMonitorCanvasSize(() => {
+      gameState.ui.update(delta, pointerInfo?.monitor ?? null, nextCall);
+    });
     gameState.audio.updateEmpathyLevel(postState.empathyScore, postState.callCount);
 
     if (postState.isComplete) {
@@ -208,11 +242,18 @@ export function createGameLifecycle() {
 
   function handleInput(delta, settings) {
     const { mouseWasPressed, mousePosScreen } = globalThis;
+    const canvasSize = getMainCanvasSize();
+    lastMonitorLayout = fitMonitorFrameToCanvas(canvasSize.width, canvasSize.height);
+    const pointerScreen = mousePosScreen ?? null;
+    const pointerMonitor = mapScreenPointToMonitor(pointerScreen, lastMonitorLayout);
+
     if (!mouseWasPressed?.(0)) {
       const currentState = computeRenderState();
       bindKeyboardHandlers(currentState);
-      gameState.ui.update(delta, mousePosScreen, currentState.call);
-      cameraState.update({ pointer: mousePosScreen, canvasSize: getMainCanvasSize() });
+      withMonitorCanvasSize(() => {
+        gameState.ui.update(delta, pointerMonitor, currentState.call);
+      });
+      cameraState.update({ pointer: pointerScreen, canvasSize });
       lightingController.update({
         empathyScore: currentState.empathyScore,
         callCount: currentState.callCount,
@@ -230,8 +271,10 @@ export function createGameLifecycle() {
     const renderState = computeRenderState();
     bindKeyboardHandlers(renderState);
 
-    gameState.ui.update(delta, mousePosScreen, renderState.call);
-    cameraState.update({ pointer: mousePosScreen, canvasSize: getMainCanvasSize() });
+    withMonitorCanvasSize(() => {
+      gameState.ui.update(delta, pointerMonitor, renderState.call);
+    });
+    cameraState.update({ pointer: pointerScreen, canvasSize });
     lightingController.update({
       empathyScore: renderState.empathyScore,
       callCount: renderState.callCount,
@@ -255,9 +298,11 @@ export function createGameLifecycle() {
       return;
     }
 
-    const pointer = mousePosScreen;
-    const optionIndex = gameState.ui.getOptionIndexAtPoint(pointer);
-    applySelection(renderState, optionIndex, pointer, delta);
+    const optionIndex = withMonitorCanvasSize(() => (
+      gameState.ui.getOptionIndexAtPoint(pointerMonitor)
+    ));
+    const pointerInfo = { screen: pointerScreen, monitor: pointerMonitor };
+    applySelection(renderState, optionIndex, pointerInfo, delta);
   }
 
   function render() {
@@ -272,17 +317,39 @@ export function createGameLifecycle() {
     const monitorContext = monitorDisplay.getContext();
     const monitorCanvas = monitorDisplay.getCanvas();
     const { width: canvasWidth, height: canvasHeight } = getMainCanvasSize();
+    const monitorLayout = fitMonitorFrameToCanvas(canvasWidth, canvasHeight);
+    lastMonitorLayout = monitorLayout;
+    const readability = evaluateMonitorReadability(
+      canvasWidth,
+      canvasHeight,
+      {},
+      { layout: monitorLayout },
+    );
+    if (!readability.isReadable && (!lastReadability || lastReadability.isReadable)) {
+      console.warn(
+        '[TinyHelpdeskHero][Monitor] Safe area below readability threshold',
+        `${Math.round(readability.safeArea?.width ?? 0)}x${Math.round(readability.safeArea?.height ?? 0)}`,
+      );
+    } else if (readability.isReadable && lastReadability && !lastReadability.isReadable) {
+      console.info(
+        '[TinyHelpdeskHero][Monitor] Safe area readability restored',
+        `${Math.round(readability.safeArea?.width ?? 0)}x${Math.round(readability.safeArea?.height ?? 0)}`,
+      );
+    }
+    lastReadability = readability;
 
     if (monitorContext && monitorCanvas) {
-      monitorDisplay.resize(canvasWidth, canvasHeight);
-      monitorDisplay.clear('#071629');
+      withMonitorCanvasSize(() => {
+        monitorDisplay.resize(monitorDesignSize.width, monitorDesignSize.height);
+        monitorDisplay.clear('#071629');
 
-      globalThis.overlayContext = monitorContext;
-      try {
-        gameState.ui.render(renderState);
-      } finally {
-        globalThis.overlayContext = originalOverlay;
-      }
+        globalThis.overlayContext = monitorContext;
+        try {
+          gameState.ui.render(renderState);
+        } finally {
+          globalThis.overlayContext = originalOverlay;
+        }
+      });
 
       const targetContext = originalOverlay
         ?? globalThis.overlayContext
@@ -294,9 +361,12 @@ export function createGameLifecycle() {
         canvasSize: { width: canvasWidth, height: canvasHeight },
         renderState,
         settings,
+        monitorLayout,
       });
     } else {
-      gameState.ui.render(renderState);
+      withMonitorCanvasSize(() => {
+        gameState.ui.render(renderState);
+      });
     }
   }
 

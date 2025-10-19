@@ -122,6 +122,50 @@ canvas {
   cursor: default;
 }
 
+.toast-region {
+  position: absolute;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px) + var(--thh-viewport-offset-bottom, 0px));
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.toast {
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: rgba(7, 22, 41, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: var(--thh-text-color);
+  font-size: calc(0.9rem * var(--thh-font-scale));
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+  animation: toast-enter 160ms ease-out forwards;
+}
+
+.toast--info {
+  border-color: rgba(110, 231, 255, 0.45);
+  background: rgba(10, 48, 72, 0.94);
+}
+
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @media (max-width: 600px) {
   .accessibility-panel {
     left: 50%;
