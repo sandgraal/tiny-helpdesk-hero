@@ -14,3 +14,5 @@ Generated via `scripts/report-monitor-readability.mjs` to capture how the desk m
 The readability warnings align with the existing console instrumentation in `src/game/main.mjs`. Breakpoints at or above 1920×1080 meet the ≥1 px/UI target from the blockout review, while 1280×720 remains serviceable albeit below native density. Values below 960×540 fall outside the documented minimums and trigger the `[TinyHelpdeskHero][Monitor]` warnings.
 
 For day-to-day checks in engine, toggle the monitor debug overlay (F9 / Shift+Alt+M) to visualize the safe-area bounds, grid, pointer projection, and readability summary directly on the desk scene. The overlay can also be forced via `?monitorDebugOverlay=1` for screenshot sessions.
+
+Before integrating high-poly exports, run `npm run analyze:gltf -- ./assets/3d/exports/<file>.glb[@scene] --markdown` (or `--json` for automation) to record mesh deltas against the blockout envelope. Attach those CLI logs to future updates of this table so readability metrics and physical proportions stay aligned.

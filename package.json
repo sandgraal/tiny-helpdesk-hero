@@ -11,7 +11,8 @@
     "build": "node scripts/build.mjs",
     "test:watch": "node --test --watch tests",
     "validate:content": "node scripts/validate-content.mjs",
-    "report:monitor": "node scripts/report-monitor-readability.mjs"
+    "report:monitor": "node scripts/report-monitor-readability.mjs",
+    "analyze:gltf": "node scripts/analyze-gltf-bounds.mjs"
   },
   "engines": {
     "node": ">=20.0.0"

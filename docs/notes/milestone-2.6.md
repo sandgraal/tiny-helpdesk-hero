@@ -41,6 +41,7 @@ This milestone brings the over-the-shoulder composition, monitor projection, and
 - [x] Track performance metrics for standard vs. low-power mode. *(Real-time console logging added via `createPerformanceMonitor`; capture samples per device and archive results.)*
 - [x] Document monitor readability thresholds for common breakpoints (`docs/art/monitor-readability-report.md`) and link logs to `[TinyHelpdeskHero][Monitor]` console alerts.
 - [x] Ship on-canvas monitor debug overlay (keyboard/query toggles) to visualize safe-area alignment during asset swaps.
+- [x] Publish GLB analyzer tooling (`npm run analyze:gltf`) so art drops can log blockout deltas before integration.
 - [x] Automate palette contrast + colorblind regression checks (`tests/ui-accessibility.test.mjs`).
 - [x] Add accessibility panel safe-area watcher + manual haptics toggle; document follow-up PT-03R verification. *(See `docs/playtests/PT-03R.md` and regression tests in `tests/safe-area.test.mjs`.)*
 - [x] Deliver blockout captures + QA review deck per concept approval follow-ups. *(See `docs/art/blockout-review-2024-06-08.md`.)*

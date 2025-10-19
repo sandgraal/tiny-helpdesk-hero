@@ -70,6 +70,7 @@ The project is kicking off with a documentation-first approach. This plan captur
 - [x] Add in-game monitor debug overlay + instrumentation to validate safe-area alignment during asset swaps.
 - [ ] Deliver high-poly sculpts + modular wall decor sets; capture review notes in `docs/art/iteration-log.md`. *(Production beats tracked in `docs/art/high-poly-production-plan.md`.)*
 - [ ] Maintain monitor readability audit snapshots in `docs/art/monitor-readability-report.md` whenever proportions shift.
+- [ ] Validate GLB exports with `npm run analyze:gltf -- <file>.glb[@scene] --markdown` before integrating desk/hero meshes; log deltas next to blockout metrics.
 - [ ] Retopologize, unwrap UVs, and generate shared trim sheets for stickers, cables, and metal edges.
 - [ ] Author PBR textures/materials (hero, desk, walls, props) and wire emissive masks for monitor + LED strips.
 - [ ] Rig hero with FK/IK arms, facial blendshapes, and prop animation pivots aligned to `docs/art/dynamic-visuals.md` micro-acting beats.

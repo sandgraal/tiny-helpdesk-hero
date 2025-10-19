@@ -5,7 +5,7 @@ These guidelines define how we will build Tiny Helpdesk Hero from the ground up.
 ## Toolchain Baseline
 - **Node.js:** v18 or newer (see the `engines` field in `package.json`).
 - **Package manager:** npm by default; keep lockfiles consistent if you use an alternative.
-- **Scripts:** `npm run lint` executes the content validator, `npm run validate:content` is callable directly, `npm run serve` runs a local `python3 -m http.server 8080`, and `npm run format` remains a placeholder until a formatter is chosen.
+- **Scripts:** `npm run lint` executes the content validator, `npm run validate:content` is callable directly, `npm run serve` runs a local `python3 -m http.server 8080`, `npm run analyze:gltf` evaluates exported GLB bounds against the blockout envelope (with optional `--markdown`/`--json` output and multi-file batching), and `npm run format` remains a placeholder until a formatter is chosen.
 
 ## Phased Development Roadmap
 1. **Bootstrap (Sprint 0)**
@@ -80,6 +80,7 @@ Add `assets/3d/` once the hero desk pipeline kicks off; store Blender/Maya scene
 - **Playtesting cadence:** Schedule empathy-focused playtests every sprint; capture feedback in `docs/playtests/`.
 - **Accessibility controls:** Use the in-game panel (top-right) to adjust text size, enable the dyslexia-friendly font, toggle high-contrast mode (or follow system), switch low-power visuals/post-processing, and turn haptics on/off. Verify these settings persist between sessions.
 - Safe-area offsets for the accessibility drawer are regression-tested via `tests/safe-area.test.mjs`; re-run after changing viewport math or panel layout.
+- **High-poly verification:** Run `npm run analyze:gltf -- ./assets/3d/exports/<file>.glb[@scene] --markdown --output docs/art/exports/<file>.md` during hero desk integration to confirm mesh bounds track the blockout metrics and to capture embeddable logs before committing new renders.
 - **Continuous integration:** GitHub Actions (`.github/workflows/test.yml`) runs `npm run lint` and `npm test` on pushes and pull requests; keep scripts green before opening PRs.
 
 ## Asset & Audio Handling
