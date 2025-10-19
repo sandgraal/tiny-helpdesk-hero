@@ -59,9 +59,12 @@ function triggerHaptic(pattern, warningLabel = 'Haptic trigger failed', { isAllo
   }
 }
 
-function createGameState() {
+function createGameState(options = {}) {
   const conversation = createConversationSystem({ calls: placeholderCalls });
-  const accessibility = createAccessibilitySettings();
+  const accessibility = createAccessibilitySettings({
+    storage: options.accessibilityStorage,
+    onSystemContrastApplied: options.onSystemContrastApplied,
+  });
   const ui = createUISystem({ accessibility });
   const audio = createAudioSystem();
   const achievements = createAchievementSystem({ definitions: achievementDefinitions });
@@ -76,8 +79,8 @@ function createGameState() {
   };
 }
 
-export function createGameLifecycle() {
-  const gameState = createGameState();
+export function createGameLifecycle(options = {}) {
+  const gameState = createGameState(options);
   let lastDelta = 1 / 60;
   const performanceMonitor = createPerformanceMonitor();
   const monitorDesignSize = {

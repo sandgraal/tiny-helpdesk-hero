@@ -8,6 +8,7 @@ import { initAccessibilityPanel } from './ui/accessibility-panel.mjs';
 import { imageSources } from './game/asset-manifest.mjs';
 import { syncWithTextureInfos } from './game/image-loader.mjs';
 import { initSafeAreaWatcher } from './ui/safe-area.mjs';
+import { createToastManager } from './ui/toast.mjs';
 
 function ensureOverlayCanvas() {
   const doc = globalThis.document;
@@ -62,7 +63,31 @@ function startEngine(lifecycle) {
 }
 
 function bootstrap() {
-  const lifecycle = createGameLifecycle();
+  const doc = globalThis.document;
+  const toastRegion = doc?.querySelector?.('[data-toast-region]');
+  const toastManager = createToastManager({
+    container: toastRegion,
+  });
+  const announcedContrastStates = new Set();
+
+  const lifecycle = createGameLifecycle({
+    onSystemContrastApplied: (event) => {
+      if (typeof toastManager.show !== 'function') {
+        return;
+      }
+      const key = event?.highContrast ? 'high' : 'default';
+      if (announcedContrastStates.has(key)) {
+        return;
+      }
+      const message = event?.highContrast
+        ? 'System preference enabled high contrast mode.'
+        : 'System preference restored default contrast.';
+      toastManager.show(`${message} You can override this in the accessibility panel.`, {
+        tone: 'info',
+      });
+      announcedContrastStates.add(key);
+    },
+  });
   initAccessibilityPanel(lifecycle.accessibility);
   initSafeAreaWatcher();
   ensureOverlayCanvas();

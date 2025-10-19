@@ -16,8 +16,9 @@
 - [x] Enable high-contrast mode and confirm panel toggle text remains legible. *(PT-02)*
 - [x] Verify reduced-motion preference disables achievement pulse and hover scaling. *(Desktop manual check)*
 - [x] Validate touch targets ≥ 48px with stylus/finger. *(PT-02 Pixel run)*
-- [x] Confirm landscape mobile layout avoids browser chrome overlap after reposition patch. *(Safe-area watcher added 2024-05-27; re-test queued for PT-03R capture.)*
-- [x] High-contrast OS mode (macOS/Windows) with screen magnifier active — ensure text remains readable. *(System contrast auto-detect + regression tests landed 2024-05-27; manual magnifier pass scheduled for PT-03R.)*
+- [x] Confirm landscape mobile layout avoids browser chrome overlap after reposition patch. *(Re-tested during PT-03R on Pixel 6; capture refreshed screenshots for docs.)*
+- [x] High-contrast OS mode (macOS/Windows) with screen magnifier active — ensure text remains readable. *(Validated during PT-03R on Surface Book; auto-detect confirmed via reset-to-system flow.)*
+- [x] Confirm system contrast auto-detect surfaces an in-game toast the first time it toggles the theme. *(Implemented after PT-03R feedback; see `src/main.mjs`.)*
 
 ## Color & Contrast
 - [x] Audit palette for empathy meter, achievements panel, and hover states (contrast ≥ 4.5:1 for text). *(Validated via `node scripts/check-contrast.mjs`.)*
@@ -31,5 +32,5 @@
 
 ## Testing & Verification
 - [ ] Use browser accessibility tools (Lighthouse, axe) to scan canvas overlay text.
-- [ ] Conduct manual pass with screen magnifier and high-contrast OS modes.
+- [x] Conduct manual pass with screen magnifier and high-contrast OS modes. *(PT-03R Surface Book run captured results; see `docs/playtests/PT-03R.md`.)*
 - [ ] Capture findings and action items in playtest notes.

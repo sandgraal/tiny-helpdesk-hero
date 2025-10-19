@@ -79,6 +79,7 @@ Add `assets/3d/` once the hero desk pipeline kicks off; store Blender/Maya scene
 - **Content validation:** `npm run lint` (or directly `npm run validate:content`) checks personas, problems, twists, and default seeds. Required fields must be non-empty strings, incorrect answer pools need ≥2 entries, IDs must be unique, empathy boosts are trimmed/validated, and seed assignments must reference defined content.
 - **Playtesting cadence:** Schedule empathy-focused playtests every sprint; capture feedback in `docs/playtests/`.
 - **Accessibility controls:** Use the in-game panel (top-right) to adjust text size, enable the dyslexia-friendly font, toggle high-contrast mode (or follow system), switch low-power visuals/post-processing, and turn haptics on/off. Verify these settings persist between sessions.
+- Safe-area offsets for the accessibility drawer are regression-tested via `tests/safe-area.test.mjs`; re-run after changing viewport math or panel layout.
 - **Continuous integration:** GitHub Actions (`.github/workflows/test.yml`) runs `npm run lint` and `npm test` on pushes and pull requests; keep scripts green before opening PRs.
 
 ## Asset & Audio Handling
