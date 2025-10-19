@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { parseGLB } from '../src/game/gltf-loader.mjs';
-import { computeSceneBounds } from '../src/game/model-bounds.mjs';
+import { computeSceneBounds, computeSceneAnalysis } from '../src/game/model-bounds.mjs';
 
 const MAGIC = 0x46546c67;
 const VERSION = 2;
@@ -21,13 +21,6 @@ function padChunk(data, padByte = 0x20) {
   padded.set(data, 0);
   padded.fill(padByte, data.length);
   return padded;
-}
-
-function concatUint8Arrays(a, b) {
-  const combined = new Uint8Array(a.length + b.length);
-  combined.set(a, 0);
-  combined.set(b, a.length);
-  return combined;
 }
 
 function createStridedBuffer(vertexCount, stride, positions) {
@@ -67,24 +60,48 @@ function createTestGlb() {
   const stride = 32;
   const stridedBytes = createStridedBuffer(stridedPositions.length, stride, stridedPositions);
 
-  const binary = concatUint8Arrays(cubeBytes, stridedBytes);
+  const cubeIndices = new Uint16Array([
+    0, 1, 2, 0, 2, 3, // back
+    4, 6, 5, 4, 7, 6, // front
+    0, 4, 5, 0, 5, 1, // bottom
+    1, 5, 6, 1, 6, 2, // right
+    2, 6, 7, 2, 7, 3, // top
+    3, 7, 4, 3, 4, 0, // left
+  ]);
+  const quadIndices = new Uint16Array([0, 1, 2, 0, 2, 3]);
+
+  const cubeIndexBytes = new Uint8Array(cubeIndices.buffer);
+  const quadIndexBytes = new Uint8Array(quadIndices.buffer);
 
   const cubeByteLength = cubeBytes.length;
+  const stridedOffset = cubeByteLength;
+  const cubeIndexOffset = stridedOffset + stridedBytes.length;
+  const quadIndexOffset = cubeIndexOffset + cubeIndexBytes.length;
+  const totalByteLength = quadIndexOffset + quadIndexBytes.length;
+  const binary = new Uint8Array(totalByteLength);
+  binary.set(cubeBytes, 0);
+  binary.set(stridedBytes, stridedOffset);
+  binary.set(cubeIndexBytes, cubeIndexOffset);
+  binary.set(quadIndexBytes, quadIndexOffset);
 
   const json = {
     asset: { version: '2.0' },
     buffers: [{ byteLength: binary.length }],
     bufferViews: [
       { buffer: 0, byteOffset: 0, byteLength: cubeByteLength },
-      { buffer: 0, byteOffset: cubeByteLength, byteLength: stridedBytes.length, byteStride: stride },
+      { buffer: 0, byteOffset: stridedOffset, byteLength: stridedBytes.length, byteStride: stride },
+      { buffer: 0, byteOffset: cubeIndexOffset, byteLength: cubeIndexBytes.length, target: 34963 },
+      { buffer: 0, byteOffset: quadIndexOffset, byteLength: quadIndexBytes.length, target: 34963 },
     ],
     accessors: [
       { bufferView: 0, componentType: 5126, count: cubePositions.length / 3, type: 'VEC3', min: [-0.5, -0.5, -0.5], max: [0.5, 0.5, 0.5] },
       { bufferView: 1, componentType: 5126, count: stridedPositions.length, type: 'VEC3' },
+      { bufferView: 2, componentType: 5123, count: cubeIndices.length, type: 'SCALAR' },
+      { bufferView: 3, componentType: 5123, count: quadIndices.length, type: 'SCALAR' },
     ],
     meshes: [
-      { primitives: [{ attributes: { POSITION: 0 } }] },
-      { primitives: [{ attributes: { POSITION: 1 } }] },
+      { primitives: [{ attributes: { POSITION: 0 }, indices: 2 }] },
+      { primitives: [{ attributes: { POSITION: 1 }, indices: 3 }] },
     ],
     nodes: [
       { mesh: 0, translation: [0, 0, 0] },
@@ -151,4 +168,42 @@ test('computeSceneBounds accepts raw ArrayBuffer input', () => {
   const glbBuffer = createTestGlb();
   const bounds = computeSceneBounds(glbBuffer, { scene: 1 });
   assert.deepEqual(bounds.min.map((v) => Number(v.toFixed(6))), [0.5, -2, -0.5]);
+});
+
+test('computeSceneAnalysis includes geometry stats for the default scene', () => {
+  const glbBuffer = createTestGlb();
+  const gltf = parseGLB(glbBuffer);
+  const analysis = computeSceneAnalysis(gltf);
+  assert.equal(analysis.stats.nodeCount, 3);
+  assert.equal(analysis.stats.meshInstanceCount, 3);
+  assert.equal(analysis.stats.primitiveCount, 3);
+  assert.equal(analysis.stats.vertexCount, 20);
+  assert.equal(analysis.stats.triangleCount, 26);
+  assert.ok(analysis.bounds);
+});
+
+test('computeSceneAnalysis respects alternate scenes when reporting stats', () => {
+  const glbBuffer = createTestGlb();
+  const gltf = parseGLB(glbBuffer);
+  const analysis = computeSceneAnalysis(gltf, { scene: 1 });
+  assert.equal(analysis.stats.nodeCount, 1);
+  assert.equal(analysis.stats.meshInstanceCount, 1);
+  assert.equal(analysis.stats.primitiveCount, 1);
+  assert.equal(analysis.stats.vertexCount, 4);
+  assert.equal(analysis.stats.triangleCount, 2);
+  assert.ok(analysis.bounds);
+});
+
+test('computeSceneAnalysis returns zeroed stats when a scene has no geometry', () => {
+  const glbBuffer = createTestGlb();
+  const gltf = parseGLB(glbBuffer);
+  const analysis = computeSceneAnalysis(gltf, { scene: 2 });
+  assert.equal(analysis.bounds, null);
+  assert.deepEqual(analysis.stats, {
+    nodeCount: 0,
+    meshInstanceCount: 0,
+    primitiveCount: 0,
+    vertexCount: 0,
+    triangleCount: 0,
+  });
 });

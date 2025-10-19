@@ -39,6 +39,15 @@ export function createBoundsSummary(entry, { deskFootprint = defaultDeskFootprin
   }
 
   const { bounds } = entry;
+  const stats = entry.stats
+    ? {
+        nodeCount: entry.stats.nodeCount ?? 0,
+        meshInstanceCount: entry.stats.meshInstanceCount ?? 0,
+        primitiveCount: entry.stats.primitiveCount ?? 0,
+        vertexCount: entry.stats.vertexCount ?? 0,
+        triangleCount: entry.stats.triangleCount ?? 0,
+      }
+    : undefined;
   return {
     ...summary,
     bounds: {
@@ -48,6 +57,7 @@ export function createBoundsSummary(entry, { deskFootprint = defaultDeskFootprin
       center: bounds.center,
       diagonal: bounds.diagonal,
     },
+    stats,
     blockout: compareBoundsToBlockout(bounds, { deskFootprint }),
   };
 }
@@ -61,7 +71,7 @@ function formatTextSummary(summary) {
   if (summary.error) {
     return `${header}\n  Error: ${summary.error}`;
   }
-  const { bounds, blockout } = summary;
+  const { bounds, blockout, stats } = summary;
   const lines = [
     header,
     `  Min:     ${formatVector(bounds.min)}`,
@@ -70,6 +80,14 @@ function formatTextSummary(summary) {
     `  Center:  ${formatVector(bounds.center)}`,
     `  Diagonal: ${bounds.diagonal.toFixed(4)}m`,
   ];
+  if (stats) {
+    lines.push('  -- Scene geometry --');
+    lines.push(`  Nodes: ${stats.nodeCount}`);
+    lines.push(`  Mesh instances: ${stats.meshInstanceCount}`);
+    lines.push(`  Primitives: ${stats.primitiveCount}`);
+    lines.push(`  Vertices (instanced): ${stats.vertexCount}`);
+    lines.push(`  Triangles (instanced): ${stats.triangleCount}`);
+  }
   if (blockout) {
     lines.push('  -- Blockout desk deltas --');
     lines.push(`  Width Δ: ${blockout.widthDelta.toFixed(4)}m`);
@@ -84,7 +102,7 @@ function formatMarkdownSummary(summary) {
   if (summary.error) {
     return `${heading}\n\n- ❌ **Error:** ${summary.error}`;
   }
-  const { bounds, blockout } = summary;
+  const { bounds, blockout, stats } = summary;
   const lines = [
     heading,
     '',
@@ -96,6 +114,13 @@ function formatMarkdownSummary(summary) {
     `| Center | ${formatVector(bounds.center)} |`,
     `| Diagonal | ${bounds.diagonal.toFixed(4)}m |`,
   ];
+  if (stats) {
+    lines.push(`| Scene nodes | ${stats.nodeCount} |`);
+    lines.push(`| Mesh instances | ${stats.meshInstanceCount} |`);
+    lines.push(`| Primitives | ${stats.primitiveCount} |`);
+    lines.push(`| Vertices (instanced) | ${stats.vertexCount} |`);
+    lines.push(`| Triangles (instanced) | ${stats.triangleCount} |`);
+  }
   if (blockout) {
     lines.push(`| Width Δ vs. blockout | ${blockout.widthDelta.toFixed(4)}m |`);
     lines.push(`| Depth Δ vs. blockout | ${blockout.depthDelta.toFixed(4)}m |`);

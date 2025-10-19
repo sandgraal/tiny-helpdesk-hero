@@ -23,3 +23,4 @@ All notable changes to this project will be documented in this file.
 - Introduced monitor safe-area debug overlay with keyboard/query toggles and regression coverage (`src/game/monitor-debug-overlay.mjs`, `tests/monitor-debug-overlay.test.mjs`).
 - Added shared GLB loader, bounding-box utilities, and CLI analysis script for validating milestone 2.6 high-poly exports (`src/game/gltf-loader.mjs`, `src/game/model-bounds.mjs`, `scripts/analyze-gltf-bounds.mjs`).
 - Extended the GLB analysis tooling with reusable reporting helpers, multi-file batching, and Markdown/JSON output options (`src/game/model-bounds-report.mjs`, `scripts/analyze-gltf-bounds.mjs`).
+- Surfaced instanced vertex/triangle totals in the GLB analysis pipeline to enforce sculpt triangle budgets and highlight heavy exports in CLI and Markdown reports.

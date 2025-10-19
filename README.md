@@ -32,7 +32,7 @@
 - `CONTRIBUTING.md` — contributor expectations, onboarding steps, and collaboration etiquette.
 
 ## Immediate Priorities
-1. Transition Milestone 2.6 into high-poly production using the beats in `docs/art/high-poly-production-plan.md`, the blockout metrics, and the updated GLB analyzer (`npm run analyze:gltf -- ./assets/3d/exports/<file>.glb[@scene] --markdown`) to confirm exports match the greybox envelope and to capture shareable logs.
+1. Transition Milestone 2.6 into high-poly production using the beats in `docs/art/high-poly-production-plan.md`, the blockout metrics, and the updated GLB analyzer (`npm run analyze:gltf -- ./assets/3d/exports/<file>.glb[@scene] --markdown`) to confirm exports match the greybox envelope, flag over-budget triangle counts, and capture shareable logs.
 2. Publish PT-03R accessibility artifacts (Pixel safe-area captures, Windows magnifier notes) and close out the remaining axe/Lighthouse scans noted in `docs/playtests/PT-03R.md`.
 3. Capture updated milestone 2.6 screenshots/perf notes in `docs/art/iteration-log.md` and `docs/notes/milestone-2.6.md`, noting any `[TinyHelpdeskHero][Monitor]` readability warnings, validating overlays with the new debug monitor guides, and logging GLB analyzer deltas alongside `docs/art/monitor-readability-report.md`.
 4. Outline milestone 3 playtests and release-readiness tasks (build pipeline check, submission packaging).

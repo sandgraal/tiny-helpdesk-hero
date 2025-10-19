@@ -34,7 +34,7 @@ The greybox blockout is locked. This plan outlines how we translate the approved
 ## Integration Checklist
 1. Export GLB packages with the LittleJS-forward axis (`+X` right, `+Y` up, `+Z` forward). Include separate animations for hero idle, type, glance, celebration, fail slump.
 2. Update `src/game/hero-assets.mjs` and `src/game/props-controller.mjs` with new sprite/GLTF hooks. Map animation events to existing empathy cues.
-3. Run `npm run analyze:gltf -- ./assets/3d/exports/<file>.glb[@scene] --markdown --output docs/art/exports/<file>.md` (or batch multiple files) to confirm mesh bounds align with the blockout envelope and to save review-ready logs before importing into the scene.
+3. Run `npm run analyze:gltf -- ./assets/3d/exports/<file>.glb[@scene] --markdown --output docs/art/exports/<file>.md` (or batch multiple files) to confirm mesh bounds align with the blockout envelope, review instanced vertex/triangle totals against the per-asset budgets, and save review-ready logs before importing into the scene.
 4. Use `fitMonitorFrameToCanvas` during integration tests to confirm the rendered safe area matches the sculpted bezel.
 5. Toggle the in-game monitor debug overlay (F9 / Shift+Alt+M or `?monitorDebugOverlay=1`) to visually inspect safe-area guides against imported meshes.
 6. Capture before/after renders and performance logs. The `createPerformanceMonitor` output should stay within ±10% of the blockout baseline.

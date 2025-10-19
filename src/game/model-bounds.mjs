@@ -265,28 +265,98 @@ function transformBounds(matrix, bounds) {
   return { min, max };
 }
 
-function traverseNodeBounds(gltf, nodeIndex, parentMatrix, accumulator) {
+const GL_PRIMITIVE_MODES = Object.freeze({
+  POINTS: 0,
+  LINES: 1,
+  LINE_LOOP: 2,
+  LINE_STRIP: 3,
+  TRIANGLES: 4,
+  TRIANGLE_STRIP: 5,
+  TRIANGLE_FAN: 6,
+});
+
+function primitiveVertexCount(gltf, primitive) {
+  const positionAccessorIndex = primitive?.attributes?.POSITION;
+  if (typeof positionAccessorIndex !== 'number') {
+    return 0;
+  }
+  const accessor = gltf.json.accessors?.[positionAccessorIndex];
+  if (!accessor) {
+    return 0;
+  }
+  return accessor.count ?? 0;
+}
+
+function primitiveElementCount(gltf, primitive, fallbackVertexCount) {
+  if (typeof primitive?.indices === 'number') {
+    const accessor = gltf.json.accessors?.[primitive.indices];
+    if (!accessor) {
+      return 0;
+    }
+    return accessor.count ?? 0;
+  }
+  return fallbackVertexCount;
+}
+
+function primitiveTriangleCount(gltf, primitive, vertexCount) {
+  const mode = primitive?.mode ?? GL_PRIMITIVE_MODES.TRIANGLES;
+  const elementCount = primitiveElementCount(gltf, primitive, vertexCount);
+  if (!elementCount || elementCount < 0) {
+    return 0;
+  }
+  switch (mode) {
+    case GL_PRIMITIVE_MODES.TRIANGLES:
+      return Math.floor(elementCount / 3);
+    case GL_PRIMITIVE_MODES.TRIANGLE_STRIP:
+    case GL_PRIMITIVE_MODES.TRIANGLE_FAN:
+      return Math.max(elementCount - 2, 0);
+    default:
+      return 0;
+  }
+}
+
+function createAccumulator() {
+  return {
+    bounds: null,
+    nodeCount: 0,
+    meshInstanceCount: 0,
+    primitiveCount: 0,
+    vertexCount: 0,
+    triangleCount: 0,
+  };
+}
+
+function traverseNodeAnalysis(gltf, nodeIndex, parentMatrix, accumulator) {
   const node = gltf.json.nodes?.[nodeIndex];
   if (!node) {
     return accumulator;
   }
+
+  accumulator.nodeCount += 1;
+
   const localMatrix = composeMatrix(node);
   const worldMatrix = parentMatrix ? multiplyMatrices(parentMatrix, localMatrix) : localMatrix;
 
   if (typeof node.mesh === 'number') {
     const mesh = gltf.json.meshes?.[node.mesh];
     if (mesh?.primitives) {
+      accumulator.meshInstanceCount += 1;
       for (const primitive of mesh.primitives) {
+        accumulator.primitiveCount += 1;
+        const vertexCount = primitiveVertexCount(gltf, primitive);
+        accumulator.vertexCount += vertexCount;
+        accumulator.triangleCount += primitiveTriangleCount(gltf, primitive, vertexCount);
+
         const localBounds = primitiveBounds(gltf, primitive);
         const worldBounds = transformBounds(worldMatrix, localBounds);
-        accumulator = mergeBounds(accumulator, worldBounds);
+        accumulator.bounds = mergeBounds(accumulator.bounds, worldBounds);
       }
     }
   }
 
   if (Array.isArray(node.children)) {
     for (const childIndex of node.children) {
-      accumulator = traverseNodeBounds(gltf, childIndex, worldMatrix, accumulator);
+      traverseNodeAnalysis(gltf, childIndex, worldMatrix, accumulator);
     }
   }
   return accumulator;
@@ -321,24 +391,39 @@ function finalizeBounds(bounds) {
  * a parsed GLB structure or a raw ArrayBuffer (which will be parsed lazily).
  */
 export function computeSceneBounds(gltfOrBuffer, options = {}) {
+  const analysis = computeSceneAnalysis(gltfOrBuffer, options);
+  return analysis.bounds;
+}
+
+export function computeSceneAnalysis(gltfOrBuffer, options = {}) {
   const gltf = gltfOrBuffer instanceof ArrayBuffer ? parseGLB(gltfOrBuffer) : gltfOrBuffer;
   if (!gltf?.json) {
-    throw new Error('computeSceneBounds expected parsed GLB data.');
+    throw new Error('computeSceneAnalysis expected parsed GLB data.');
   }
   const sceneIndex = options.scene ?? gltf.json.scene ?? 0;
   const scene = gltf.json.scenes?.[sceneIndex];
   if (!scene) {
     throw new Error(`Scene index ${sceneIndex} not found in GLTF.`);
   }
-  let bounds = null;
+  const accumulator = createAccumulator();
   if (Array.isArray(scene.nodes)) {
     for (const nodeIndex of scene.nodes) {
-      bounds = traverseNodeBounds(gltf, nodeIndex, cloneMatrix(IDENTITY_MATRIX), bounds);
+      traverseNodeAnalysis(gltf, nodeIndex, cloneMatrix(IDENTITY_MATRIX), accumulator);
     }
   }
-  return finalizeBounds(bounds);
+  return {
+    bounds: finalizeBounds(accumulator.bounds),
+    stats: {
+      nodeCount: accumulator.nodeCount,
+      meshInstanceCount: accumulator.meshInstanceCount,
+      primitiveCount: accumulator.primitiveCount,
+      vertexCount: accumulator.vertexCount,
+      triangleCount: accumulator.triangleCount,
+    },
+  };
 }
 
 export default {
   computeSceneBounds,
+  computeSceneAnalysis,
 };

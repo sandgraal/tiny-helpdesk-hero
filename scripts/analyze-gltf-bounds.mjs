@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
 import process from 'node:process';
 
 import { parseGLB } from '../src/game/gltf-loader.mjs';
-import { computeSceneBounds } from '../src/game/model-bounds.mjs';
+import { computeSceneAnalysis } from '../src/game/model-bounds.mjs';
 import {
   createBoundsSummary,
   formatBoundsSummaries,
@@ -130,12 +130,13 @@ async function main(argv) {
     const sceneIndex = file.scene ?? parsed.scene;
     try {
       const gltf = await readGlb(file.filePath);
-      const bounds = computeSceneBounds(gltf, { scene: sceneIndex });
+      const analysis = computeSceneAnalysis(gltf, { scene: sceneIndex });
       summaries.push(
         createBoundsSummary({
           filePath: resolve(file.filePath),
           scene: sceneIndex,
-          bounds,
+          bounds: analysis.bounds,
+          stats: analysis.stats,
         }),
       );
     } catch (error) {
