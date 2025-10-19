@@ -146,7 +146,10 @@ function applyDocumentTheme(state) {
   root.style.setProperty('--thh-panel-border', state.highContrast ? 'rgba(255, 255, 255, 0.4)' : 'rgba(255, 255, 255, 0.16)');
 }
 
-export function createAccessibilitySettings({ storage = globalThis.localStorage } = {}) {
+export function createAccessibilitySettings({
+  storage = globalThis.localStorage,
+  onSystemContrastApplied,
+} = {}) {
   let systemHighContrast = readSystemHighContrastPreference();
   let state = loadState(storage, systemHighContrast);
   const listeners = new Set();
@@ -171,7 +174,24 @@ export function createAccessibilitySettings({ storage = globalThis.localStorage 
     notify();
   }
 
+  function notifySystemContrastApplied(previousHighContrast) {
+    if (typeof onSystemContrastApplied !== 'function') {
+      return;
+    }
+    try {
+      onSystemContrastApplied({
+        highContrast: Boolean(state.highContrast),
+        previousHighContrast: Boolean(previousHighContrast),
+        followSystemContrast: Boolean(state.followSystemContrast),
+        systemHighContrast: Boolean(systemHighContrast),
+      });
+    } catch (error) {
+      console.warn('[Accessibility] onSystemContrastApplied failed', error);
+    }
+  }
+
   function applySystemContrast(nextValue) {
+    const previousHighContrast = state.highContrast;
     systemHighContrast = Boolean(nextValue);
     if (!state.followSystemContrast) {
       return;
@@ -185,6 +205,7 @@ export function createAccessibilitySettings({ storage = globalThis.localStorage 
     };
     persistState(storage, state);
     notify();
+    notifySystemContrastApplied(previousHighContrast);
   }
 
   const detachContrastListeners = attachContrastListeners(applySystemContrast);

@@ -214,7 +214,7 @@ export function createUISystem({ accessibility } = {}) {
   const achievementTiming = {
     initial: 5,
     touchExtend: 4,
-    keyboardMax: 1.5,
+    keyboardMax: 0.75,
     toggle: 4,
     unlock: 6,
   };
@@ -1195,6 +1195,15 @@ export function createUISystem({ accessibility } = {}) {
     }
   }
 
+  function getAchievementPanelState() {
+    return {
+      autoHideInitialized: panelState.autoHideInitialized,
+      achievementTimer: panelState.achievementTimer,
+      achievementVisible: panelState.achievementVisible,
+      touchInteractionTimer: panelState.touchInteractionTimer,
+    };
+  }
+
   return {
     render,
     update,
@@ -1202,5 +1211,6 @@ export function createUISystem({ accessibility } = {}) {
     notifySelection,
     notifyAchievements,
     setKeyboardSelectHandler,
+    getAchievementPanelState,
   };
 }

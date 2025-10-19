@@ -6,6 +6,7 @@ import { drawRoundedRect, drawEllipse, hsl } from './draw-utils.mjs';
 import { drawHero } from './hero-assets.mjs';
 import { getImage } from './image-loader.mjs';
 import { imageManifest } from './asset-manifest.mjs';
+import { fitMonitorFrameToCanvas } from './blockout-metrics.mjs';
 
 const assets = {
   wall: getImage(imageManifest.backgroundWall),
@@ -28,9 +29,6 @@ const assets = {
   particlesFailure: getImage(imageManifest.particlesFailure),
   screenStatic: getImage(imageManifest.screenStatic),
 };
-
-const MONITOR_TOTAL = { width: 1100, height: 760 };
-const MONITOR_INNER = { x: 80, y: 80, width: 940, height: 600 };
 
 function colorToRgba(color, alpha = 1) {
   if (!color) {
@@ -258,43 +256,37 @@ function drawDeskSurface(ctx, width, height) {
   return deskTopY;
 }
 
-export function drawMonitorFrame(ctx, width, height) {
-  if (!ctx?.save) {
+export function drawMonitorFrame(ctx, width, height, options = {}) {
+  const { layout, ...coverage } = options ?? {};
+  const layoutResult = layout ?? fitMonitorFrameToCanvas(width, height, coverage);
+
+  if (!ctx?.save || !ctx?.drawImage) {
     return {
-      x: Math.round(width * 0.1),
-      y: Math.round(height * 0.16),
-      width: Math.round(width * 0.8),
-      height: Math.round(height * 0.6),
-      scale: 1,
+      ...layoutResult.safeArea,
+      scale: layoutResult.scale,
+      frame: layoutResult.frame,
     };
   }
 
-  const scale = Math.min((width * 0.86) / MONITOR_TOTAL.width, (height * 0.72) / MONITOR_TOTAL.height);
-  const drawWidth = MONITOR_TOTAL.width * scale;
-  const drawHeight = MONITOR_TOTAL.height * scale;
-  const drawX = Math.round((width - drawWidth) / 2);
-  const drawY = Math.round(height * 0.08);
-
+  const { frame } = layoutResult;
   if (isReady(assets.monitorFrame)) {
-    ctx.drawImage(assets.monitorFrame.image, drawX, drawY, drawWidth, drawHeight);
+    ctx.drawImage(assets.monitorFrame.image, frame.x, frame.y, frame.width, frame.height);
   } else {
     ctx.save();
     ctx.fillStyle = '#0B1220';
-    drawRoundedRect(ctx, drawX, drawY, drawWidth, drawHeight, Math.round(32 * scale));
+    const cornerRadius = Math.round(32 * layout.scale);
+    drawRoundedRect(ctx, frame.x, frame.y, frame.width, frame.height, cornerRadius);
     ctx.fill();
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.14)';
-    ctx.lineWidth = Math.max(2, 6 * scale);
+    ctx.lineWidth = Math.max(2, 6 * layout.scale);
     ctx.stroke();
     ctx.restore();
   }
 
   return {
-    x: drawX + Math.round(MONITOR_INNER.x * scale),
-    y: drawY + Math.round(MONITOR_INNER.y * scale),
-    width: Math.round(MONITOR_INNER.width * scale),
-    height: Math.round(MONITOR_INNER.height * scale),
-    scale,
-    frame: { x: drawX, y: drawY, width: drawWidth, height: drawHeight },
+    ...layoutResult.safeArea,
+    scale: layoutResult.scale,
+    frame: layoutResult.frame,
   };
 }
 

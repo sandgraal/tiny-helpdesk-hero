@@ -66,8 +66,11 @@ The project is kicking off with a documentation-first approach. This plan captur
 **Target:** Execute the 3D transition for the hero, desk, and office vignette as defined in `docs/art/3d-transition-plan.md`.
 
 - [x] Approve concept sketches for hero, desk layout, and wall dressing; sync decal palette with `docs/art/asset-backlog.md`. *(See `docs/art/concept-approval-2024-06-01.md` for notes and follow-ups.)*
-- [ ] Complete 3D blockout matching in-engine camera specs and validate monitor readability in greybox renders.
-- [ ] Deliver high-poly sculpts + modular wall decor sets; capture review notes in `docs/art/iteration-log.md`.
+- [x] Complete 3D blockout matching in-engine camera specs and validate monitor readability in greybox renders. *(Metrics logged in `src/game/blockout-metrics.mjs` and `docs/art/blockout-review-2024-06-08.md`.)*
+- [x] Add in-game monitor debug overlay + instrumentation to validate safe-area alignment during asset swaps.
+- [ ] Deliver high-poly sculpts + modular wall decor sets; capture review notes in `docs/art/iteration-log.md`. *(Production beats tracked in `docs/art/high-poly-production-plan.md`.)*
+- [ ] Maintain monitor readability audit snapshots in `docs/art/monitor-readability-report.md` whenever proportions shift.
+- [ ] Validate GLB exports with `npm run analyze:gltf -- <file>.glb[@scene] --markdown` before integrating desk/hero meshes; log deltas next to blockout metrics.
 - [ ] Retopologize, unwrap UVs, and generate shared trim sheets for stickers, cables, and metal edges.
 - [ ] Author PBR textures/materials (hero, desk, walls, props) and wire emissive masks for monitor + LED strips.
 - [ ] Rig hero with FK/IK arms, facial blendshapes, and prop animation pivots aligned to `docs/art/dynamic-visuals.md` micro-acting beats.
