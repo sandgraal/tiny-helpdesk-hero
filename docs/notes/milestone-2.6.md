@@ -42,6 +42,7 @@ This milestone brings the over-the-shoulder composition, monitor projection, and
 - [x] Document monitor readability thresholds for common breakpoints (`docs/art/monitor-readability-report.md`) and link logs to `[TinyHelpdeskHero][Monitor]` console alerts.
 - [x] Automate palette contrast + colorblind regression checks (`tests/ui-accessibility.test.mjs`).
 - [x] Add accessibility panel safe-area watcher + manual haptics toggle; document follow-up PT-03R verification. *(See `docs/playtests/PT-03R.md` and regression tests in `tests/safe-area.test.mjs`.)*
+- [x] Add accessibility panel safe-area watcher + manual haptics toggle; document follow-up PT-03R verification.
 - [x] Deliver blockout captures + QA review deck per concept approval follow-ups. *(See `docs/art/blockout-review-2024-06-08.md`.)*
 
 > 2024-05-24 — Local instrumentation sample (Node harness with stubbed canvas):
