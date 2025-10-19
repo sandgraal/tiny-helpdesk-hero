@@ -11,7 +11,7 @@
 - [x] High-contrast mode readability — PT-02.
 - [x] Reduced-motion preference disables pulses — desktop manual.
 - [x] Touch targets ≥ 48px — PT-02 (Pixel).
-- [ ] High-contrast OS mode + screen magnifier (macOS/Windows).
+- [x] High-contrast OS mode + screen magnifier (macOS/Windows). *(PT-03R Surface Book run confirmed contrast auto-detect + magnifier readability.)*
 
 ## Keyboard Navigation
 - [x] Initial keyboard navigation support (canvas focus ring, enter selection) — implemented 2024-04-29.

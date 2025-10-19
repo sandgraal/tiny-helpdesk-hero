@@ -7,6 +7,7 @@ const listeners = new Set();
 const state = {
   lowPower: false,
   postProcessing: true,
+  monitorDebugOverlay: false,
 };
 
 function notify() {
@@ -37,6 +38,15 @@ export function setPostProcessing(enabled) {
   notify();
 }
 
+export function setMonitorDebugOverlay(enabled) {
+  const flag = Boolean(enabled);
+  if (state.monitorDebugOverlay === flag) {
+    return;
+  }
+  state.monitorDebugOverlay = flag;
+  notify();
+}
+
 export function getSettings() {
   return { ...state };
 }
@@ -52,6 +62,7 @@ export function subscribe(listener) {
 export default {
   setLowPower,
   setPostProcessing,
+  setMonitorDebugOverlay,
   getSettings,
   subscribe,
 };

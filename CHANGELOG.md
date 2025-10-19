@@ -17,3 +17,7 @@ All notable changes to this project will be documented in this file.
 - Added camera parallax, low-power toggle, and empathy-driven ambient lighting scaffolds for the desk scene.
 - Stubbed desk props (mug, notes, LED strip) with empathy-driven states and added failure static overlay as visual feedback.
 - Introduced hero placeholder sprite assets to support the over-the-shoulder composition.
+- Extracted monitor pointer mapper, added regression coverage, and published readability breakpoint report (`docs/art/monitor-readability-report.md`, `scripts/report-monitor-readability.mjs`).
+- Added PT-03R accessibility regression notes (`docs/playtests/PT-03R.md`) and automated safe-area watcher coverage (`tests/safe-area.test.mjs`).
+- Added in-game toast announcements for system-driven contrast changes and documented the PT-03R follow-up closure.
+- Introduced monitor safe-area debug overlay with keyboard/query toggles and regression coverage (`src/game/monitor-debug-overlay.mjs`, `tests/monitor-debug-overlay.test.mjs`).
