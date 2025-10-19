@@ -10,7 +10,7 @@ function toRgba({ r, g, b }, alpha) {
 }
 
 export function createDeskScene({ monitorDisplay, camera, lighting, props }) {
-  function render({ context, canvasSize, renderState, settings }) {
+  function render({ context, canvasSize, renderState, settings, monitorLayout }) {
     if (!context || !monitorDisplay) {
       return;
     }
@@ -41,7 +41,12 @@ export function createDeskScene({ monitorDisplay, camera, lighting, props }) {
       context.restore();
     }
 
-    const frame = drawMonitorFrame(context, width, height);
+    const frame = drawMonitorFrame(
+      context,
+      width,
+      height,
+      monitorLayout ? { layout: monitorLayout } : undefined,
+    );
     drawDesk(context, width, height, propsState, {
       cameraOffset: offset,
       lighting: lightingState,
