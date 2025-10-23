@@ -1,0 +1,23 @@
+{
+  "project_name": "Tiny Helpdesk Hero",
+  "tagline": "Empathy-forward comedy adventure for the LittleJS Game Jam 2025",
+  "description": "Browser-based support sim built with LittleJS, modular JS, and an accessibility-first UI toolkit.",
+  "links": {
+    "design_docs": "docs/",
+    "prototype": "public/index.html",
+    "development_guide": "DEVELOPMENT.md"
+  },
+  "content_overview": {
+    "entry_point": "src/main.mjs",
+    "gameplay_systems": "src/game/",
+    "ui_layer": "src/ui/",
+    "procedural_content": "src/content/",
+    "tests": "tests/"
+  },
+  "commands": {
+    "serve": "npm run serve",
+    "lint": "npm run lint",
+    "test": "npm test",
+    "build": "npm run build"
+  }
+}

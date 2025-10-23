@@ -1,0 +1,30 @@
+project_name: Tiny Helpdesk Hero
+summary: >-
+  Tiny Helpdesk Hero is a browser-based adventure built with LittleJS and modern web tooling.
+  The codebase is written in ECMAScript modules and focuses on delivering an empathy-forward
+  comedy support experience for the LittleJS Game Jam 2025.
+tech_stack:
+  languages:
+    - JavaScript (ESM)
+    - HTML
+    - CSS
+  frameworks:
+    - LittleJS
+    - Web Audio API
+  tooling:
+    - Node.js 20+
+    - npm scripts
+key_paths:
+  entry_point: src/main.mjs
+  static_assets: public/
+  content_pipeline: src/content/
+  docs: docs/
+primary_commands:
+  serve: npm run serve
+  test: npm test
+  lint: npm run lint
+  build: npm run build
+knowledge_base:
+  - README.md
+  - DEVELOPMENT.md
+  - docs/wiki-starter-guide.md
