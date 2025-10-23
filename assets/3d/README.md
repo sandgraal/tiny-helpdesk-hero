@@ -5,7 +5,7 @@ This directory stores the DCC source files and exports that support Milestone 2.
 ## Directory Structure
 - `concepts/` — Reference renders, paint-overs, and shape studies that inform the sculpt. Use this folder for flattened exports only; keep linked design files in Figma.
 - `blockout/` — Blender/Maya greybox scenes, proxy textures, and capture exports that prove layout and readability. Include the date and owner in filenames (e.g., `2024-06-02-blockout-devon.blend`).
-- `final/` — Game-ready meshes, textures, and GLTF/GLB packages once the pipeline is complete. Retain the high-poly sources alongside baked maps for troubleshooting. Use `npm run analyze:gltf -- <file>.glb[@scene] --markdown` to log bounds deltas for each export and stash the Markdown output next to the binary for reviews.
+- `final/` — Game-ready meshes, textures, and GLTF/GLB packages once the pipeline is complete. Retain the high-poly sources alongside baked maps for troubleshooting. Use `npm run analyze:gltf -- <file>.glb[@scene] --markdown --budget triangles=12000 --budget vertices=6000` to log bounds deltas for each export, enforce sculpt budgets, and stash the Markdown output next to the binary for reviews.
 
 ## Naming & Versioning
 - Prefix files with `YYYY-MM-DD` and the contributor handle (e.g., `2024-06-02-devon-camera-fov.blend`).

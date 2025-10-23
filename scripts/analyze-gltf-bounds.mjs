@@ -20,6 +20,7 @@ function printUsage() {
   console.log('  --json               Shortcut for --format json');
   console.log('  --markdown           Shortcut for --format markdown');
   console.log('  --output <file>      Write the report to a file in addition to stdout');
+  console.log('  --budget <key=value> Enforce a numeric budget for a stat (triangles, vertices, etc.)');
   console.log('  --help               Show this message');
 }
 
@@ -47,11 +48,51 @@ function parseFileArg(arg) {
   return { filePath, scene };
 }
 
+const BUDGET_ALIASES = Object.freeze({
+  triangles: 'triangleCount',
+  triangle: 'triangleCount',
+  verts: 'vertexCount',
+  vertices: 'vertexCount',
+  vertex: 'vertexCount',
+  primitives: 'primitiveCount',
+  primitive: 'primitiveCount',
+  nodes: 'nodeCount',
+  node: 'nodeCount',
+  meshes: 'meshInstanceCount',
+  meshinstances: 'meshInstanceCount',
+  mesh: 'meshInstanceCount',
+});
+
+function normalizeBudgetKey(key) {
+  const normalized = key?.toLowerCase();
+  if (!normalized) {
+    return null;
+  }
+  return BUDGET_ALIASES[normalized] ?? key;
+}
+
+function parseBudgetArg(value) {
+  if (!value || !value.includes('=')) {
+    throw new Error('Budget must be provided as key=value.');
+  }
+  const [rawKey, rawBudget] = value.split('=', 2);
+  const key = normalizeBudgetKey(rawKey);
+  if (!key) {
+    throw new Error(`Invalid budget key: ${rawKey}`);
+  }
+  const budget = Number.parseFloat(rawBudget);
+  if (!Number.isFinite(budget)) {
+    throw new Error(`Invalid budget value for ${rawKey}: ${rawBudget}`);
+  }
+  return { key, budget };
+}
+
 function parseArgs(args) {
   const files = [];
   let scene;
   let format;
   let output;
+  const statBudgets = {};
   for (let i = 0; i < args.length; i += 1) {
     const arg = args[i];
     if (arg === '--scene') {
@@ -81,13 +122,21 @@ function parseArgs(args) {
         throw new Error('Missing value for --output');
       }
       i += 1;
+    } else if (arg === '--budget') {
+      const value = args[i + 1];
+      if (!value) {
+        throw new Error('Missing value for --budget');
+      }
+      const budget = parseBudgetArg(value);
+      statBudgets[budget.key] = budget.budget;
+      i += 1;
     } else if (arg === '--help' || arg === '-h') {
       return { help: true };
     } else {
       files.push(parseFileArg(arg));
     }
   }
-  return { files, scene, format, output };
+  return { files, scene, format, output, statBudgets };
 }
 
 async function main(argv) {
@@ -137,8 +186,11 @@ async function main(argv) {
           scene: sceneIndex,
           bounds: analysis.bounds,
           stats: analysis.stats,
-        }),
+        }, { statBudgets: parsed.statBudgets }),
       );
+      if (summaries.at(-1)?.warnings?.length) {
+        process.exitCode = 1;
+      }
     } catch (error) {
       summaries.push(createBoundsSummary({ filePath: resolve(file.filePath), scene: sceneIndex, error }));
       process.exitCode = 1;

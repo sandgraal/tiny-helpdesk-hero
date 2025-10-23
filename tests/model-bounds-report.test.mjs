@@ -49,6 +49,8 @@ test('createBoundsSummary normalizes bounds payload and stats', () => {
   assert.ok(summary.blockout);
   assert.equal(summary.blockout.widthDelta, 0);
   assert.deepEqual(summary.stats, sampleStats);
+  assert.equal(summary.budgets, undefined);
+  assert.equal(summary.warnings, undefined);
 });
 
 test('formatBoundsSummaries outputs text by default', () => {
@@ -78,4 +80,30 @@ test('formatBoundsSummaries serializes json when requested', () => {
 
 test('formatBoundsSummaries throws for non-array input', () => {
   assert.throws(() => formatBoundsSummaries(null), /Summaries must be an array/);
+});
+
+test('createBoundsSummary attaches budget warnings when thresholds exceeded', () => {
+  const summary = createBoundsSummary(
+    { filePath: 'desk.glb', bounds: sampleBounds, stats: sampleStats },
+    { deskFootprint, statBudgets: { triangleCount: 1000, vertexCount: 3000 } },
+  );
+  assert.ok(summary.budgets);
+  assert.deepEqual(summary.budgets.triangleCount, { budget: 1000, actual: 1200, delta: 200 });
+  assert.deepEqual(summary.budgets.vertexCount, { budget: 3000, actual: 2400, delta: -600 });
+  assert.equal(summary.warnings.length, 1);
+  assert.equal(summary.warnings[0].stat, 'triangleCount');
+});
+
+test('budget details appear in formatted reports', () => {
+  const summary = createBoundsSummary(
+    { filePath: 'desk.glb', bounds: sampleBounds, stats: sampleStats },
+    { deskFootprint, statBudgets: { triangleCount: 1000, vertexCount: 3000 } },
+  );
+  const text = formatBoundsSummaries([summary]);
+  assert.match(text, /Budget checks/);
+  assert.match(text, /⚠️ Triangles \(instanced\): 1200 \/ 1000 \(\+200\)/);
+  assert.match(text, /✅ Vertices \(instanced\): 2400 \/ 3000 \(-600\)/);
+  const markdown = formatBoundsSummaries([summary], { format: 'markdown' });
+  assert.match(markdown, /Triangles \(instanced\) budget \| ⚠️ 1200 \/ 1000 \(\+200\)/);
+  assert.match(markdown, /Vertices \(instanced\) budget \| ✅ 2400 \/ 3000 \(-600\)/);
 });
