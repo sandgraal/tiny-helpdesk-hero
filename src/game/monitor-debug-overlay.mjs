@@ -4,6 +4,7 @@
  * continues to respect the documented readability envelope.
  */
 
+import { clamp } from '../util/index.mjs';
 import { monitorFrameSpec } from './blockout-metrics.mjs';
 
 function hasContextAbilities(context) {
@@ -14,10 +15,6 @@ function hasContextAbilities(context) {
     && typeof context.fillRect === 'function'
     && typeof context.strokeRect === 'function'
   );
-}
-
-function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, value));
 }
 
 function drawInfoPanel(context, safeArea, readability, designSize) {

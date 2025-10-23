@@ -3,6 +3,8 @@
  * Handles parallax offsets driven by pointer movement and low-power toggles.
  */
 
+import { clamp } from '../util/index.mjs';
+
 const DEFAULT_PARALLAX = { x: 4, y: 2 };
 
 export function createCameraState({
@@ -15,10 +17,6 @@ export function createCameraState({
 
   let offset = { x: 0, y: 0 };
   let lowPower = false;
-
-  function clamp(value, min, max) {
-    return Math.min(Math.max(value, min), max);
-  }
 
   function update({ pointer, canvasSize } = {}) {
     if (lowPower) {

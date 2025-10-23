@@ -2,9 +2,7 @@
  * Tracks prop states (mug, notes, LEDs) based on empathy ratio with low-power support.
  */
 
-function clamp(value, min, max) {
-  return Math.min(Math.max(value, min), max);
-}
+import { clamp } from '../util/index.mjs';
 
 export function createPropsController() {
   let state = {

@@ -2,6 +2,8 @@
  * Tracks ambient lighting state driven by empathy ratio and low-power mode.
  */
 
+import { clamp, lerp } from '../../util/index.mjs';
+
 const defaultColors = {
   warm: { r: 255, g: 214, b: 102 },
   cool: { r: 64, g: 102, b: 142 },
@@ -35,10 +37,6 @@ const dayKeyframes = [
   },
 ];
 
-function clamp(value, min, max) {
-  return Math.min(Math.max(value, min), max);
-}
-
 export function createLightingController({ colors = defaultColors } = {}) {
   let ratio = 0;
   let lowPower = false;
@@ -53,10 +51,6 @@ export function createLightingController({ colors = defaultColors } = {}) {
     ratio = callCount > 0 ? clamp(empathyScore / callCount, 0, 1) : 0;
     progress = callCount > 0 ? clamp(currentIndex / callCount, 0, 1) : 0;
     lowPower = Boolean(lowPowerMode);
-  }
-
-  function lerp(a, b, t) {
-    return a + (b - a) * t;
   }
 
   function mixColor(a, b, t) {

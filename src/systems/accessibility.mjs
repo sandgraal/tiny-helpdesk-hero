@@ -4,6 +4,8 @@
  * haptics preference, and persistence.
  */
 
+import { clamp, prefersHighContrast, observeMediaQueries } from '../util/index.mjs';
+
 const STORAGE_KEY = 'tiny-helpdesk-hero/accessibility';
 const CONTRAST_MEDIA_QUERIES = [
   '(forced-colors: active)',
@@ -19,10 +21,6 @@ const defaultState = {
   hapticsEnabled: true,
 };
 
-function clamp(value, min, max) {
-  return Math.min(Math.max(value, min), max);
-}
-
 function sanitizeFontScale(value) {
   const numeric = Number(value);
   if (!Number.isFinite(numeric)) {
@@ -32,54 +30,24 @@ function sanitizeFontScale(value) {
 }
 
 function readSystemHighContrastPreference() {
-  if (typeof globalThis.matchMedia !== 'function') {
-    return false;
-  }
-  try {
-    return CONTRAST_MEDIA_QUERIES.some((query) => {
-      const media = globalThis.matchMedia(query);
-      return Boolean(media?.matches);
-    });
-  } catch (error) {
-    console.warn('[Accessibility] Failed to evaluate system contrast preference', error);
-    return false;
-  }
+  const result = prefersHighContrast({
+    matchMedia: globalThis.matchMedia,
+    queries: CONTRAST_MEDIA_QUERIES,
+  });
+  return result ?? false;
 }
 
 function attachContrastListeners(callback) {
-  if (typeof callback !== 'function' || typeof globalThis.matchMedia !== 'function') {
+  if (typeof callback !== 'function') {
     return () => {};
   }
-  const removers = [];
-  CONTRAST_MEDIA_QUERIES.forEach((query) => {
-    try {
-      const media = globalThis.matchMedia(query);
-      if (!media) {
-        return;
-      }
-      const handler = () => {
-        callback(readSystemHighContrastPreference());
-      };
-      if (typeof media.addEventListener === 'function') {
-        media.addEventListener('change', handler);
-        removers.push(() => media.removeEventListener('change', handler));
-      } else if (typeof media.addListener === 'function') {
-        media.addListener(handler);
-        removers.push(() => media.removeListener(handler));
-      }
-    } catch (error) {
-      console.warn('[Accessibility] Failed to observe contrast media query', error);
-    }
-  });
-  return () => {
-    removers.forEach((remove) => {
-      try {
-        remove();
-      } catch (error) {
-        console.warn('[Accessibility] Failed to detach contrast listener', error);
-      }
-    });
-  };
+  return observeMediaQueries(
+    CONTRAST_MEDIA_QUERIES,
+    () => {
+      callback(readSystemHighContrastPreference());
+    },
+    { matchMedia: globalThis.matchMedia },
+  );
 }
 
 function loadState(storage, systemHighContrast) {
