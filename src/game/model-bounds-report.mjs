@@ -4,6 +4,18 @@
 
 import { deskFootprint as defaultDeskFootprint } from './blockout-metrics.mjs';
 
+const STAT_LABELS = Object.freeze({
+  nodeCount: 'Nodes',
+  meshInstanceCount: 'Mesh instances',
+  primitiveCount: 'Primitives',
+  vertexCount: 'Vertices (instanced)',
+  triangleCount: 'Triangles (instanced)',
+});
+
+function getStatLabel(key) {
+  return STAT_LABELS[key] ?? key;
+}
+
 /**
  * Computes the delta between a set of bounds and the milestone 2.6 desk footprint.
  * @param {{ min:number[], max:number[], size:number[], center:number[], diagonal:number }} bounds
@@ -25,7 +37,7 @@ export function compareBoundsToBlockout(bounds, { deskFootprint = defaultDeskFoo
  * @param {{ filePath: string, scene?: number, bounds?: object, error?: Error | string }} entry
  * @param {{ deskFootprint?: object }} [options]
  */
-export function createBoundsSummary(entry, { deskFootprint = defaultDeskFootprint } = {}) {
+export function createBoundsSummary(entry, { deskFootprint = defaultDeskFootprint, statBudgets } = {}) {
   const summary = {
     filePath: entry.filePath,
     scene: entry.scene,
@@ -48,6 +60,25 @@ export function createBoundsSummary(entry, { deskFootprint = defaultDeskFootprin
         triangleCount: entry.stats.triangleCount ?? 0,
       }
     : undefined;
+  const budgets = {};
+  const budgetWarnings = [];
+
+  if (stats && statBudgets && typeof statBudgets === 'object') {
+    for (const [rawKey, rawBudget] of Object.entries(statBudgets)) {
+      const statKey = rawKey;
+      const budget = Number(rawBudget);
+      const actual = stats[statKey];
+      if (!Number.isFinite(budget) || typeof actual !== 'number') {
+        continue;
+      }
+      const delta = actual - budget;
+      budgets[statKey] = { budget, actual, delta };
+      if (delta > 0) {
+        budgetWarnings.push({ stat: statKey, budget, actual, delta });
+      }
+    }
+  }
+
   return {
     ...summary,
     bounds: {
@@ -58,6 +89,8 @@ export function createBoundsSummary(entry, { deskFootprint = defaultDeskFootprin
       diagonal: bounds.diagonal,
     },
     stats,
+    budgets: Object.keys(budgets).length ? budgets : undefined,
+    warnings: budgetWarnings.length ? budgetWarnings : undefined,
     blockout: compareBoundsToBlockout(bounds, { deskFootprint }),
   };
 }
@@ -82,11 +115,19 @@ function formatTextSummary(summary) {
   ];
   if (stats) {
     lines.push('  -- Scene geometry --');
-    lines.push(`  Nodes: ${stats.nodeCount}`);
-    lines.push(`  Mesh instances: ${stats.meshInstanceCount}`);
-    lines.push(`  Primitives: ${stats.primitiveCount}`);
-    lines.push(`  Vertices (instanced): ${stats.vertexCount}`);
-    lines.push(`  Triangles (instanced): ${stats.triangleCount}`);
+    for (const [key, value] of Object.entries(stats)) {
+      lines.push(`  ${getStatLabel(key)}: ${value}`);
+    }
+  }
+  if (summary.budgets) {
+    lines.push('  -- Budget checks --');
+    for (const [key, info] of Object.entries(summary.budgets)) {
+      const { budget, actual, delta } = info;
+      const label = getStatLabel(key);
+      const deltaLabel = delta >= 0 ? `+${delta}` : `${delta}`;
+      const status = delta > 0 ? '⚠️' : '✅';
+      lines.push(`  ${status} ${label}: ${actual} / ${budget} (${deltaLabel})`);
+    }
   }
   if (blockout) {
     lines.push('  -- Blockout desk deltas --');
@@ -115,11 +156,17 @@ function formatMarkdownSummary(summary) {
     `| Diagonal | ${bounds.diagonal.toFixed(4)}m |`,
   ];
   if (stats) {
-    lines.push(`| Scene nodes | ${stats.nodeCount} |`);
-    lines.push(`| Mesh instances | ${stats.meshInstanceCount} |`);
-    lines.push(`| Primitives | ${stats.primitiveCount} |`);
-    lines.push(`| Vertices (instanced) | ${stats.vertexCount} |`);
-    lines.push(`| Triangles (instanced) | ${stats.triangleCount} |`);
+    for (const [key, value] of Object.entries(stats)) {
+      lines.push(`| ${getStatLabel(key)} | ${value} |`);
+    }
+  }
+  if (summary.budgets) {
+    for (const [key, info] of Object.entries(summary.budgets)) {
+      const { budget, actual, delta } = info;
+      const status = delta > 0 ? '⚠️' : '✅';
+      const deltaLabel = delta >= 0 ? `+${delta}` : `${delta}`;
+      lines.push(`| ${getStatLabel(key)} budget | ${status} ${actual} / ${budget} (${deltaLabel}) |`);
+    }
   }
   if (blockout) {
     lines.push(`| Width Δ vs. blockout | ${blockout.widthDelta.toFixed(4)}m |`);

@@ -15,4 +15,4 @@ The readability warnings align with the existing console instrumentation in `src
 
 For day-to-day checks in engine, toggle the monitor debug overlay (F9 / Shift+Alt+M) to visualize the safe-area bounds, grid, pointer projection, and readability summary directly on the desk scene. The overlay can also be forced via `?monitorDebugOverlay=1` for screenshot sessions.
 
-Before integrating high-poly exports, run `npm run analyze:gltf -- ./assets/3d/exports/<file>.glb[@scene] --markdown` (or `--json` for automation) to record mesh deltas against the blockout envelope. Attach those CLI logs to future updates of this table so readability metrics and physical proportions stay aligned.
+Before integrating high-poly exports, run `npm run analyze:gltf -- ./assets/3d/exports/<file>.glb[@scene] --markdown --budget triangles=12000 --budget vertices=6000` (or `--json` for automation) to record mesh deltas against the blockout envelope and enforce sculpt budgets. Attach those CLI logs to future updates of this table so readability metrics and physical proportions stay aligned.

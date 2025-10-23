@@ -24,3 +24,4 @@ All notable changes to this project will be documented in this file.
 - Added shared GLB loader, bounding-box utilities, and CLI analysis script for validating milestone 2.6 high-poly exports (`src/game/gltf-loader.mjs`, `src/game/model-bounds.mjs`, `scripts/analyze-gltf-bounds.mjs`).
 - Extended the GLB analysis tooling with reusable reporting helpers, multi-file batching, and Markdown/JSON output options (`src/game/model-bounds-report.mjs`, `scripts/analyze-gltf-bounds.mjs`).
 - Surfaced instanced vertex/triangle totals in the GLB analysis pipeline to enforce sculpt triangle budgets and highlight heavy exports in CLI and Markdown reports.
+- Added CLI budget enforcement and ✅/⚠️ reporting to `scripts/analyze-gltf-bounds.mjs`, allowing builds to fail when GLB exports exceed triangle/vertex limits.
