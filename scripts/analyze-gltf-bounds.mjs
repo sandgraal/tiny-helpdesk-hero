@@ -31,7 +31,7 @@ async function readGlb(path) {
   return parseGLB(arrayBuffer);
 }
 
-function parseFileArg(arg) {
+export function parseFileArg(arg) {
   if (!arg) {
     return null;
   }
@@ -63,7 +63,7 @@ const BUDGET_ALIASES = Object.freeze({
   mesh: 'meshInstanceCount',
 });
 
-function normalizeBudgetKey(key) {
+export function normalizeBudgetKey(key) {
   const normalized = key?.toLowerCase();
   if (!normalized) {
     return null;
@@ -71,7 +71,7 @@ function normalizeBudgetKey(key) {
   return BUDGET_ALIASES[normalized] ?? key;
 }
 
-function parseBudgetArg(value) {
+export function parseBudgetArg(value) {
   if (!value || !value.includes('=')) {
     throw new Error('Budget must be provided as key=value.');
   }
@@ -87,7 +87,7 @@ function parseBudgetArg(value) {
   return { key, budget };
 }
 
-function parseArgs(args) {
+export function parseArgs(args) {
   const files = [];
   let scene;
   let format;
@@ -137,6 +137,39 @@ function parseArgs(args) {
     }
   }
   return { files, scene, format, output, statBudgets };
+}
+
+function countPlural(value, noun) {
+  const normalized = Math.max(0, Number(value) || 0);
+  const label = normalized === 1 ? noun : `${noun}s`;
+  return `${normalized} ${label}`;
+}
+
+export function formatAnalysisSummary(summaries = []) {
+  if (!Array.isArray(summaries) || summaries.length === 0) {
+    return '';
+  }
+  let errors = 0;
+  let warnings = 0;
+  for (const summary of summaries) {
+    if (summary?.error) {
+      errors += 1;
+    } else if (Array.isArray(summary?.warnings) && summary.warnings.length > 0) {
+      warnings += 1;
+    }
+  }
+  const successes = summaries.length - errors - warnings;
+  const parts = [
+    `Summary: ${countPlural(summaries.length, 'file')} analyzed`,
+    countPlural(successes, 'pass'),
+  ];
+  if (warnings > 0) {
+    parts.push(countPlural(warnings, 'warning'));
+  }
+  if (errors > 0) {
+    parts.push(countPlural(errors, 'error'));
+  }
+  return parts.join(' — ');
 }
 
 async function main(argv) {
@@ -205,6 +238,25 @@ async function main(argv) {
   if (parsed.output) {
     await writeFile(resolve(parsed.output), `${report}\n`);
   }
+
+  const summaryLine = formatAnalysisSummary(summaries);
+  if (summaryLine && (!parsed.format || parsed.format === 'text')) {
+    if (report) {
+      console.log('');
+    }
+    console.log(summaryLine);
+  }
 }
 
-await main(process.argv);
+if (import.meta.url === `file://${process.argv[1]}`) {
+  await main(process.argv);
+}
+
+export default {
+  parseFileArg,
+  normalizeBudgetKey,
+  parseBudgetArg,
+  parseArgs,
+  formatAnalysisSummary,
+  main,
+};
