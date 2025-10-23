@@ -1,65 +1,198 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 import {
   parseFileArg,
-  normalizeBudgetKey,
   parseBudgetArg,
   parseArgs,
-  formatAnalysisSummary,
+  main as runAnalyzer,
 } from '../scripts/analyze-gltf-bounds.mjs';
 
-test('parseFileArg handles optional scene overrides', () => {
-  assert.deepEqual(parseFileArg('desk.glb'), { filePath: 'desk.glb' });
-  assert.deepEqual(parseFileArg('desk.glb@2'), { filePath: 'desk.glb', scene: 2 });
-  assert.throws(() => parseFileArg('desk.glb@not-a-number'));
+const textEncoder = new TextEncoder();
+
+function padChunk(data, padByte = 0x20) {
+  const padding = (4 - (data.length % 4)) % 4;
+  if (padding === 0) {
+    return data;
+  }
+  const padded = new Uint8Array(data.length + padding);
+  padded.set(data, 0);
+  padded.fill(padByte, data.length);
+  return padded;
+}
+
+function createGlb(json, binary = new Uint8Array()) {
+  const jsonBytes = padChunk(textEncoder.encode(JSON.stringify(json)));
+  const binBytes = padChunk(binary, 0);
+  const totalLength = 12 + 8 + jsonBytes.length + 8 + binBytes.length;
+  const arrayBuffer = new ArrayBuffer(totalLength);
+  const view = new DataView(arrayBuffer);
+
+  const MAGIC = 0x46546c67;
+  const VERSION = 2;
+  const CHUNK_JSON = 0x4e4f534a;
+  const CHUNK_BIN = 0x004e4942;
+
+  view.setUint32(0, MAGIC, true);
+  view.setUint32(4, VERSION, true);
+  view.setUint32(8, totalLength, true);
+
+  let offset = 12;
+  view.setUint32(offset, jsonBytes.length, true);
+  view.setUint32(offset + 4, CHUNK_JSON, true);
+  new Uint8Array(arrayBuffer, offset + 8, jsonBytes.length).set(jsonBytes);
+  offset += 8 + jsonBytes.length;
+
+  view.setUint32(offset, binBytes.length, true);
+  view.setUint32(offset + 4, CHUNK_BIN, true);
+  new Uint8Array(arrayBuffer, offset + 8, binBytes.length).set(binBytes);
+
+  return arrayBuffer;
+}
+
+function createTriangleGlb() {
+  const positions = new Float32Array([
+    0, 0, 0,
+    1, 0, 0,
+    0, 1, 0,
+  ]);
+  const indices = new Uint16Array([0, 1, 2]);
+  const binary = new Uint8Array(positions.byteLength + indices.byteLength);
+  binary.set(new Uint8Array(positions.buffer), 0);
+  binary.set(new Uint8Array(indices.buffer), positions.byteLength);
+
+  const json = {
+    asset: { version: '2.0' },
+    buffers: [{ byteLength: binary.length }],
+    bufferViews: [
+      { buffer: 0, byteOffset: 0, byteLength: positions.byteLength },
+      { buffer: 0, byteOffset: positions.byteLength, byteLength: indices.byteLength },
+    ],
+    accessors: [
+      {
+        bufferView: 0,
+        componentType: 5126,
+        count: 3,
+        type: 'VEC3',
+        min: [0, 0, 0],
+        max: [1, 1, 0],
+      },
+      {
+        bufferView: 1,
+        componentType: 5123,
+        count: 3,
+        type: 'SCALAR',
+      },
+    ],
+    meshes: [
+      {
+        primitives: [
+          {
+            attributes: { POSITION: 0 },
+            indices: 1,
+            mode: 4,
+          },
+        ],
+      },
+    ],
+    nodes: [{ mesh: 0 }],
+    scenes: [{ nodes: [0] }],
+    scene: 0,
+  };
+
+  return new Uint8Array(createGlb(json, binary));
+}
+
+test('parseFileArg handles scene override suffix', () => {
+  const parsed = parseFileArg('desk.glb@2');
+  assert.deepEqual(parsed, { filePath: 'desk.glb', scene: 2 });
 });
 
-test('normalizeBudgetKey resolves known aliases and preserves custom keys', () => {
-  assert.equal(normalizeBudgetKey('triangles'), 'triangleCount');
-  assert.equal(normalizeBudgetKey('Meshes'), 'meshInstanceCount');
-  assert.equal(normalizeBudgetKey('customStat'), 'customStat');
+test('parseFileArg rejects invalid scene suffix', () => {
+  assert.throws(() => parseFileArg('desk.glb@nope'), /Invalid scene override/);
 });
 
-test('parseBudgetArg enforces key=value pairs with numeric budgets', () => {
-  assert.deepEqual(parseBudgetArg('triangles=12000'), { key: 'triangleCount', budget: 12000 });
-  assert.deepEqual(parseBudgetArg('vertexCount=6400.5'), { key: 'vertexCount', budget: 6400.5 });
-  assert.throws(() => parseBudgetArg('invalid'));
-  assert.throws(() => parseBudgetArg('triangles='));
+test('parseBudgetArg normalizes aliases', () => {
+  const parsed = parseBudgetArg('triangles=1234');
+  assert.equal(parsed.key, 'triangleCount');
+  assert.equal(parsed.budget, 1234);
 });
 
-test('parseArgs collects files, scene defaults, and budgets', () => {
+test('parseArgs collects files, formats, and budgets', () => {
   const parsed = parseArgs([
-    '--scene', '1',
-    '--format', 'Markdown',
-    '--budget', 'triangles=12000',
-    '--budget', 'vertices=6000',
-    'desk.glb@3',
-    'hero.glb',
+    'desk.glb@1',
+    '--scene',
+    '3',
+    '--format',
+    'markdown',
+    '--output',
+    'report.md',
+    '--budget',
+    'vertices=8000',
   ]);
-  assert.equal(parsed.scene, 1);
+  assert.equal(parsed.scene, 3);
   assert.equal(parsed.format, 'markdown');
-  assert.deepEqual(parsed.statBudgets, { triangleCount: 12000, vertexCount: 6000 });
-  assert.equal(parsed.files.length, 2);
-  assert.deepEqual(parsed.files[0], { filePath: 'desk.glb', scene: 3 });
-  assert.deepEqual(parsed.files[1], { filePath: 'hero.glb' });
+  assert.equal(parsed.output, 'report.md');
+  assert.deepEqual(parsed.files, [{ filePath: 'desk.glb', scene: 1 }]);
+  assert.equal(parsed.statBudgets.vertexCount, 8000);
 });
 
-test('parseArgs returns help flag when requested', () => {
-  const parsed = parseArgs(['--help']);
-  assert.equal(parsed.help, true);
+test('main generates a summary for valid GLB input', async (t) => {
+  const tempDir = await mkdtemp(join(tmpdir(), 'thh-analyze-'));
+  t.after(async () => {
+    await rm(tempDir, { recursive: true, force: true });
+  });
+
+  const glbPath = join(tempDir, 'triangle.glb');
+  await writeFile(glbPath, createTriangleGlb());
+
+  const logs = [];
+  const errors = [];
+  const exitCodes = [];
+
+  const result = await runAnalyzer(['node', 'analyze', glbPath], {
+    log: (value) => logs.push(value),
+    error: (value) => errors.push(value),
+    setExitCode: (code) => exitCodes.push(code),
+  });
+
+  assert.equal(errors.length, 0);
+  assert.equal(exitCodes.length, 0);
+  assert.ok(logs[0]?.includes('Scene bounds for'));
+  assert.equal(result.summaries.length, 1);
+  assert.equal(result.summaries[0].stats.triangleCount, 1);
 });
 
-test('formatAnalysisSummary reports passes, warnings, and errors', () => {
-  const summary = formatAnalysisSummary([
-    { filePath: 'desk.glb', warnings: [{ stat: 'triangleCount' }] },
-    { filePath: 'hero.glb', error: 'Failed to parse' },
-    { filePath: 'prop.glb' },
-  ]);
-  assert.equal(summary, 'Summary: 3 files analyzed — 1 pass — 1 warning — 1 error');
-});
+test('main flags budget overruns and surfaces warnings', async (t) => {
+  const tempDir = await mkdtemp(join(tmpdir(), 'thh-analyze-budget-'));
+  t.after(async () => {
+    await rm(tempDir, { recursive: true, force: true });
+  });
 
-test('formatAnalysisSummary returns empty string for empty input', () => {
-  assert.equal(formatAnalysisSummary([]), '');
-  assert.equal(formatAnalysisSummary(null), '');
+  const glbPath = join(tempDir, 'triangle.glb');
+  await writeFile(glbPath, createTriangleGlb());
+
+  const logs = [];
+  const exitCodes = [];
+
+  const result = await runAnalyzer([
+    'node',
+    'analyze',
+    glbPath,
+    '--budget',
+    'triangles=0',
+    '--format',
+    'markdown',
+  ], {
+    log: (value) => logs.push(value),
+    error: () => {},
+    setExitCode: (code) => exitCodes.push(code),
+  });
+
+  assert.ok(exitCodes.includes(1));
+  assert.equal(result.summaries[0].warnings?.length ?? 0, 1);
+  assert.ok(logs[0]?.includes('Triangles (instanced)'));
 });

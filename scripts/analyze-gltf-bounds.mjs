@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { readFile, writeFile } from 'node:fs/promises';
+import { readFile as readFileFromFs, writeFile as writeFileToFs } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import process from 'node:process';
 
@@ -11,22 +11,22 @@ import {
   formatBoundsSummaries,
 } from '../src/game/model-bounds-report.mjs';
 
-function printUsage() {
-  console.log('Usage: npm run analyze:gltf -- <path[@scene]> [...more] [options]');
-  console.log('       node scripts/analyze-gltf-bounds.mjs <path[@scene]> [...more] [options]');
-  console.log('Options:');
-  console.log('  --scene <index>      Scene index to analyze (applies when @scene is not provided)');
-  console.log('  --format <mode>      Output mode: text (default), markdown, json');
-  console.log('  --json               Shortcut for --format json');
-  console.log('  --markdown           Shortcut for --format markdown');
-  console.log('  --output <file>      Write the report to a file in addition to stdout');
-  console.log('  --budget <key=value> Enforce a numeric budget for a stat (triangles, vertices, etc.)');
-  console.log('  --help               Show this message');
+function printUsage(log = console.log) {
+  log('Usage: npm run analyze:gltf -- <path[@scene]> [...more] [options]');
+  log('       node scripts/analyze-gltf-bounds.mjs <path[@scene]> [...more] [options]');
+  log('Options:');
+  log('  --scene <index>      Scene index to analyze (applies when @scene is not provided)');
+  log('  --format <mode>      Output mode: text (default), markdown, json');
+  log('  --json               Shortcut for --format json');
+  log('  --markdown           Shortcut for --format markdown');
+  log('  --output <file>      Write the report to a file in addition to stdout');
+  log('  --budget <key=value> Enforce a numeric budget for a stat (triangles, vertices, etc.)');
+  log('  --help               Show this message');
 }
 
-async function readGlb(path) {
+export async function readGlb(path) {
   const resolved = resolve(path);
-  const file = await readFile(resolved);
+  const file = await readFileFromFs(resolved);
   const arrayBuffer = file.buffer.slice(file.byteOffset, file.byteOffset + file.byteLength);
   return parseGLB(arrayBuffer);
 }
@@ -48,7 +48,7 @@ export function parseFileArg(arg) {
   return { filePath, scene };
 }
 
-const BUDGET_ALIASES = Object.freeze({
+export const BUDGET_ALIASES = Object.freeze({
   triangles: 'triangleCount',
   triangle: 'triangleCount',
   verts: 'vertexCount',
@@ -139,124 +139,103 @@ export function parseArgs(args) {
   return { files, scene, format, output, statBudgets };
 }
 
-function countPlural(value, noun) {
-  const normalized = Math.max(0, Number(value) || 0);
-  const label = normalized === 1 ? noun : `${noun}s`;
-  return `${normalized} ${label}`;
-}
-
-export function formatAnalysisSummary(summaries = []) {
-  if (!Array.isArray(summaries) || summaries.length === 0) {
-    return '';
-  }
-  let errors = 0;
-  let warnings = 0;
-  for (const summary of summaries) {
-    if (summary?.error) {
-      errors += 1;
-    } else if (Array.isArray(summary?.warnings) && summary.warnings.length > 0) {
-      warnings += 1;
-    }
-  }
-  const successes = summaries.length - errors - warnings;
-  const parts = [
-    `Summary: ${countPlural(summaries.length, 'file')} analyzed`,
-    countPlural(successes, 'pass'),
-  ];
-  if (warnings > 0) {
-    parts.push(countPlural(warnings, 'warning'));
-  }
-  if (errors > 0) {
-    parts.push(countPlural(errors, 'error'));
-  }
-  return parts.join(' — ');
-}
-
-async function main(argv) {
+export async function main(argv, io = {}) {
+  const {
+    log = console.log,
+    error = console.error,
+    readGlbFn = readGlb,
+    writeFileFn = writeFileToFs,
+    setExitCode = (code) => {
+      if (typeof code === 'number' && code > 0) {
+        process.exitCode = code;
+      }
+    },
+  } = io;
   const args = argv.slice(2);
   if (args.length === 0) {
-    printUsage();
-    process.exitCode = 1;
-    return;
+    printUsage(log);
+    setExitCode(1);
+    return { summaries: [], report: '' };
   }
 
   let parsed;
   try {
     parsed = parseArgs(args);
   } catch (error) {
-    console.error(error.message);
-    printUsage();
-    process.exitCode = 1;
-    return;
+    error(error.message);
+    printUsage(log);
+    setExitCode(1);
+    return { summaries: [], report: '' };
   }
 
   if (parsed.help) {
-    printUsage();
-    return;
+    printUsage(log);
+    return { summaries: [], report: '' };
   }
 
   const { files = [] } = parsed;
   if (!files.length) {
-    printUsage();
-    process.exitCode = 1;
-    return;
+    printUsage(log);
+    setExitCode(1);
+    return { summaries: [], report: '' };
   }
 
   const summaries = [];
 
   for (const file of files) {
     if (!file?.filePath) {
-      summaries.push(createBoundsSummary({ filePath: String(file?.filePath ?? 'unknown'), error: 'Invalid file path.' }));
+      summaries.push(
+        createBoundsSummary({ filePath: String(file?.filePath ?? 'unknown'), error: 'Invalid file path.' }),
+      );
+      setExitCode(1);
       continue;
     }
     const sceneIndex = file.scene ?? parsed.scene;
     try {
-      const gltf = await readGlb(file.filePath);
+      const gltf = await readGlbFn(file.filePath);
       const analysis = computeSceneAnalysis(gltf, { scene: sceneIndex });
-      summaries.push(
-        createBoundsSummary({
+      const summary = createBoundsSummary(
+        {
           filePath: resolve(file.filePath),
           scene: sceneIndex,
           bounds: analysis.bounds,
           stats: analysis.stats,
-        }, { statBudgets: parsed.statBudgets }),
+        },
+        { statBudgets: parsed.statBudgets },
       );
-      if (summaries.at(-1)?.warnings?.length) {
-        process.exitCode = 1;
+      summaries.push(summary);
+      if (summary?.warnings?.length) {
+        setExitCode(1);
       }
     } catch (error) {
       summaries.push(createBoundsSummary({ filePath: resolve(file.filePath), scene: sceneIndex, error }));
-      process.exitCode = 1;
+      setExitCode(1);
     }
   }
 
   const report = formatBoundsSummaries(summaries, { format: parsed.format });
   if (report) {
-    console.log(report);
+    log(report);
   }
 
   if (parsed.output) {
-    await writeFile(resolve(parsed.output), `${report}\n`);
+    const outputPath = resolve(parsed.output);
+    const resolvedReport = report ? `${report}\n` : '\n';
+    await writeFileFn(outputPath, resolvedReport);
   }
-
-  const summaryLine = formatAnalysisSummary(summaries);
-  if (summaryLine && (!parsed.format || parsed.format === 'text')) {
-    if (report) {
-      console.log('');
-    }
-    console.log(summaryLine);
-  }
+  return { summaries, report };
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  await main(process.argv);
+  await main(process.argv, {
+    log: console.log,
+    error: console.error,
+    setExitCode: (code) => {
+      if (typeof code === 'number' && code > 0) {
+        process.exitCode = code;
+      }
+    },
+  });
 }
 
-export default {
-  parseFileArg,
-  normalizeBudgetKey,
-  parseBudgetArg,
-  parseArgs,
-  formatAnalysisSummary,
-  main,
-};
+export default main;
