@@ -135,7 +135,7 @@ canvas {
   z-index: 5;
 }
 
-.toast {
+.toast { 
   padding: 10px 18px;
   border-radius: 999px;
   background: rgba(7, 22, 41, 0.92);
@@ -164,6 +164,75 @@ canvas {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+}
+
+.debug-overlay {
+  position: absolute;
+  top: calc(16px + env(safe-area-inset-top, 0px) + var(--thh-viewport-offset-top, 0px));
+  left: calc(16px + env(safe-area-inset-left, 0px));
+  padding: 12px 16px;
+  min-width: 240px;
+  max-width: 320px;
+  font-size: calc(0.78rem * var(--thh-font-scale));
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: var(--thh-text-color);
+  background: rgba(7, 22, 41, 0.9);
+  border: 1px solid var(--thh-panel-border);
+  border-radius: 10px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(6px);
+  z-index: 6;
+  pointer-events: none;
+}
+
+.debug-overlay__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.debug-overlay__title {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+}
+
+.debug-overlay__status {
+  font-family: 'Atkinson Hyperlegible', 'Segoe UI', sans-serif;
+  font-size: 0.78rem;
+}
+
+.debug-overlay__metrics {
+  margin: 0;
+  font-family: 'Fira Code', 'Source Code Pro', monospace;
+  font-size: 0.76rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.debug-overlay__section-title {
+  margin: 8px 0 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.78;
+}
+
+.debug-overlay__instructions {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 2px;
+  opacity: 0.88;
+  font-size: 0.72rem;
+}
+
+.debug-overlay__instructions li {
+  list-style: disc;
 }
 
 @media (max-width: 600px) {
