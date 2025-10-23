@@ -32,10 +32,10 @@
 - `CONTRIBUTING.md` — contributor expectations, onboarding steps, and collaboration etiquette.
 
 ## Immediate Priorities
-1. Transition Milestone 2.6 into high-poly production using the beats in `docs/art/high-poly-production-plan.md`, the blockout metrics, and the updated GLB analyzer (`npm run analyze:gltf -- ./assets/3d/exports/<file>.glb[@scene] --markdown --budget triangles=12000 --budget vertices=6000`) to confirm exports match the greybox envelope, flag over-budget triangle counts, and capture shareable logs.
-2. Publish PT-03R accessibility artifacts (Pixel safe-area captures, Windows magnifier notes) and close out the remaining axe/Lighthouse scans noted in `docs/playtests/PT-03R.md`.
+1. Transition Milestone 2.6 into high-poly production using the beats in `docs/art/high-poly-production-plan.md`, the blockout metrics, and the updated GLB analyzer (`npm run analyze:gltf -- ./assets/3d/exports/<file>.glb[@scene] --markdown --budget triangles=12000 --budget vertices=6000`) to confirm exports match the greybox envelope, flag over-budget triangle counts, and capture shareable logs. Track daily progress in `docs/art/high-poly-production-log.md`.
+2. Publish PT-03R accessibility artifacts (Pixel safe-area captures, Windows magnifier notes) and close out the remaining axe/Lighthouse scans noted in `docs/playtests/PT-03R.md`. Use `docs/playtests/PT-03R-artifacts.md` to stage captures + narration for review.
 3. Capture updated milestone 2.6 screenshots/perf notes in `docs/art/iteration-log.md` and `docs/notes/milestone-2.6.md`, noting any `[TinyHelpdeskHero][Monitor]` readability warnings, validating overlays with the new debug monitor guides, and logging GLB analyzer deltas alongside `docs/art/monitor-readability-report.md`.
-4. Outline milestone 3 playtests and release-readiness tasks (build pipeline check, submission packaging).
+4. Outline milestone 3 playtests and release-readiness tasks (build pipeline check, submission packaging) — see `docs/notes/milestone-3.md`.
 
 ## Running Locally
 1. `npm run serve` (uses `python3 -m http.server 8080`)

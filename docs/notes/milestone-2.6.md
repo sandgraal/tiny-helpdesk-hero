@@ -55,4 +55,4 @@ This milestone brings the over-the-shoulder composition, monitor projection, and
 - Hero + prop animations respond to gameplay events.
 - Visual changes documented with before/after captures and performance notes.
 
-Document owner: Chris (@sandgraal). Update as tasks progress.
+Document owner: Chris (@sandgraal). Update as tasks progress. Day-to-day sculpt milestones are tracked in `docs/art/high-poly-production-log.md`.

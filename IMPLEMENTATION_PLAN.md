@@ -79,7 +79,7 @@ The project is kicking off with a documentation-first approach. This plan captur
 - [ ] Log draw-call/texture memory metrics and performance notes per build in `docs/art/iteration-log.md`.
 
 ## Milestone 3 — Polish & Submission
-**Target:** Ship-quality jam build with supporting materials.
+**Target:** Ship-quality jam build with supporting materials. Coordination tracker lives in `docs/notes/milestone-3.md`.
 
 - [ ] Conduct structured playtests; iterate on pacing, clarity, and humor balance. Capture findings in `docs/playtests/`. *(PT-01 completed 2024-04-24; PT-02 completed 2024-04-28; PT-03 completed 2024-05-03 with landscape retest pending.)*
 - [ ] Optimize for performance and readability on small screens (mobile + desktop) and document device test matrix.
