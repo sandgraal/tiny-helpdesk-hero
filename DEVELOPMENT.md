@@ -5,7 +5,7 @@ These guidelines define how we will build Tiny Helpdesk Hero from the ground up.
 ## Toolchain Baseline
 - **Node.js:** v18 or newer (see the `engines` field in `package.json`).
 - **Package manager:** npm by default; keep lockfiles consistent if you use an alternative.
-- **Scripts:** `npm run lint` executes the content validator, `npm run validate:content` is callable directly, `npm run serve` runs a local `python3 -m http.server 8080`, `npm run analyze:gltf` evaluates exported GLB bounds against the blockout envelope (with optional `--markdown`/`--json` output, multi-file batching, instanced vertex/triangle totals, and `--budget` enforcement), and `npm run format` remains a placeholder until a formatter is chosen.
+- **Scripts:** `npm run lint` executes the content validator, `npm run validate:content` is callable directly, `npm run serve` runs a local `python3 -m http.server 8080`, `npm run analyze:gltf` evaluates exported GLB bounds against the blockout envelope (with optional `--markdown`/`--json` output, multi-file batching, instanced vertex/triangle totals, summary status lines, and `--budget` enforcement), and `npm run format` remains a placeholder until a formatter is chosen.
 
 ## Phased Development Roadmap
 1. **Bootstrap (Sprint 0)**
