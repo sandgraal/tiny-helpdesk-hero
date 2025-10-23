@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 
 import {
   parseFileArg,
@@ -195,4 +195,90 @@ test('main flags budget overruns and surfaces warnings', async (t) => {
   assert.ok(exitCodes.includes(1));
   assert.equal(result.summaries[0].warnings?.length ?? 0, 1);
   assert.ok(logs[0]?.includes('Triangles (instanced)'));
+});
+
+const sampleBounds = {
+  min: [0, 0, 0],
+  max: [1, 1, 1],
+  size: [1, 1, 1],
+  center: [0.5, 0.5, 0.5],
+  diagonal: Math.sqrt(3),
+};
+
+function createAnalysis(statsOverrides = {}) {
+  return {
+    bounds: { ...sampleBounds },
+    stats: {
+      nodeCount: 1,
+      meshInstanceCount: 1,
+      primitiveCount: 1,
+      vertexCount: 1,
+      triangleCount: 1,
+      ...statsOverrides,
+    },
+  };
+}
+
+test('main appends roll-up summary for text output', async () => {
+  const logs = [];
+  let exitCode = 0;
+  const analyses = new Map([
+    ['pass.glb', createAnalysis({ triangleCount: 80 })],
+    ['warn.glb', createAnalysis({ triangleCount: 150 })],
+  ]);
+
+  const argv = [
+    'node',
+    'scripts/analyze-gltf-bounds.mjs',
+    'pass.glb',
+    'warn.glb',
+    'error.glb',
+    '--budget',
+    'triangles=100',
+  ];
+
+  const { report } = await runAnalyzer(argv, {
+    log: (message) => logs.push(message),
+    error: () => {},
+    readGlbFn: async (filePath) => {
+      if (filePath === 'error.glb') {
+        throw new Error('Boom');
+      }
+      return { filePath };
+    },
+    analyzeSceneFn: (gltf) => analyses.get(gltf.filePath),
+    setExitCode: (code) => {
+      exitCode = code;
+    },
+  });
+
+  assert.equal(exitCode, 1);
+  assert.equal(logs.length, 1);
+  const output = logs[0];
+  assert.equal(report, output);
+  assert.match(output, new RegExp(`Scene bounds for ${resolve('pass.glb')}`));
+  assert.match(output, new RegExp(`Scene bounds for ${resolve('warn.glb')}`));
+  assert.match(output, /Error: Boom/);
+  assert.match(output, /✅ 1 pass/);
+  assert.match(output, /⚠️ 1 warning/);
+  assert.match(output, /❌ 1 error/);
+});
+
+test('main skips roll-up summary for markdown output', async () => {
+  const logs = [];
+  const argv = ['node', 'scripts/analyze-gltf-bounds.mjs', 'pass.glb', '--format', 'markdown'];
+
+  const { report } = await runAnalyzer(argv, {
+    log: (message) => logs.push(message),
+    error: () => {},
+    readGlbFn: async (filePath) => ({ filePath }),
+    analyzeSceneFn: () => createAnalysis({ triangleCount: 40 }),
+    setExitCode: () => {},
+  });
+
+  assert.equal(logs.length, 1);
+  const output = logs[0];
+  assert.equal(report, output);
+  assert.ok(output.startsWith('### '));
+  assert.ok(!output.includes('Roll-up:'));
 });
