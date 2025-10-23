@@ -31,6 +31,43 @@ export async function readGlb(path) {
   return parseGLB(arrayBuffer);
 }
 
+function getSummaryStatus(summary) {
+  if (!summary || typeof summary !== 'object') {
+    return 'error';
+  }
+  if (summary.error) {
+    return 'error';
+  }
+  if (Array.isArray(summary.warnings) && summary.warnings.length > 0) {
+    return 'warn';
+  }
+  return 'pass';
+}
+
+function pluralizeStatus(status, count) {
+  const label =
+    {
+      pass: count === 1 ? 'pass' : 'passes',
+      warn: count === 1 ? 'warning' : 'warnings',
+      error: count === 1 ? 'error' : 'errors',
+    }[status] ?? 'items';
+  return `${count} ${label}`;
+}
+
+function formatRollupSummary(summaries) {
+  const counts = { pass: 0, warn: 0, error: 0 };
+  if (Array.isArray(summaries)) {
+    for (const summary of summaries) {
+      const status = getSummaryStatus(summary);
+      counts[status] += 1;
+    }
+  }
+  return `---\nRoll-up: ✅ ${pluralizeStatus('pass', counts.pass)} · ⚠️ ${pluralizeStatus(
+    'warn',
+    counts.warn,
+  )} · ❌ ${pluralizeStatus('error', counts.error)}`;
+}
+
 export function parseFileArg(arg) {
   if (!arg) {
     return null;
@@ -145,6 +182,7 @@ export async function main(argv, io = {}) {
     error = console.error,
     readGlbFn = readGlb,
     writeFileFn = writeFileToFs,
+    analyzeSceneFn = computeSceneAnalysis,
     setExitCode = (code) => {
       if (typeof code === 'number' && code > 0) {
         process.exitCode = code;
@@ -193,7 +231,7 @@ export async function main(argv, io = {}) {
     const sceneIndex = file.scene ?? parsed.scene;
     try {
       const gltf = await readGlbFn(file.filePath);
-      const analysis = computeSceneAnalysis(gltf, { scene: sceneIndex });
+      const analysis = analyzeSceneFn(gltf, { scene: sceneIndex });
       const summary = createBoundsSummary(
         {
           filePath: resolve(file.filePath),
@@ -214,16 +252,20 @@ export async function main(argv, io = {}) {
   }
 
   const report = formatBoundsSummaries(summaries, { format: parsed.format });
-  if (report) {
-    log(report);
+  const shouldAppendRollup = !parsed.format || parsed.format === 'text';
+  const rollup = shouldAppendRollup ? formatRollupSummary(summaries) : '';
+  const output = shouldAppendRollup ? [report, rollup].filter(Boolean).join('\n\n') : report;
+
+  if (output) {
+    log(output);
   }
 
   if (parsed.output) {
     const outputPath = resolve(parsed.output);
-    const resolvedReport = report ? `${report}\n` : '\n';
+    const resolvedReport = output ? `${output}\n` : '\n';
     await writeFileFn(outputPath, resolvedReport);
   }
-  return { summaries, report };
+  return { summaries, report: output };
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
