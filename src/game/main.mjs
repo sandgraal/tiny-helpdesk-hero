@@ -16,6 +16,7 @@ import { createLightingController } from '../systems/lighting/lighting-controlle
 import { createPropsController } from './props-controller.mjs';
 import { subscribe as subscribeSettings, getSettings } from './settings.mjs';
 import { createPerformanceMonitor } from './performance-monitor.mjs';
+import { clamp } from '../util/index.mjs';
 import { monitorFrameSpec, fitMonitorFrameToCanvas, evaluateMonitorReadability } from './blockout-metrics.mjs';
 import { mapScreenPointToMonitor } from './monitor-coordinates.mjs';
 import { drawMonitorDebugOverlay } from './monitor-debug-overlay.mjs';
@@ -60,6 +61,10 @@ function triggerHaptic(pattern, warningLabel = 'Haptic trigger failed', { isAllo
   }
 }
 
+const DEFAULT_TIME_SCALE = 1;
+const MIN_TIME_SCALE = 0;
+const MAX_TIME_SCALE = 4;
+
 function createGameState(options = {}) {
   const conversation = createConversationSystem({ calls: placeholderCalls });
   const accessibility = createAccessibilitySettings({
@@ -83,6 +88,7 @@ function createGameState(options = {}) {
 export function createGameLifecycle(options = {}) {
   const gameState = createGameState(options);
   let lastDelta = 1 / 60;
+  let lastBaseDelta = 1 / 60;
   const performanceMonitor = createPerformanceMonitor();
   const monitorDesignSize = {
     width: monitorFrameSpec.safeArea.width,
@@ -112,6 +118,8 @@ export function createGameLifecycle(options = {}) {
   subscribeSettings(({ lowPower }) => {
     cameraState.setLowPower(lowPower);
   });
+  let timeScale = DEFAULT_TIME_SCALE;
+  let lastNonZeroTimeScale = DEFAULT_TIME_SCALE;
 
   function withMonitorCanvasSize(callback) {
     const hadSize = Object.prototype.hasOwnProperty.call(globalThis, 'mainCanvasSize');
@@ -394,11 +402,13 @@ export function createGameLifecycle(options = {}) {
     },
     update() {
       performanceMonitor.markFrameStart();
-      const delta = globalThis.timeDelta ?? globalThis.frameTime ?? 1 / 60;
-      lastDelta = delta;
+      const baseDelta = globalThis.timeDelta ?? globalThis.frameTime ?? 1 / 60;
+      lastBaseDelta = baseDelta;
+      const scaledDelta = baseDelta * timeScale;
+      lastDelta = scaledDelta;
       const settings = getSettings();
       lastFrameSettings = settings;
-      handleInput(delta, settings);
+      handleInput(scaledDelta, settings);
     },
     render,
     renderPost() {
@@ -409,5 +419,38 @@ export function createGameLifecycle(options = {}) {
     },
     updatePost() {},
     accessibility: gameState.accessibility,
+    debug: {
+      getTimeScale() {
+        return timeScale;
+      },
+      setTimeScale(value) {
+        const numeric = Number.isFinite(value) ? value : DEFAULT_TIME_SCALE;
+        const clamped = clamp(numeric, MIN_TIME_SCALE, MAX_TIME_SCALE);
+        if (clamped > 0) {
+          lastNonZeroTimeScale = clamped;
+        }
+        timeScale = clamped;
+        return timeScale;
+      },
+      nudgeTimeScale(amount) {
+        return this.setTimeScale(timeScale + Number(amount || 0));
+      },
+      resetTimeScale() {
+        return this.setTimeScale(DEFAULT_TIME_SCALE);
+      },
+      togglePause() {
+        if (timeScale === 0) {
+          return this.setTimeScale(lastNonZeroTimeScale || DEFAULT_TIME_SCALE);
+        }
+        lastNonZeroTimeScale = timeScale > 0 ? timeScale : lastNonZeroTimeScale;
+        return this.setTimeScale(0);
+      },
+      getPerformanceStats() {
+        return performanceMonitor.getStats();
+      },
+      getBaseDelta() {
+        return lastBaseDelta;
+      },
+    },
   };
 }

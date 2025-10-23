@@ -108,6 +108,19 @@ test('game lifecycle integrates systems and audio cues', { concurrency: false },
 
       globalThis.mouseWasPressed = () => false;
       lifecycle.render();
+      lifecycle.renderPost();
+
+      assert.ok(lifecycle.debug, 'Debug controls should be exposed.');
+      assert.equal(lifecycle.debug.getTimeScale(), 1, 'Default time scale should be 1x.');
+      const fasterScale = lifecycle.debug.nudgeTimeScale(0.5);
+      assert.equal(fasterScale, 1.5, 'Time scale increases via debug controls.');
+      assert.equal(lifecycle.debug.togglePause(), 0, 'Toggle pause returns zero time scale.');
+      assert.equal(lifecycle.debug.togglePause(), 1.5, 'Toggle pause restores previous scale.');
+      assert.equal(lifecycle.debug.resetTimeScale(), 1, 'Reset returns to default time scale.');
+
+      const stats = lifecycle.debug.getPerformanceStats();
+      assert.ok(stats);
+      assert.ok('lastFrame' in stats, 'Performance stats include last frame metadata.');
     } finally {
       Math.random = originalRandom;
     }
