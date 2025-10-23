@@ -3,6 +3,8 @@
  * Wraps LittleJS Sound helper so we can trigger UI cues and background loops.
  */
 
+import { clamp } from '../util/index.mjs';
+
 function canUseSound() {
   return typeof globalThis.Sound === 'function';
 }
@@ -24,10 +26,6 @@ function playSound(sound, { position, volume = 1, pitch = 1, loop = false } = {}
     console.warn('[AudioSystem] Failed to play sound', error);
     return null;
   }
-}
-
-function clamp(value, min, max) {
-  return Math.min(Math.max(value, min), max);
 }
 
 function createClickSound() {
