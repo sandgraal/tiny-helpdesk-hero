@@ -34,4 +34,5 @@ _Assign artists as soon as production resources are locked; leave “TBD” if t
 - Place generated Markdown exports alongside manual reviewer notes (e.g., highlight triangle overages or pivot mismatches).
 - Commit the analyzer command used for each export so QA can reproduce the exact run.
 - Attach related screenshots in `docs/art/reference/` and link them from the log entry.
+- When reviewing the CLI output in a terminal, record the summary line (pass/warn/error counts) alongside the detailed report so reviewers can see status at a glance.
 - Update this log after every major sculpt, retopo, or integration milestone.
