@@ -1,6 +1,6 @@
 # High-Poly Production Plan — Milestone 2.6
 
-The greybox blockout is locked. This plan outlines how we translate the approved proportions into final hero, desk, and vignette assets while keeping the LittleJS integration fast.
+The greybox blockout is locked. This plan outlines how we translate the approved proportions into final hero, desk, and vignette assets while keeping the LittleJS integration fast. Track execution updates in `docs/art/high-poly-production-log.md`.
 
 ## Objectives
 - Deliver game-ready hero, desk, and ambient prop meshes that preserve the milestone 2.6 composition.

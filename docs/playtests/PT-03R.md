@@ -8,6 +8,8 @@
 - **Session focus:** Verify accessibility panel refinements (safe-area watcher, contrast auto-detect, manual haptics toggle) after monitor layout instrumentation.
 - **Session window:** 30 min remote call (10 min setup + capture, 15 min guided regression, 5 min debrief).
 
+_Artifacts tracked in `docs/playtests/PT-03R-artifacts.md` with capture paths + outstanding follow-ups._
+
 ## Goals
 - Confirm the visual viewport safe-area watcher keeps the accessibility drawer clear of browser chrome on mobile landscape/portrait.
 - Validate system high-contrast detection hand-off and manual override/reset flow while a screen magnifier is active.
@@ -30,8 +32,8 @@
 - “Nice that it remembers I turned haptics off when I reload; the reset button also put contrast back where Windows wants it.” — Jordan
 
 ### Issues / Bugs
-- [ ] Capture new Pixel safe-area screenshots for documentation (current reference still shows pre-watcher overlap).
-- [ ] Axe scan still outstanding for monitor overlay text (desktop).
+- [ ] Capture new Pixel safe-area screenshots for documentation (current reference still shows pre-watcher overlap). See `docs/playtests/PT-03R-artifacts.md` for capture path + measurements.
+- [ ] Axe scan still outstanding for monitor overlay text (desktop). Link findings back to `docs/playtests/PT-03R-artifacts.md` once the sweep completes.
 
 ### Opportunities
 - [x] Surface a toast the first time system contrast toggles the theme so players notice the automatic switch. (Implemented via `createToastManager` announcement in `src/main.mjs`.)
