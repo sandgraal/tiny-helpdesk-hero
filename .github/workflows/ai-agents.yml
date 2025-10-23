@@ -1,0 +1,39 @@
+name: AI Agents
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      agent:
+        description: "Agent preset to execute"
+        required: false
+        default: all
+        type: choice
+        options:
+          - all
+          - content
+          - gameplay
+
+jobs:
+  bootstrap:
+    name: Bootstrap automation context
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Summarize project metadata
+        run: node ai/scripts/bootstrap.mjs
+
+      - name: Record workflow dispatch
+        run: >-
+          node ai/scripts/log-agent-run.mjs
+          agent=${{ github.event.inputs.agent || 'all' }}
+          workflow_run=${{ github.run_id }}
+          actor=${{ github.actor }}
