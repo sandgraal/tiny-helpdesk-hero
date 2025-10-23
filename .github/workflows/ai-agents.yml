@@ -1,4 +1,6 @@
 name: AI Agents
+permissions:
+  contents: read
 
 on:
   workflow_dispatch:
