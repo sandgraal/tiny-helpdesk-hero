@@ -16,3 +16,12 @@ The readability warnings align with the existing console instrumentation in `src
 For day-to-day checks in engine, toggle the monitor debug overlay (F9 / Shift+Alt+M) to visualize the safe-area bounds, grid, pointer projection, and readability summary directly on the desk scene. The overlay can also be forced via `?monitorDebugOverlay=1` for screenshot sessions.
 
 Before integrating high-poly exports, run `npm run analyze:gltf -- ./assets/3d/exports/<file>.glb[@scene] --markdown --budget triangles=12000 --budget vertices=6000` (or `--json` for automation) to record mesh deltas against the blockout envelope and enforce sculpt budgets. Attach those CLI logs to future updates of this table so readability metrics and physical proportions stay aligned.
+
+### Refreshing this table
+
+Use `npm run report:monitor` to regenerate the table above. The script now accepts flexible output modes for attaching raw data to docs or playtest notes:
+
+- `npm run report:monitor -- --format markdown` (default) — renders the table shown here.
+- `npm run report:monitor -- --json` — emits a machine-friendly payload for logging with performance captures.
+- `npm run report:monitor -- --text` — prints a compact summary in the console.
+- `npm run report:monitor -- --size 3440x1440 --size 1024×768 --include-defaults` — evaluate additional breakpoints alongside the defaults before exporting.
